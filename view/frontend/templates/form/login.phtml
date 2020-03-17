@@ -18,13 +18,15 @@
               data-mage-init='{"validation":{}}'>
             <?= $block->getBlockHtml('formkey') ?>
             <fieldset class="fieldset login" data-hasrequired="<?= $block->escapeHtmlAttr(__('* Required Fields')) ?>">
-                <div class="field note"><?= $block->escapeHtml(__('If you have an account, sign in with your email address.')) ?></div>
-                <div class="field email required">
-                    <label class="label" for="email"><span><?= $block->escapeHtml(__('CPF')) ?></span></label>
+                <div class="field note"><?= $block->escapeHtml(__('Caso tenha uma conta entre com o seu Cpf')) ?></div>
+
+                <div class="field cpf required">
+                    <label class="label" for="cpf"><span><?= $block->escapeHtml(__('CPF')) ?></span></label>
                     <div class="control">
-                        <input name="login[username]" value="" autocomplete="off" id="cpf" type="number" class="input-text" title="<?= $block->escapeHtmlAttr(__('Cpf')) ?>" data-mage-init='{"mage/trim-input":{}}'>
+                        <input name="login[username]" value="" autocomplete="off" id="username" type="text" class="input-text" title="<?= $block->escapeHtmlAttr(__('Cpf')) ?>" >
                     </div>
                 </div>
+                
                 <div class="field password required">
                     <label for="pass" class="label"><span><?= $block->escapeHtml(__('Password')) ?></span></label>
                     <div class="control">

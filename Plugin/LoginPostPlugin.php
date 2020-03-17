@@ -69,6 +69,19 @@ class LoginPostPlugin
         return true;
     }
 
+    // public function aroundExecute(
+    //     \Magento\Customer\Controller\Account\LoginPost $subject,
+    //     $result)
+    // {
+    //     $value = [
+    //         'username' => 'iisabellyfatimadias@fortlar.com.br',
+    //         'cpf' => '37859237911',
+    //         'password' => 'Teste12#'
+    //     ];
+    //     $subject->getRequest()->setPostValue('login',$value);
+    //     return $result;
+    // }
+
     /**
      *
      * @param \Magento\Customer\Controller\Account\LoginPost $subject
@@ -81,8 +94,20 @@ class LoginPostPlugin
         $errorMessage = "Cpf ou senha inválidos";
         $websiteId  = $this->storeManager->getWebsite()->getWebsiteId();
 
-        $cpf = $subject->getRequest()->getPost('login')['username'];
+        // $value = [
+        //     'username' => 'eltonfd@gmail.com',
+        //     'cpf' => '05265617930',
+        //     'password' => 'aie1176A'
+        // ];
+        // $subject->getRequest()->setPostValue('login',$value);
+
+
+        $username = $subject->getRequest()->getPost('login')['username'];
+        $cpf = preg_replace("/[^0-9]/", "", $username);
+
         $senha = $subject->getRequest()->getPost('login')['password'];
+
+
 
         //Get Object Manager Instance
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
@@ -113,7 +138,7 @@ class LoginPostPlugin
             
             if($res == false){
                 $this->_messageManager->addError($errorMessage);
-                $result->setPath('/customer/account/login/');
+                $result->setPath('customer/account/');
                 return $result;
             }
 
@@ -122,29 +147,42 @@ class LoginPostPlugin
             $sessionManager = $this->_sessionFactory->create();
             $sessionManager->setCustomerAsLoggedIn($customer);
 
-            $result->setPath('/customer/account/login/');
+            $result->setPath('customer/account/');
             return $result;
+
         } else {
             // Tenta realizar a autenticação com JWT
-            $url = 'https://vxp-germini-identity-dev.azurewebsites.net/connect/token';
-            $params = [
-                "username" => $cpf,
-                "password" => $senha,
-                "client_id" => "ro.client.consumer",
-                "client_secret" => "secret",
-                "grant_type" => "password",
-                "scope" => "germini-api openid profile"
-            ];
-            $this->_curl->post($url, $params);
-            //response will contain the output in form of JSON string
-            $response = $this->_curl->getBody();
+            try{
+
+                $url = 'https://vxp-germini-identity-dev.azurewebsites.net/connect/token';
+                $params = [
+                    "username" => $cpf,
+                    "password" => $senha,
+                    "client_id" => "ro.client.consumer",
+                    "client_secret" => "secret",
+                    "grant_type" => "password",
+                    "scope" => "germini-api openid profile"
+                ];
+                $this->_curl->post($url, $params);
+                //response will contain the output in form of JSON string
+                $response = $this->_curl->getBody();
+            }
+            catch (\Exception $e) {
+                $this->_messageManager->addError('Não foi possível conectar com germini');
+
+                $result->setPath('customer/account/');
+                return $result;
+
+            }
+
+
             $resultado = json_decode($response);
 
             if ($response != "")
             {
                 if (isset($resultado->error)){
                     $this->_messageManager->addError($errorMessage);
-                    $result->setPath('/customer/account/login/');
+                    $result->setPath('customer/account/');
                     return $result;
                 }
                 $token = json_decode($response)->access_token;
@@ -190,22 +228,36 @@ class LoginPostPlugin
                 //                         ->loadByCode('CA', 'US');
 
                 // TODO: regionId
-                $addresss = $objectManager->get('\Magento\Customer\Model\AddressFactory');
-                $address = $addresss->create();
-                $address->setCustomerId($new_customer->getId())
-                ->setFirstname($first_name)
-                ->setLastname($last_name)
-                ->setCountryId('BR')
-                ->setPostcode($dados->address->zipcode)
-                ->setCity($dados->address->city->name)
-                ->setTelephone($dados->phoneNumber)
-                ->setFax('')
-                ->setCompany('')
-                ->setStreet($dados->address->location)
-                ->setIsDefaultBilling('1')
-                ->setIsDefaultShipping('1')
-                ->setSaveInAddressBook('1');
-                $address->save();
+                try
+                {
+                    $regionCode = $dados->address->state->abbreviation;
+                    $countryCode = 'BR';
+                    $region = $objectManager->create('Magento\Directory\Model\Region');
+                    $regionId = $region->loadByCode($regionCode, $countryCode)->getId();
+    
+                    $addresss = $objectManager->get('\Magento\Customer\Model\AddressFactory');
+                    $address = $addresss->create();
+                    $address->setCustomerId($new_customer->getId())
+                            ->setFirstname($first_name)
+                            ->setLastname($last_name)
+                            ->setCountryId($countryCode)
+                            ->setRegionId($regionId)
+                            ->setPostcode($dados->address->zipCode)
+                            ->setCity($dados->address->city->name)
+                            ->setTelephone($dados->phoneNumber)
+                            ->setFax('')
+                            ->setCompany('')
+                            ->setStreet($dados->address->location)
+                            ->setIsDefaultBilling('1')
+                            ->setIsDefaultShipping('1')
+                            ->setSaveInAddressBook('1');
+                    $address->save();
+                }
+                catch (\Exception $e) {
+                    $this->_messageManager->addError('Não foi possível carregar endereço');
+                    // $result->setPath('customer/account/');
+                    // return $result;
+                }
 
                 // Crio a sessão desse usuário
                 // $customerSession = $objectManager->create('Magento\Customer\Model\Session');
@@ -217,7 +269,8 @@ class LoginPostPlugin
                 $this->_messageManager->addError($errorMessage);
             }
         }
-        $result->setPath('/customer/account/login/');
+        $result->setPath('customer/account/');
+        $this->_messageManager->getMessages(true);
         return $result;
     }
 }
