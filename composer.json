@@ -1,0 +1,12 @@
+{
+    "name": "vexpro/autenticacao",
+    "description": "Add autentication to germini using cpf and password and autentication in admin panel with germini",
+    "type": "magento2-module",
+    "version": "1.0.0",
+    "autoload": {
+        "files": [ "registration.php" ],
+        "psr-4": {
+            "Vexpro\\Autenticacao\\": ""
+        }
+    }
+}
