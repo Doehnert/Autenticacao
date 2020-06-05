@@ -6,6 +6,10 @@
 
 /** @var \Magento\Customer\Block\Form\Login $block */
 ?>
+
+
+
+
 <div class="block block-customer-login">
     <div class="block-title">
         <strong id="block-customer-login-heading" role="heading" aria-level="2"><?= $block->escapeHtml(__('Registered Customers')) ?></strong>
@@ -15,7 +19,7 @@
               action="<?= $block->escapeUrl($block->getPostActionUrl()) ?>"
               method="post"
               id="login-form"
-              data-mage-init='{"validation":{}}'>
+              >
             <?= $block->getBlockHtml('formkey') ?>
             <fieldset class="fieldset login" data-hasrequired="<?= $block->escapeHtmlAttr(__('* Required Fields')) ?>">
                 <div class="field note"><?= $block->escapeHtml(__('Caso tenha uma conta entre com o seu Cpf')) ?></div>
@@ -23,14 +27,26 @@
                 <div class="field cpf required">
                     <label class="label" for="cpf"><span><?= $block->escapeHtml(__('CPF')) ?></span></label>
                     <div class="control">
-                        <input name="login[username]" value="" autocomplete="off" id="username" type="text" class="input-text" title="<?= $block->escapeHtmlAttr(__('Cpf')) ?>" >
+
+
+
+                    <div class="control">
+                            <input type="text"
+                            id="cpf"
+                            name="login[username]"
+                            value="<?php echo $block->escapeHtml($block->getCustomerValue("cpf")) ?>"
+                            title="<?php /* @escapeNotVerified */ echo __('CPF') ?>"
+                            class="input-text"
+                            data-validate="{required:<?php echo var_export($block->getStatus("required", "cpf", "cpf"), true) ?>, 'validate-cpf':true}">
+                    </div>
+
                     </div>
                 </div>
                 
                 <div class="field password required">
                     <label for="pass" class="label"><span><?= $block->escapeHtml(__('Password')) ?></span></label>
                     <div class="control">
-                        <input name="login[password]" type="password" <?php if ($block->isAutocompleteDisabled()) : ?> autocomplete="off"<?php endif; ?> class="input-text" id="pass" title="<?= $block->escapeHtmlAttr(__('Password')) ?>" data-validate="{required:true}">
+                        <input name="login[password]" type="password" <?php if ($block->isAutocompleteDisabled()) : ?> autocomplete="off"<?php endif; ?> class="input-text" id="pass" title="<?= $block->escapeHtmlAttr(__('Password')) ?>">
                     </div>
                 </div>
                 <?= $block->getChildHtml('form_additional_info') ?>
@@ -43,3 +59,23 @@
     </div>
 </div>
 
+<script type="text/x-magento-init">
+    {
+        "[data-role=type-individual], [data-role=type-corporation]": {
+            "changePersonType" : {
+                "changeFirstnameLabel": <?php echo ($block->getConfigAdmin("cnpj", "copy_firstname")?"true":"false"); ?>,
+                "changeLastnameLabel": <?php echo ($block->getConfigAdmin("cnpj", "copy_lastname")?"true":"false"); ?>
+            }
+        }
+    }
+</script>
+
+<script>
+    require([
+        'jquery',
+        'inputMask'
+    ], function ($) {
+        $('#cpf').mask('000.000.000-00', {clearIfNotMatch: true});
+        $('#cnpj').mask('00.000.000/0000-00', {clearIfNotMatch: true});
+    });
+</script>

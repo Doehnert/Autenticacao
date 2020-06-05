@@ -19,7 +19,7 @@ use Magento\Quote\Model\QuoteRepository;
 /**
  *
  */
-class LoginPostPlugin
+class UserPlugin
 {
     protected $quoteRepository;
     protected $_encryptor;
@@ -69,19 +69,6 @@ class LoginPostPlugin
         return true;
     }
 
-    // public function aroundExecute(
-    //     \Magento\Customer\Controller\Account\LoginPost $subject,
-    //     $result)
-    // {
-    //     $value = [
-    //         'username' => 'iisabellyfatimadias@fortlar.com.br',
-    //         'cpf' => '37859237911',
-    //         'password' => 'Teste12#'
-    //     ];
-    //     $subject->getRequest()->setPostValue('login',$value);
-    //     return $result;
-    // }
-
     /**
      *
      * @param \Magento\Customer\Controller\Account\LoginPost $subject
@@ -92,21 +79,23 @@ class LoginPostPlugin
         $result)
     {
         $errorMessage = "Cpf ou senha inválidos";
-        $websiteId  = $this->storeManager->getWebsite()->getWebsiteId();
-
-        // $value = [
-        //     'username' => 'eltonfd@gmail.com',
-        //     'cpf' => '05265617930',
-        //     'password' => 'aie1176A'
-        // ];
-        // $subject->getRequest()->setPostValue('login',$value);
-
+        // $websiteId  = $this->storeManager->getWebsite()->getWebsiteId();
+        $websiteId = 1;
 
         $username = $subject->getRequest()->getPost('login')['username'];
-        $cpf = preg_replace("/[^0-9]/", "", $username);
+        // $cpf = preg_replace("/[^0-9]/", "", $username);
+        $cpf = $username;
+        $cpf_apenas_numeros = preg_replace("/[^0-9]/", "", $username);
 
         $senha = $subject->getRequest()->getPost('login')['password'];
 
+
+        //     Tenta conectar com Germini usando JWT, caso consiga:
+        //     Verifico se esse CPF já existe no magento, se existir então
+        //     loga com esse usuário.
+        //     Se o CPF náo exite no magento então cria esse usuário no magento.
+        //     Se não conseguir conectar no germini tenta logar com os dados
+        //     no magento.
 
 
         //Get Object Manager Instance
@@ -119,12 +108,14 @@ class LoginPostPlugin
         $customerCollection = $objectManager->create('Magento\Customer\Model\ResourceModel\Customer\Collection');
         /** Applying Filters */
         $customerCollection
-           ->addAttributeToSelect(array('email'))
-           ->addAttributeToFilter('taxvat', array('eq' => $cpf));
+           //->addAttributeToSelect(array('email'))
+           ->addAttributeToFilter('cpf', array('eq' => $cpf));
         $customers = $customerCollection->load();
 
+        $conta = 0;
         $customer_id = 0;
         foreach ($customers as $customer) {
+            $conta++;
             $email = $customer->getEmail();
             $customer_id = $customer->getId();
         }
@@ -137,7 +128,7 @@ class LoginPostPlugin
             $res = $this->authenticate($customer_id, $senha);
             
             if($res == false){
-                $this->_messageManager->addError($errorMessage);
+                $this->_messageManager->addError("1");
                 $result->setPath('customer/account/');
                 return $result;
             }
@@ -153,10 +144,11 @@ class LoginPostPlugin
         } else {
             // Tenta realizar a autenticação com JWT
             try{
+                $url_base = 'https://cvale-fidelidade-identity-dev.azurewebsites.net';
+                $url = $url_base . '/connect/token';
 
-                $url = 'https://vxp-germini-identity-dev.azurewebsites.net/connect/token';
                 $params = [
-                    "username" => $cpf,
+                    "username" => $cpf_apenas_numeros,
                     "password" => $senha,
                     "client_id" => "ro.client.consumer",
                     "client_secret" => "secret",
@@ -172,30 +164,29 @@ class LoginPostPlugin
 
                 $result->setPath('customer/account/');
                 return $result;
-
             }
 
-
             $resultado = json_decode($response);
+
 
             if ($response != "")
             {
                 if (isset($resultado->error)){
-                    $this->_messageManager->addError($errorMessage);
+                    $this->_messageManager->addError($conta);
                     $result->setPath('customer/account/');
                     return $result;
                 }
                 $token = json_decode($response)->access_token;
 
                 // Com o token, cria o usuário com as informações do sistema germini
-                $url = 'https://vxp-germini-kernel-dev.azurewebsites.net/api/Consumer/GetCurrentConsumer';
+                $url_base = 'https://cvale-fidelidade-kernel-dev.azurewebsites.net';
+                $url = $url_base . '/api/Consumer/GetCurrentConsumer';
                 
                 $this->_curl->addHeader("Accept", "text/plain");
                 $this->_curl->addHeader("Authorization", 'bearer '.$token);
                 $this->_curl->get($url);
                 $response = $this->_curl->getBody();
                 $dados = json_decode($response);
-
                 
                 $new_customer = $objectManager->get('\Magento\Customer\Api\Data\CustomerInterfaceFactory')->create();
                 $new_customer->setWebsiteId($websiteId);
@@ -205,11 +196,16 @@ class LoginPostPlugin
                 $name = $dados->name;
                 $names = explode(" ", $name);
                 $first_name = $names[0];
-                $last_name = end($names);
+                if (sizeof($names) > 1){
+                    $last_name = end($names);
+                } else {
+                    $last_name = "CVale";
+                }
 
                 $new_customer->setFirstname($first_name);
                 $new_customer->setLastname($last_name);
                 $new_customer->setTaxVat($cpf);
+                $new_customer->setCustomAttribute('cpf', $cpf);
 
                 $pontos = $dados->points;
                 $new_customer->setCustomAttribute('pontos_cliente', $pontos);
@@ -222,18 +218,17 @@ class LoginPostPlugin
                 $new_customer->setWebsiteId($websiteId)->loadByEmail($dados->email);
 
                 // Seta endereço do cliente
-
-                // $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-                // $region = $objectManager->create('Magento\Directory\Model\Region')
-                //                         ->loadByCode('CA', 'US');
-
-                // TODO: regionId
                 try
                 {
                     $regionCode = $dados->address->state->abbreviation;
                     $countryCode = 'BR';
                     $region = $objectManager->create('Magento\Directory\Model\Region');
                     $regionId = $region->loadByCode($regionCode, $countryCode)->getId();
+
+                    $telefone = $dados->phoneNumber;
+                    if ($telefone == ""){
+                        $telefone = $dados->phoneNumber2;
+                    }
     
                     $addresss = $objectManager->get('\Magento\Customer\Model\AddressFactory');
                     $address = $addresss->create();
@@ -244,7 +239,7 @@ class LoginPostPlugin
                             ->setRegionId($regionId)
                             ->setPostcode($dados->address->zipCode)
                             ->setCity($dados->address->city->name)
-                            ->setTelephone($dados->phoneNumber)
+                            ->setTelephone($telefone)
                             ->setFax('')
                             ->setCompany('')
                             ->setStreet($dados->address->location)
@@ -260,17 +255,15 @@ class LoginPostPlugin
                 }
 
                 // Crio a sessão desse usuário
-                // $customerSession = $objectManager->create('Magento\Customer\Model\Session');
-                // $customerSession->setCustomerAsLoggedIn($new_customer);
                 $sessionManager = $this->_sessionFactory->create();
                 $sessionManager->setCustomerAsLoggedIn($new_customer);
     
             } else {
-                $this->_messageManager->addError($errorMessage);
+                $this->_messageManager->addError("3");
             }
         }
         $result->setPath('customer/account/');
-        $this->_messageManager->getMessages(true);
+        $this->_messageManager->getMessages(false);
         return $result;
     }
 }

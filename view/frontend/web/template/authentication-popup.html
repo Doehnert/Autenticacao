@@ -5,9 +5,18 @@
  */
  -->
 
+ <style>
+ button.button, button, .cart .continue, .actions-toolbar .primary a.action, button:focus {
+    color: white;
+    background-color: #3DBAC7;
+    border-color: #dbdbdb;
+    border-radius: 52px;
+}
+</style>
+
 <div class="block-authentication"
      data-bind="afterRender: setModalElement, blockLoader: isLoading"
-     style="display: none">
+     style="display: none; padding: 20px;">
     <div class="block block-new-customer"
          data-bind="attr: {'data-label': $t('or')}">
         <div class="block-title">
@@ -25,7 +34,7 @@
             </ul>
             <div class="actions-toolbar">
                 <div class="primary">
-                    <a class="action action-register primary" data-bind="attr: {href: registerUrl}">
+                    <a class="action action-register primary button btn-cart" data-bind="attr: {href: registerUrl}">
                         <span data-bind="i18n: 'Create an Account'"></span>
                     </a>
                 </div>
@@ -46,7 +55,7 @@
                 <p data-bind="i18n: 'Realize o login caso já tenha uma conta'"></p>
                 <div class="actions-toolbar">
                     <div class="primary">
-                        <a class="action action-register primary" href="customer/account/login">Login</a>
+                        <a class="action action-register primary button btn-cart" href="customer/account/login">Login</a>
                     </div>
                 </div>
             </div>
