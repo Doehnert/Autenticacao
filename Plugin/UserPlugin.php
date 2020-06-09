@@ -144,7 +144,8 @@ class UserPlugin
         } else {
             // Tenta realizar a autenticação com JWT
             try{
-                $url_base = 'https://cvale-fidelidade-identity-dev.azurewebsites.net';
+                // $url_base = 'https://cvale-fidelidade-identity-dev.azurewebsites.net';
+                $url_base = 'https://vxp-germini-identity-dev.azurewebsites.net/';
                 $url = $url_base . '/connect/token';
 
                 $params = [
@@ -169,10 +170,10 @@ class UserPlugin
             $resultado = json_decode($response);
 
 
-            if ($response != "")
+            if ($response != "" or $resultado->error != "")
             {
                 if (isset($resultado->error)){
-                    $this->_messageManager->addError($conta);
+                    $this->_messageManager->addError("Não foi possível conectar com germini");
                     $result->setPath('customer/account/');
                     return $result;
                 }
