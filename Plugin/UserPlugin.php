@@ -144,8 +144,8 @@ class UserPlugin
         } else {
             // Tenta realizar a autenticação com JWT
             try{
-                // $url_base = 'https://cvale-fidelidade-identity-dev.azurewebsites.net';
-                $url_base = 'https://vxp-germini-identity-dev.azurewebsites.net/';
+                $url_base = 'https://cvale-fidelidade-identity-dev.azurewebsites.net';
+                // $url_base = 'https://vxp-germini-identity-dev.azurewebsites.net/';
                 $url = $url_base . '/connect/token';
 
                 $params = [
