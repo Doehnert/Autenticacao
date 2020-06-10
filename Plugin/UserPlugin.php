@@ -209,6 +209,9 @@ class UserPlugin
                 $new_customer->setCustomAttribute('cpf', $cpf);
 
                 $pontos = $dados->points;
+                if ($pontos == ""){
+                    $pontos = 0;
+                }
                 $new_customer->setCustomAttribute('pontos_cliente', $pontos);
 
                 $hashedPassword = $this->_encryptor->hash($senha);
