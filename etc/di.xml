@@ -8,4 +8,10 @@
     <plugin name="check_customer_group" type="\Vexpro\Autenticacao\Plugin\AdminLogin" />
   </type>
 
+  <type name="Magento\Customer\Model\AccountManagement">
+    <plugin name="PontosZero"
+            type="Vexpro\Autenticacao\Plugin\PontosZero"/>
+  </type>
+
+
 </config>
