@@ -30,6 +30,7 @@ class UserPlugin
     protected $customerFactory;
     protected $addressDataFactory;
     protected $_sessionFactory;
+    protected $scopeConfig;
 
     public function __construct(
         \Magento\Quote\Api\CartRepositoryInterface $quoteRepository,
@@ -41,7 +42,8 @@ class UserPlugin
         \Magento\Framework\HTTP\Client\Curl $curl,
         ResultFactory $result,
         \Magento\Framework\Message\ManagerInterface $messageManager,
-        \Magento\Framework\Encryption\EncryptorInterface $encryptor
+        \Magento\Framework\Encryption\EncryptorInterface $encryptor,
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
     ) {
         $this->quoteRepository = $quoteRepository;
         $this->_sessionFactory = $sessionFactory;
@@ -53,6 +55,7 @@ class UserPlugin
         $this->resultRedirect = $result;
         $this->_messageManager = $messageManager;
         $this->_encryptor = $encryptor;
+        $this->scopeConfig = $scopeConfig;
     }
 
     // Autentica o usuário
@@ -144,7 +147,8 @@ class UserPlugin
         } else {
             // Tenta realizar a autenticação com JWT
             try{
-                $url_base = 'https://cvale-fidelidade-identity-dev.azurewebsites.net';
+                // $url_base = 'https://cvale-fidelidade-identity-dev.azurewebsites.net';
+                $url_base = $this->scopeConfig->getValue('acessos/general/identity_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
                 // $url_base = 'https://vxp-germini-identity-dev.azurewebsites.net/';
                 $url = $url_base . '/connect/token';
 
@@ -180,7 +184,10 @@ class UserPlugin
                 $token = json_decode($response)->access_token;
 
                 // Com o token, cria o usuário com as informações do sistema germini
-                $url_base = 'https://cvale-fidelidade-kernel-dev.azurewebsites.net';
+                // $url_base = 'https://cvale-fidelidade-kernel-dev.azurewebsites.net';
+
+                $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+
                 $url = $url_base . '/api/Consumer/GetCurrentConsumer';
                 
                 $this->_curl->addHeader("Accept", "text/plain");

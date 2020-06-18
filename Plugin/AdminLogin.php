@@ -12,6 +12,7 @@ class AdminLogin
     protected $_curl;
     protected $_encryptor;
     protected $catalogSession;
+    protected $scopeConfig;
 
     public function __construct(
         \Psr\Log\LoggerInterface $logger,
@@ -19,7 +20,8 @@ class AdminLogin
         \Magento\Framework\HTTP\Client\Curl $curl,
         \Magento\Framework\Encryption\EncryptorInterface $encryptor,
         \Magento\User\Model\UserFactory $userFactory,
-        \Magento\Catalog\Model\Session $catalogSession
+        \Magento\Catalog\Model\Session $catalogSession,
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
     )
     {
         $this->logger = $logger;
@@ -28,6 +30,7 @@ class AdminLogin
         $this->_encryptor = $encryptor;
         $this->_userFactory = $userFactory;
         $this->catalogSession = $catalogSession;
+        $this->scopeConfig = $scopeConfig;
     }
 
     // Autentica o usuário
@@ -68,7 +71,8 @@ class AdminLogin
         $session = $objectManager->get('Magento\Customer\Model\Session');
         $responseHttp = $objectManager->get('Magento\Framework\App\Response\Http');
 
-        $url_base = 'https://cvale-fidelidade-identity-dev.azurewebsites.net';
+        // $url_base = 'https://cvale-fidelidade-identity-dev.azurewebsites.net';
+        $url_base = $this->scopeConfig->getValue('acessos/general/identity_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 
         if ($admin_exist)
         {
@@ -90,34 +94,6 @@ class AdminLogin
                 //response will contain the output in form of JSON string
                 $response = $this->_curl->getBody();
 
-            // try{
-            //     $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-            //     $url = $objectManager->get('Magento\Framework\App\Config\ScopeConfigInterface')->getValue('configuracao/general/vexpro_url');
-
-            //     if ($url == "")
-            //     {
-            //         $url = 'https://vxp-germini-kernel-dev.azurewebsites.net/connect/token/connect/token';
-            //     } else {
-            //         $url = $url . '/connect/token/connect/token';
-            //     }
-        
-                
-            //     $params = [
-            //         "username" => $cpf,
-            //         "password" => $senha,
-            //         "client_id" => "ro.client.partner",
-            //         "client_secret" => "secret",
-            //         "grant_type" => "password",
-            //         "scope" => "germini-api openid profile"
-            //     ];
-            //     $this->_curl->post($url, $params);
-            //     //response will contain the output in form of JSON string
-            //     $response = $this->_curl->getBody();
-
-            // }
-            // catch (\Exception $e) {
-            //     $messageManager->addError('Não foi possível conectar com germini');
-            // }
 
             $resultado = json_decode($response);
 
@@ -143,16 +119,8 @@ class AdminLogin
             {
                 // Com o token, cria o usuário com as informações do sistema germini
                 // $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-                // $url = $objectManager->get('Magento\Framework\App\Config\ScopeConfigInterface')->getValue('configuracao/general/vexpro_url');
-
-                // if ($url == "")
-                // {
-                //     $url = $url_base . '/api/Partner/GetCurrentPartner';
-                //     $url = $url_base . '/connect/token';
-                // } else {
-                //     $url = $url . '/api/Partner/GetCurrentPartner';
-                // }
-                $url_base = 'https://cvale-fidelidade-kernel-dev.azurewebsites.net';
+                // $url_base = 'https://cvale-fidelidade-kernel-dev.azurewebsites.net';
+                $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
                 
                 $url = $url_base . '/api/Partner/GetCurrentPartner';
 
