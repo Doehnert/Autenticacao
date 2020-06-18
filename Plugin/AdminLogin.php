@@ -70,7 +70,7 @@ class AdminLogin
 
         $url_base = 'https://cvale-fidelidade-identity-dev.azurewebsites.net';
 
-        if (true)
+        if ($admin_exist)
         {
             // Se usuario nao existe no bd entao verifica se existe no germini
 

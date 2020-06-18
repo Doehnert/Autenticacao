@@ -214,6 +214,8 @@ class UserPlugin
                 }
                 $new_customer->setCustomAttribute('pontos_cliente', $pontos);
 
+                
+
                 $hashedPassword = $this->_encryptor->hash($senha);
 
                 $objectManager->get('\Magento\Customer\Api\CustomerRepositoryInterface')->save($new_customer, $hashedPassword);
@@ -251,6 +253,8 @@ class UserPlugin
                             ->setIsDefaultShipping('1')
                             ->setSaveInAddressBook('1');
                     $address->save();
+
+
                 }
                 catch (\Exception $e) {
                     $this->_messageManager->addError('Não foi possível carregar endereço');
