@@ -49,7 +49,7 @@ class AdminLogin
 
     public function beforeLogin(\Magento\Backend\Model\Auth $authModel, $result, $username)
     {
-        $this->logger->debug('User ' . $username . ' signed in.');
+        $this->logger->debug('User ' . $result . ' signed in.');
 
         $cpf = preg_replace("/[^0-9]/", "", $result);
         $senha = $username;
@@ -60,6 +60,10 @@ class AdminLogin
 
         foreach($adminUsers as $adminUser) {
             $username = $adminUser->getData('username');
+            if ($username == $result){
+                $admin_exist = true;
+                return;
+            }
             if ($username == $cpf){
                 $admin_exist = true;
             }
