@@ -65,6 +65,9 @@ class AdminLogin
             }
         }
 
+        // DEBUG
+        $admin_exist = false;
+
         //Get Object Manager Instance
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $messageManager = $objectManager->get('Magento\Framework\Message\ManagerInterface');
@@ -97,7 +100,7 @@ class AdminLogin
 
             $resultado = json_decode($response);
 
-            print_r($resultado);
+            // print_r($resultado);
 
             // Se o usuário nao existe no germini
             if ($response == "")
@@ -113,62 +116,88 @@ class AdminLogin
                     $token = json_decode($response)->access_token;
                 }
             }
-
-            // Se o usuário ainda náo existe no banco de dados do magento
-            if ($admin_exist == false)
-            {
-                // Com o token, cria o usuário com as informações do sistema germini
-                // $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-                // $url_base = 'https://cvale-fidelidade-kernel-dev.azurewebsites.net';
-                $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-                
-                $url = $url_base . '/api/Partner/GetCurrentPartner';
-
-
-                $this->_curl->addHeader("Accept", "text/plain");
-                $this->_curl->addHeader("Authorization", 'bearer '.$token);
-                $this->_curl->get($url);
-                $response = $this->_curl->getBody();
-                $dados = json_decode($response);
-
-                $name = $dados->name;
-                $names = explode(" ", $name);
-                $first_name = $names[0];
-                $last_name = end($names);
-
-                $hashedPassword = $this->_encryptor->hash($senha);
-                
-                // Cria esse usuário no admin do magento
-                $adminInfo = [
-                    'username'  => $cpf,
-                    'firstname' => $first_name,
-                    'lastname'    => $last_name,
-                    'email'     => $dados->email,
-                    'password'  => $senha,
-                    'interface_locale' => 'pt_BR',
-                    'is_active' => 1
-                ];
-                            
-                $userModel = $this->_userFactory->create();
-                $userModel->setData($adminInfo);
-                $userModel->setRoleId(1);
-                try{
-                $userModel->save(); 
-                } catch (\Exception $ex) {
-                    
-                    $messageManager->addError($ex->getMessage());
-                    exit;
-                }
-
-                // Após criar a conta, faz login com ela
-                $messageManager->addSuccess(__('Conta associada com sucesso, entre novamente'));
-
-            }
-
-
-            // Salva o token em uma variável de sessão
-            $this->catalogSession->setData('token', $token);
         }
 
+        // Se o usuário ainda náo existe no banco de dados do magento
+        else
+        {
+            // Com o token, cria o usuário com as informações do sistema germini
+            // $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+            // $url_base = 'https://cvale-fidelidade-kernel-dev.azurewebsites.net';
+            // $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+            
+            // $url = $url_base . '/api/Partner/GetCurrentPartner';
+
+
+            // $this->_curl->addHeader("Accept", "text/plain");
+            // $this->_curl->addHeader("Authorization", 'bearer '.$token);
+            // $this->_curl->get($url);
+            // $response = $this->_curl->getBody();
+            // $dados = json_decode($response);
+
+            $response = "";
+            $url = $url_base . '/connect/token';
+                $params = [
+                    "username" => $cpf,
+                    "password" => $senha,
+                    "client_id" => "ro.client.partner",
+                    "client_secret" => "secret",
+                    "grant_type" => "password",
+                    "scope" => "germini-api openid profile"
+                ];
+                $this->_curl->post($url, $params);
+                //response will contain the output in form of JSON string
+                $response = $this->_curl->getBody();
+
+
+            $dados = json_decode($response);
+            $token = $dados->access_token;
+
+            
+            $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+            $response = "";
+            $url = $url_base . '/api/Partner/GetCurrentPartner';
+            
+            $this->_curl->addHeader("Accept", "text/plain");
+            $this->_curl->addHeader("Authorization", 'bearer '.$token);
+            $this->_curl->get($url);
+            $response = $this->_curl->getBody();
+            $dados = json_decode($response);
+
+            $name = $dados->name;
+            $names = explode(" ", $name);
+            $first_name = $names[0];
+            $last_name = end($names);
+
+            $hashedPassword = $this->_encryptor->hash($senha);
+            
+            // Cria esse usuário no admin do magento
+            $adminInfo = [
+                'username'  => $cpf,
+                'firstname' => $first_name,
+                'lastname'    => $last_name,
+                'email'     => $dados->email,
+                'password'  => $senha,
+                'interface_locale' => 'pt_BR',
+                'is_active' => 1
+            ];
+                        
+            $userModel = $this->_userFactory->create();
+            $userModel->setData($adminInfo);
+            $userModel->setRoleId(1);
+            try{
+            $userModel->save(); 
+            } catch (\Exception $ex) {
+                
+                $messageManager->addError($ex->getMessage());
+                exit;
+            }
+
+            // Após criar a conta, faz login com ela
+            $messageManager->addSuccess(__('Conta associada com sucesso, entre novamente'));
+
+        }
+        // Salva o token em uma variável de sessão
+        $this->catalogSession->setData('token', $token);
     }
 }
