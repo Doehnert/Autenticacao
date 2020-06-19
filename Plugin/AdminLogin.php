@@ -62,7 +62,7 @@ class AdminLogin
             $username = $adminUser->getData('username');
             if ($username == $result){
                 $admin_exist = true;
-                return;
+                // return;
             }
             if ($username == $cpf){
                 $admin_exist = true;
@@ -110,12 +110,12 @@ class AdminLogin
             if ($response == "")
             {
                 $messageManager->addError('Usuário não existe no Germini');
-                exit;
+                return;
             } else {
                 if (isset($resultado->error))
                 {
                     $messageManager->addError('Erro ao conectar com germini');
-                    exit;
+                    return;
                 } else {
                     $token = json_decode($response)->access_token;
                 }
