@@ -66,7 +66,7 @@ class AdminLogin
         }
 
         // DEBUG
-        $admin_exist = false;
+        // $admin_exist = false;
 
         //Get Object Manager Instance
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
