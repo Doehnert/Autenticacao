@@ -88,10 +88,10 @@ class AdminLogin
             // Tenta realizar a autenticação com JWT
             $response = "";
             $url = $url_base . '/connect/token';
-            // $url = 'https://vxp-germini-identity-dev.azurewebsites.net/connect/token';
                 $params = [
                     "username" => $cpf,
-                    "password" => $senha,
+                    // "password" => $senha,
+                    "password" => "123",
                     "client_id" => "ro.client.partner",
                     "client_secret" => "secret",
                     "grant_type" => "password",
@@ -128,7 +128,7 @@ class AdminLogin
             // Com o token, cria o usuário com as informações do sistema germini
             // $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
             // $url_base = 'https://cvale-fidelidade-kernel-dev.azurewebsites.net';
-            // $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+            // $url_base = $this->scop77863223000530eConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
             
             // $url = $url_base . '/api/Partner/GetCurrentPartner';
 
@@ -194,7 +194,7 @@ class AdminLogin
             } catch (\Exception $ex) {
                 
                 $messageManager->addError($ex->getMessage());
-                exit;
+                return;
             }
 
             // Após criar a conta, faz login com ela
