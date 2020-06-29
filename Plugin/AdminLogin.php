@@ -2,6 +2,7 @@
 namespace Vexpro\Autenticacao\Plugin;
 
 use  Magento\User\Model\ResourceModel\User\CollectionFactory as UserCollectionFactory;
+use Magento\Framework\Controller\ResultFactory;
 
 
 class AdminLogin
@@ -13,6 +14,7 @@ class AdminLogin
     protected $_encryptor;
     protected $catalogSession;
     protected $scopeConfig;
+    protected $resultRedirect;
 
     public function __construct(
         \Psr\Log\LoggerInterface $logger,
@@ -21,7 +23,8 @@ class AdminLogin
         \Magento\Framework\Encryption\EncryptorInterface $encryptor,
         \Magento\User\Model\UserFactory $userFactory,
         \Magento\Catalog\Model\Session $catalogSession,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        \Magento\Framework\Controller\ResultFactory $result
     )
     {
         $this->logger = $logger;
@@ -31,6 +34,7 @@ class AdminLogin
         $this->_userFactory = $userFactory;
         $this->catalogSession = $catalogSession;
         $this->scopeConfig = $scopeConfig;
+        $this->resultRedirect = $result;
     }
 
     // Autentica o usuário
@@ -50,6 +54,7 @@ class AdminLogin
     public function beforeLogin(\Magento\Backend\Model\Auth $authModel, $result, $username)
     {
         $this->logger->debug('User ' . $result . ' signed in.');
+        $resultRedirect = $this->resultRedirect->create(ResultFactory::TYPE_REDIRECT);
 
         $cpf = preg_replace("/[^0-9]/", "", $result);
         $senha = $username;
@@ -90,8 +95,7 @@ class AdminLogin
             $url = $url_base . '/connect/token';
                 $params = [
                     "username" => $cpf,
-                    // "password" => $senha,
-                    "password" => "123",
+                    "password" => $senha,
                     "client_id" => "ro.client.partner",
                     "client_secret" => "secret",
                     "grant_type" => "password",
@@ -103,8 +107,6 @@ class AdminLogin
 
 
             $resultado = json_decode($response);
-
-            // print_r($resultado);
 
             // Se o usuário nao existe no germini
             if ($response == "")
@@ -125,22 +127,9 @@ class AdminLogin
         // Se o usuário ainda náo existe no banco de dados do magento
         else
         {
-            // Com o token, cria o usuário com as informações do sistema germini
-            // $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-            // $url_base = 'https://cvale-fidelidade-kernel-dev.azurewebsites.net';
-            // $url_base = $this->scop77863223000530eConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-            
-            // $url = $url_base . '/api/Partner/GetCurrentPartner';
-
-
-            // $this->_curl->addHeader("Accept", "text/plain");
-            // $this->_curl->addHeader("Authorization", 'bearer '.$token);
-            // $this->_curl->get($url);
-            // $response = $this->_curl->getBody();
-            // $dados = json_decode($response);
-
-            $response = "";
-            $url = $url_base . '/connect/token';
+            try{
+                $response = "";
+                $url = $url_base . '/connect/token';
                 $params = [
                     "username" => $cpf,
                     "password" => $senha,
@@ -152,11 +141,20 @@ class AdminLogin
                 $this->_curl->post($url, $params);
                 //response will contain the output in form of JSON string
                 $response = $this->_curl->getBody();
-
-
+            }catch (\Exception $e) {
+                $messageManager->addError('Não foi possível conectar com germini');
+                return;
+            }
             $dados = json_decode($response);
-            $token = $dados->access_token;
 
+            if ($response == "" or $dados->error != "")
+            {
+                $messageManager->addError('Usuário não existe no Germini');
+                return;
+            }
+
+            
+            $token = $dados->access_token;
             
             $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
             $response = "";
