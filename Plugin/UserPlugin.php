@@ -4,7 +4,7 @@
  *
  */
 namespace Vexpro\Autenticacao\Plugin;
-use Magento\Customer\Model\Session;
+use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\Data\Form\FormKey\Validator;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Framework\Message\ManagerInterface;
@@ -43,7 +43,9 @@ class UserPlugin
         ResultFactory $result,
         \Magento\Framework\Message\ManagerInterface $messageManager,
         \Magento\Framework\Encryption\EncryptorInterface $encryptor,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        CustomerRepositoryInterface $customerRepository,
+        CustomerSession $customerSession
     ) {
         $this->quoteRepository = $quoteRepository;
         $this->_sessionFactory = $sessionFactory;
@@ -56,6 +58,8 @@ class UserPlugin
         $this->_messageManager = $messageManager;
         $this->_encryptor = $encryptor;
         $this->scopeConfig = $scopeConfig;
+        $this->customerRepository = $customerRepository;
+        $this->customerSession = $customerSession;
     }
 
     // Autentica o usuário
@@ -126,7 +130,8 @@ class UserPlugin
         // Se o usuário existe
         if ($customer_id > 0)
         {
-            $customer = $objectManager->get('Magento\Customer\Model\Customer')->load($customer_id);
+            // $customer = $objectManager->get('Magento\Customer\Model\Customer')->load($customer_id);
+            $customer = $this->customerRepository->getById($customer_id);
             // Realizo a autenticação desse usuário
             $res = $this->authenticate($customer_id, $senha);
             
@@ -137,11 +142,13 @@ class UserPlugin
             }
 
             // Crio a sessão desse usuário
-            $customer->setWebsiteId($websiteId)->loadByEmail($customer->getEmail());
-            $sessionManager = $this->_sessionFactory->create();
-            $sessionManager->setCustomerAsLoggedIn($customer);
+            // $customer->setWebsiteId($websiteId)->loadByEmail($customer->getEmail());
+            // $sessionManager = $this->_sessionFactory->create();
+            // $sessionManager->setCustomerAsLoggedIn($customer);
+            $this->customerSession->setCustomerDataAsLoggedIn($customer);
 
             $result->setPath('customer/account/');
+            $this->_messageManager->getMessages(true);
             return $result;
 
         } else {
@@ -278,7 +285,7 @@ class UserPlugin
             }
         }
         $result->setPath('customer/account/');
-        $this->_messageManager->getMessages(false);
+        $this->_messageManager->getMessages(true);
         return $result;
     }
 }
