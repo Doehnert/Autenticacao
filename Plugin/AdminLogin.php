@@ -166,7 +166,7 @@ class AdminLogin
 
             $usuarios = $dados->users;
             foreach($usuarios as $user){
-                if($cpf == $user->cpf)
+                if($cpf == $user->userName)
                 {
                     // Encontrado o usuário correspondente
                     $name = $user->name;
