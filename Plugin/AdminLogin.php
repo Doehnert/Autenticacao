@@ -89,7 +89,6 @@ class AdminLogin
         if ($admin_exist)
         {
             // Se usuario nao existe no bd entao verifica se existe no germini
-
             // Tenta realizar a autenticação com JWT
             $response = "";
             $url = $url_base . '/connect/token';
@@ -147,12 +146,11 @@ class AdminLogin
             }
             $dados = json_decode($response);
 
-            if ($response == "" or $dados->error != "")
+            if ($response == "" or isset($dados->error))
             {
                 $messageManager->addError('Usuário não existe no Germini');
                 return;
             }
-
             
             $token = $dados->access_token;
             
@@ -166,38 +164,45 @@ class AdminLogin
             $response = $this->_curl->getBody();
             $dados = json_decode($response);
 
-            $name = $dados->name;
-            $names = explode(" ", $name);
-            $first_name = $names[0];
-            $last_name = end($names);
-
-            $hashedPassword = $this->_encryptor->hash($senha);
-            
-            // Cria esse usuário no admin do magento
-            $adminInfo = [
-                'username'  => $cpf,
-                'firstname' => $first_name,
-                'lastname'    => $last_name,
-                'email'     => $dados->email,
-                'password'  => $senha,
-                'interface_locale' => 'pt_BR',
-                'is_active' => 1
-            ];
+            $usuarios = $dados->users;
+            foreach($usuarios as $user){
+                if($cpf == $user->cpf)
+                {
+                    // Encontrado o usuário correspondente
+                    $name = $user->name;
+                    $names = explode(" ", $name);
+                    $first_name = $names[0];
+                    $last_name = end($names);
+        
+                    $hashedPassword = $this->_encryptor->hash($senha);
+                    
+                    // Cria esse usuário no admin do magento
+                    $adminInfo = [
+                        'username'  => $cpf,
+                        'firstname' => $first_name,
+                        'lastname'    => $last_name,
+                        'email'     => $user->email,
+                        'password'  => $senha,
+                        'interface_locale' => 'pt_BR',
+                        'is_active' => 1
+                    ];
+                                
+                    $userModel = $this->_userFactory->create();
+                    $userModel->setData($adminInfo);
+                    $userModel->setRoleId(1);
+                    try{
+                    $userModel->save(); 
+                    } catch (\Exception $ex) {
                         
-            $userModel = $this->_userFactory->create();
-            $userModel->setData($adminInfo);
-            $userModel->setRoleId(1);
-            try{
-            $userModel->save(); 
-            } catch (\Exception $ex) {
-                
-                $messageManager->addError($ex->getMessage());
-                return;
+                        $messageManager->addError($ex->getMessage());
+                        return;
+                    }
+        
+                    // Após criar a conta, faz login com ela
+                    $messageManager->addSuccess(__('Conta associada com sucesso, entre novamente'));
+                    break;
+                }
             }
-
-            // Após criar a conta, faz login com ela
-            $messageManager->addSuccess(__('Conta associada com sucesso, entre novamente'));
-
         }
         // Salva o token em uma variável de sessão
         $this->catalogSession->setData('token', $token);
