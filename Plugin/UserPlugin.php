@@ -130,21 +130,75 @@ class UserPlugin
         // Se o usuário existe
         if ($customer_id > 0)
         {
-            // $customer = $objectManager->get('Magento\Customer\Model\Customer')->load($customer_id);
             $customer = $this->customerRepository->getById($customer_id);
             // Realizo a autenticação desse usuário
             $res = $this->authenticate($customer_id, $senha);
             
             if($res == false){
-                $this->_messageManager->addError("1");
+                $this->_messageManager->addError("Erro ao autenticar com Germini");
                 $result->setPath('customer/account/');
                 return $result;
             }
 
-            // Crio a sessão desse usuário
-            // $customer->setWebsiteId($websiteId)->loadByEmail($customer->getEmail());
-            // $sessionManager = $this->_sessionFactory->create();
-            // $sessionManager->setCustomerAsLoggedIn($customer);
+            // Carrega pontos do Germini
+
+            // Tenta realizar a autenticação com JWT
+            try{
+                $url_base = $this->scopeConfig->getValue('acessos/general/identity_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+                $url = $url_base . '/connect/token';
+
+                $params = [
+                    "username" => $cpf_apenas_numeros,
+                    "password" => $senha,
+                    "client_id" => "ro.client.consumer",
+                    "client_secret" => "secret",
+                    "grant_type" => "password",
+                    "scope" => "germini-api openid profile"
+                ];
+                $this->_curl->post($url, $params);
+                //response will contain the output in form of JSON string
+                $response = $this->_curl->getBody();
+            }
+            catch (\Exception $e) {
+                $this->_messageManager->addError('Não foi possível conectar com germini');
+
+                $result->setPath('customer/account/');
+                return $result;
+            }
+
+            $resultado = json_decode($response);
+
+            if ($response != "" or !isset($resultado->error))
+            {
+                if (isset($resultado->error)){
+                    $this->_messageManager->addError("Não foi possível conectar com germini");
+                    $result->setPath('customer/account/');
+                    return $result;
+                }
+                $token = json_decode($response)->access_token;
+
+                // Com o token, cria o usuário com as informações do sistema germini
+
+                $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+
+                $url = $url_base . '/api/Consumer/GetCurrentConsumer';
+                
+                $this->_curl->addHeader("Accept", "text/plain");
+                $this->_curl->addHeader("Authorization", 'bearer '.$token);
+                $this->_curl->get($url);
+                $response = $this->_curl->getBody();
+                $dados = json_decode($response);
+
+                $pontos = $dados->points;
+                if ($pontos == ""){
+                    $pontos = 0;
+                }
+                $customer->setCustomAttribute('pontos_cliente', $pontos);
+                $this->customerRepository->save($customer);
+            }
+
+
+
             $this->customerSession->setCustomerDataAsLoggedIn($customer);
 
             $result->setPath('customer/account/');
@@ -154,7 +208,6 @@ class UserPlugin
         } else {
             // Tenta realizar a autenticação com JWT
             try{
-                // $url_base = 'https://cvale-fidelidade-identity-dev.azurewebsites.net';
                 $url_base = $this->scopeConfig->getValue('acessos/general/identity_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
                 // $url_base = 'https://vxp-germini-identity-dev.azurewebsites.net/';
                 $url = $url_base . '/connect/token';
@@ -180,8 +233,7 @@ class UserPlugin
 
             $resultado = json_decode($response);
 
-
-            if ($response != "" or $resultado->error != "")
+            if ($response != "" or !isset($resultado->error))
             {
                 if (isset($resultado->error)){
                     $this->_messageManager->addError("Não foi possível conectar com germini");
@@ -191,7 +243,6 @@ class UserPlugin
                 $token = json_decode($response)->access_token;
 
                 // Com o token, cria o usuário com as informações do sistema germini
-                // $url_base = 'https://cvale-fidelidade-kernel-dev.azurewebsites.net';
 
                 $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 
@@ -281,7 +332,7 @@ class UserPlugin
                 $sessionManager->setCustomerAsLoggedIn($new_customer);
     
             } else {
-                $this->_messageManager->addError("3");
+                $this->_messageManager->addError("Erro ao conectar com Germini");
             }
         }
         $result->setPath('customer/account/');
