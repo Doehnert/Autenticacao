@@ -134,68 +134,99 @@ class UserPlugin
             // Realizo a autenticação desse usuário
             $res = $this->authenticate($customer_id, $senha);
             
+            // Autentica no Magento
             if($res == false){
-                $this->_messageManager->addError("Erro ao autenticar com Germini");
+                $this->_messageManager->addError("Erro ao autenticar no Magento");
                 $result->setPath('customer/account/');
                 return $result;
             }
+
+            $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+            $url = $url_base . '/api/ConsumerWallet/GetConsumerPoints';
+
+            $url = $url . '?cpfCnpj='.$cpf_apenas_numeros.'&password='.$senha;
+
+            // get method
+            $this->_curl->get($url);
+
+            // output of curl request
+            $response = $this->_curl->getBody();
+
+            $dados = json_decode($response);
+
+            if ($dados == ""){
+                $this->_messageManager->addError('Não foi possível conectar com germini');
+                $result->setPath('customer/account/');
+                return $result;
+            }
+
+            $pontos = $dados->data;
+            if ($pontos == ""){
+                $pontos = 0;
+            }
+
+
+            // $pontos = 234;
+
+            $customer->setCustomAttribute('pontos_cliente', $pontos);
+            $this->customerRepository->save($customer);
+
 
             // Carrega pontos do Germini
 
             // Tenta realizar a autenticação com JWT
-            try{
-                $url_base = $this->scopeConfig->getValue('acessos/general/identity_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-                $url = $url_base . '/connect/token';
+            // try{
+            //     $url_base = $this->scopeConfig->getValue('acessos/general/identity_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+            //     $url = $url_base . '/connect/token';
 
-                $params = [
-                    "username" => $cpf_apenas_numeros,
-                    "password" => $senha,
-                    "client_id" => "ro.client.consumer",
-                    "client_secret" => "secret",
-                    "grant_type" => "password",
-                    "scope" => "germini-api openid profile"
-                ];
-                $this->_curl->post($url, $params);
-                //response will contain the output in form of JSON string
-                $response = $this->_curl->getBody();
-            }
-            catch (\Exception $e) {
-                $this->_messageManager->addError('Não foi possível conectar com germini');
+            //     $params = [
+            //         "username" => $cpf_apenas_numeros,
+            //         "password" => $senha,
+            //         "client_id" => "ro.client.consumer",
+            //         "client_secret" => "secret",
+            //         "grant_type" => "password",
+            //         "scope" => "germini-api openid profile"
+            //     ];
+            //     $this->_curl->post($url, $params);
+            //     //response will contain the output in form of JSON string
+            //     $response = $this->_curl->getBody();
+            // }
+            // catch (\Exception $e) {
+            //     $this->_messageManager->addError('Não foi possível conectar com germini');
 
-                $result->setPath('customer/account/');
-                return $result;
-            }
+            //     $result->setPath('customer/account/');
+            //     return $result;
+            // }
 
-            $resultado = json_decode($response);
+            // $resultado = json_decode($response);
 
-            if ($response != "" or !isset($resultado->error))
-            {
-                if (isset($resultado->error)){
-                    $this->_messageManager->addError("Não foi possível conectar com germini");
-                    $result->setPath('customer/account/');
-                    return $result;
-                }
-                $token = json_decode($response)->access_token;
+            // if ($response != "" or !isset($resultado->error))
+            // {
+            //     if (isset($resultado->error)){
+            //         $this->_messageManager->addError("Não foi possível conectar com germini");
+            //         $result->setPath('customer/account/');
+            //         return $result;
+            //     }
+            //     $token = json_decode($response)->access_token;
 
-                // Com o token, cria o usuário com as informações do sistema germini
+            //     $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 
-                $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-
-                $url = $url_base . '/api/Consumer/GetCurrentConsumer';
+            //     $url = $url_base . '/api/Consumer/GetCurrentConsumer';
                 
-                $this->_curl->addHeader("Accept", "text/plain");
-                $this->_curl->addHeader("Authorization", 'bearer '.$token);
-                $this->_curl->get($url);
-                $response = $this->_curl->getBody();
-                $dados = json_decode($response);
+            //     $this->_curl->addHeader("Accept", "text/plain");
+            //     $this->_curl->addHeader("Authorization", 'bearer '.$token);
+            //     $this->_curl->get($url);
+            //     $response = $this->_curl->getBody();
+            //     $dados = json_decode($response);
 
-                $pontos = $dados->points;
-                if ($pontos == ""){
-                    $pontos = 0;
-                }
-                $customer->setCustomAttribute('pontos_cliente', $pontos);
-                $this->customerRepository->save($customer);
-            }
+            //     $pontos = $dados->points;
+            //     if ($pontos == ""){
+            //         $pontos = 0;
+            //     }
+            //     $customer->setCustomAttribute('pontos_cliente', $pontos);
+            //     $this->customerRepository->save($customer);
+            // }
+
 
 
 
