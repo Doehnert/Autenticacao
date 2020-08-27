@@ -3,7 +3,9 @@
 /**
  *
  */
+
 namespace Vexpro\Autenticacao\Plugin;
+
 use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\Data\Form\FormKey\Validator;
 use Magento\Customer\Api\CustomerRepositoryInterface;
@@ -16,6 +18,7 @@ use Magento\Framework\Controller\ResultFactory;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Customer\Model\CustomerFactory;
 use Magento\Quote\Model\QuoteRepository;
+
 /**
  *
  */
@@ -83,8 +86,8 @@ class UserPlugin
      */
     public function afterExecute(
         \Magento\Customer\Controller\Account\LoginPost $subject,
-        $result)
-    {
+        $result
+    ) {
         $errorMessage = "Cpf ou senha inválidos";
         // $websiteId  = $this->storeManager->getWebsite()->getWebsiteId();
         $websiteId = 1;
@@ -115,8 +118,8 @@ class UserPlugin
         $customerCollection = $objectManager->create('Magento\Customer\Model\ResourceModel\Customer\Collection');
         /** Applying Filters */
         $customerCollection
-           //->addAttributeToSelect(array('email'))
-           ->addAttributeToFilter('cpf', array('eq' => $cpf));
+            //->addAttributeToSelect(array('email'))
+            ->addAttributeToFilter('cpf', array('eq' => $cpf));
         $customers = $customerCollection->load();
 
         $conta = 0;
@@ -126,16 +129,15 @@ class UserPlugin
             $email = $customer->getEmail();
             $customer_id = $customer->getId();
         }
-        
+
         // Se o usuário existe
-        if ($customer_id > 0)
-        {
+        if ($customer_id > 0) {
             $customer = $this->customerRepository->getById($customer_id);
             // Realizo a autenticação desse usuário
             $res = $this->authenticate($customer_id, $senha);
-            
+
             // Autentica no Magento
-            if($res == false){
+            if ($res == false) {
                 $this->_messageManager->addError("Erro ao autenticar no Magento");
                 $result->setPath('customer/account/');
                 return $result;
@@ -144,7 +146,7 @@ class UserPlugin
             $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
             $url = $url_base . '/api/ConsumerWallet/GetConsumerPoints';
 
-            $url = $url . '?cpfCnpj='.$cpf_apenas_numeros.'&password='.$senha;
+            $url = $url . '?cpfCnpj=' . $cpf_apenas_numeros . '&password=' . $senha;
 
             // get method
             $this->_curl->get($url);
@@ -154,91 +156,29 @@ class UserPlugin
 
             $dados = json_decode($response);
 
-            if ($dados == ""){
-                $this->_messageManager->addError('Não foi possível conectar com germini');
-                $result->setPath('customer/account/');
-                return $result;
-            }
-
-            $pontos = $dados->data;
-            if ($pontos == ""){
+            if ($dados == "") {
+                // $this->_messageManager->addError('Não foi possível conectar com germini');
+                // $result->setPath('customer/account/');
+                // return $result;
                 $pontos = 0;
+            } else {
+                $pontos = $dados->data;
+                if ($pontos == "") {
+                    $pontos = 0;
+                }
             }
-
-
-            // $pontos = 234;
 
             $customer->setCustomAttribute('pontos_cliente', $pontos);
             $this->customerRepository->save($customer);
-
-
-            // Carrega pontos do Germini
-
-            // Tenta realizar a autenticação com JWT
-            // try{
-            //     $url_base = $this->scopeConfig->getValue('acessos/general/identity_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-            //     $url = $url_base . '/connect/token';
-
-            //     $params = [
-            //         "username" => $cpf_apenas_numeros,
-            //         "password" => $senha,
-            //         "client_id" => "ro.client.consumer",
-            //         "client_secret" => "secret",
-            //         "grant_type" => "password",
-            //         "scope" => "germini-api openid profile"
-            //     ];
-            //     $this->_curl->post($url, $params);
-            //     //response will contain the output in form of JSON string
-            //     $response = $this->_curl->getBody();
-            // }
-            // catch (\Exception $e) {
-            //     $this->_messageManager->addError('Não foi possível conectar com germini');
-
-            //     $result->setPath('customer/account/');
-            //     return $result;
-            // }
-
-            // $resultado = json_decode($response);
-
-            // if ($response != "" or !isset($resultado->error))
-            // {
-            //     if (isset($resultado->error)){
-            //         $this->_messageManager->addError("Não foi possível conectar com germini");
-            //         $result->setPath('customer/account/');
-            //         return $result;
-            //     }
-            //     $token = json_decode($response)->access_token;
-
-            //     $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-
-            //     $url = $url_base . '/api/Consumer/GetCurrentConsumer';
-                
-            //     $this->_curl->addHeader("Accept", "text/plain");
-            //     $this->_curl->addHeader("Authorization", 'bearer '.$token);
-            //     $this->_curl->get($url);
-            //     $response = $this->_curl->getBody();
-            //     $dados = json_decode($response);
-
-            //     $pontos = $dados->points;
-            //     if ($pontos == ""){
-            //         $pontos = 0;
-            //     }
-            //     $customer->setCustomAttribute('pontos_cliente', $pontos);
-            //     $this->customerRepository->save($customer);
-            // }
-
-
-
 
             $this->customerSession->setCustomerDataAsLoggedIn($customer);
 
             $result->setPath('customer/account/');
             $this->_messageManager->getMessages(true);
             return $result;
-
         } else {
             // Tenta realizar a autenticação com JWT
-            try{
+            try {
                 $url_base = $this->scopeConfig->getValue('acessos/general/identity_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
                 // $url_base = 'https://vxp-germini-identity-dev.azurewebsites.net/';
                 $url = $url_base . '/connect/token';
@@ -254,8 +194,7 @@ class UserPlugin
                 $this->_curl->post($url, $params);
                 //response will contain the output in form of JSON string
                 $response = $this->_curl->getBody();
-            }
-            catch (\Exception $e) {
+            } catch (\Exception $e) {
                 $this->_messageManager->addError('Não foi possível conectar com germini');
 
                 $result->setPath('customer/account/');
@@ -264,9 +203,8 @@ class UserPlugin
 
             $resultado = json_decode($response);
 
-            if ($response != "" or !isset($resultado->error))
-            {
-                if (isset($resultado->error)){
+            if ($response != "" or !isset($resultado->error)) {
+                if (isset($resultado->error)) {
                     $this->_messageManager->addError("Não foi possível conectar com germini");
                     $result->setPath('customer/account/');
                     return $result;
@@ -278,13 +216,13 @@ class UserPlugin
                 $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 
                 $url = $url_base . '/api/Consumer/GetCurrentConsumer';
-                
+
                 $this->_curl->addHeader("Accept", "text/plain");
-                $this->_curl->addHeader("Authorization", 'bearer '.$token);
+                $this->_curl->addHeader("Authorization", 'bearer ' . $token);
                 $this->_curl->get($url);
                 $response = $this->_curl->getBody();
                 $dados = json_decode($response);
-                
+
                 $new_customer = $objectManager->get('\Magento\Customer\Api\Data\CustomerInterfaceFactory')->create();
                 $new_customer->setWebsiteId($websiteId);
 
@@ -293,7 +231,7 @@ class UserPlugin
                 $name = $dados->name;
                 $names = explode(" ", $name);
                 $first_name = $names[0];
-                if (sizeof($names) > 1){
+                if (sizeof($names) > 1) {
                     $last_name = end($names);
                 } else {
                     $last_name = "CVale";
@@ -305,12 +243,12 @@ class UserPlugin
                 $new_customer->setCustomAttribute('cpf', $cpf);
 
                 $pontos = $dados->points;
-                if ($pontos == ""){
+                if ($pontos == "") {
                     $pontos = 0;
                 }
                 $new_customer->setCustomAttribute('pontos_cliente', $pontos);
 
-                
+
 
                 $hashedPassword = $this->_encryptor->hash($senha);
 
@@ -320,39 +258,35 @@ class UserPlugin
                 $new_customer->setWebsiteId($websiteId)->loadByEmail($dados->email);
 
                 // Seta endereço do cliente
-                try
-                {
+                try {
                     $regionCode = $dados->address->state->abbreviation;
                     $countryCode = 'BR';
                     $region = $objectManager->create('Magento\Directory\Model\Region');
                     $regionId = $region->loadByCode($regionCode, $countryCode)->getId();
 
                     $telefone = $dados->phoneNumber;
-                    if ($telefone == ""){
+                    if ($telefone == "") {
                         $telefone = $dados->phoneNumber2;
                     }
-    
+
                     $addresss = $objectManager->get('\Magento\Customer\Model\AddressFactory');
                     $address = $addresss->create();
                     $address->setCustomerId($new_customer->getId())
-                            ->setFirstname($first_name)
-                            ->setLastname($last_name)
-                            ->setCountryId($countryCode)
-                            ->setRegionId($regionId)
-                            ->setPostcode($dados->address->zipCode)
-                            ->setCity($dados->address->city->name)
-                            ->setTelephone($telefone)
-                            ->setFax('')
-                            ->setCompany('')
-                            ->setStreet($dados->address->location)
-                            ->setIsDefaultBilling('1')
-                            ->setIsDefaultShipping('1')
-                            ->setSaveInAddressBook('1');
+                        ->setFirstname($first_name)
+                        ->setLastname($last_name)
+                        ->setCountryId($countryCode)
+                        ->setRegionId($regionId)
+                        ->setPostcode($dados->address->zipCode)
+                        ->setCity($dados->address->city->name)
+                        ->setTelephone($telefone)
+                        ->setFax('')
+                        ->setCompany('')
+                        ->setStreet($dados->address->location)
+                        ->setIsDefaultBilling('1')
+                        ->setIsDefaultShipping('1')
+                        ->setSaveInAddressBook('1');
                     $address->save();
-
-
-                }
-                catch (\Exception $e) {
+                } catch (\Exception $e) {
                     $this->_messageManager->addError('Não foi possível carregar endereço');
                     // $result->setPath('customer/account/');
                     // return $result;
@@ -361,7 +295,6 @@ class UserPlugin
                 // Crio a sessão desse usuário
                 $sessionManager = $this->_sessionFactory->create();
                 $sessionManager->setCustomerAsLoggedIn($new_customer);
-    
             } else {
                 $this->_messageManager->addError("Erro ao conectar com Germini");
             }
