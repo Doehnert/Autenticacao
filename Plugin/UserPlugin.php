@@ -229,12 +229,12 @@ class UserPlugin
                 // Preparing data for new customer
                 $new_customer->setEmail($dados->email);
                 $name = $dados->name;
-                $names = explode(" ", $name);
+                $names = explode(" ", $name, 2);
                 $first_name = $names[0];
                 if (sizeof($names) > 1) {
                     $last_name = end($names);
                 } else {
-                    $last_name = "CVale";
+                    $last_name = $first_name;
                 }
 
                 $new_customer->setFirstname($first_name);
