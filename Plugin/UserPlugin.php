@@ -18,6 +18,8 @@ use Magento\Framework\Controller\ResultFactory;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Customer\Model\CustomerFactory;
 use Magento\Quote\Model\QuoteRepository;
+use Magento\Framework\App\Cache\Frontend\Pool;
+use Magento\Framework\App\Cache\TypeListInterface;
 
 /**
  *
@@ -34,6 +36,8 @@ class UserPlugin
     protected $addressDataFactory;
     protected $_sessionFactory;
     protected $scopeConfig;
+    protected $cacheTypeList;
+    protected $cacheFrontendPool;
 
     public function __construct(
         \Magento\Quote\Api\CartRepositoryInterface $quoteRepository,
@@ -48,7 +52,9 @@ class UserPlugin
         \Magento\Framework\Encryption\EncryptorInterface $encryptor,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         CustomerRepositoryInterface $customerRepository,
-        CustomerSession $customerSession
+        CustomerSession $customerSession,
+        Pool $cacheFrontendPool,
+        TypeListInterface $cacheTypeList,
     ) {
         $this->quoteRepository = $quoteRepository;
         $this->_sessionFactory = $sessionFactory;
@@ -63,6 +69,22 @@ class UserPlugin
         $this->scopeConfig = $scopeConfig;
         $this->customerRepository = $customerRepository;
         $this->customerSession = $customerSession;
+        $this->cacheTypeList = $cacheTypeList;
+        $this->cacheFrontendPool = $cacheFrontendPool;
+    }
+
+    public function flushCache()
+    {
+        $_types = [
+            'full_page'
+        ];
+
+        foreach ($_types as $type) {
+            $this->cacheTypeList->cleanType($type);
+        }
+        foreach ($this->cacheFrontendPool as $cacheFrontend) {
+            $cacheFrontend->getBackend()->clean();
+        }
     }
 
     // Autentica o usuário
@@ -299,6 +321,7 @@ class UserPlugin
                 $this->_messageManager->addError("Erro ao conectar com Germini");
             }
         }
+        $this->flushCache();
         $result->setPath('customer/account/');
         $this->_messageManager->getMessages(true);
         return $result;
