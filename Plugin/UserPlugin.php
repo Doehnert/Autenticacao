@@ -188,7 +188,7 @@ class UserPlugin
 
             $result->setPath('customer/account/');
             $this->_messageManager->getMessages(true);
-            $this->cleanCache();
+            // $this->cleanCache();
             return $result;
         } else {
             // Tenta realizar a autenticação com JWT
@@ -313,7 +313,7 @@ class UserPlugin
                 $this->_messageManager->addError("Erro ao conectar com Germini");
             }
         }
-        $this->cleanCache();
+        // $this->cleanCache();
         $result->setPath('customer/account/');
         $this->_messageManager->getMessages(true);
         return $result;
