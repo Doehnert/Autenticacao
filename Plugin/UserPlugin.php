@@ -36,8 +36,8 @@ class UserPlugin
     protected $addressDataFactory;
     protected $_sessionFactory;
     protected $scopeConfig;
-    protected $cacheTypeList;
-    protected $cacheFrontendPool;
+
+
 
     public function __construct(
         \Magento\Quote\Api\CartRepositoryInterface $quoteRepository,
@@ -53,8 +53,8 @@ class UserPlugin
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         CustomerRepositoryInterface $customerRepository,
         CustomerSession $customerSession,
-        Pool $cacheFrontendPool,
-        TypeListInterface $cacheTypeList,
+        \Magento\Framework\App\Cache\Manager $cacheManager
+
     ) {
         $this->quoteRepository = $quoteRepository;
         $this->_sessionFactory = $sessionFactory;
@@ -69,22 +69,13 @@ class UserPlugin
         $this->scopeConfig = $scopeConfig;
         $this->customerRepository = $customerRepository;
         $this->customerSession = $customerSession;
-        $this->cacheTypeList = $cacheTypeList;
-        $this->cacheFrontendPool = $cacheFrontendPool;
+        $this->cacheManager = $cacheManager;
     }
 
-    public function flushCache()
+    private function cleanCache()
     {
-        $_types = [
-            'full_page'
-        ];
-
-        foreach ($_types as $type) {
-            $this->cacheTypeList->cleanType($type);
-        }
-        foreach ($this->cacheFrontendPool as $cacheFrontend) {
-            $cacheFrontend->getBackend()->clean();
-        }
+        $this->cacheManager->flush($this->cacheManager->getAvailableTypes());
+        $this->cacheManager->clean($this->cacheManager->getAvailableTypes());
     }
 
     // Autentica o usuário
@@ -197,6 +188,7 @@ class UserPlugin
 
             $result->setPath('customer/account/');
             $this->_messageManager->getMessages(true);
+            $this->cleanCache();
             return $result;
         } else {
             // Tenta realizar a autenticação com JWT
@@ -283,7 +275,7 @@ class UserPlugin
                 try {
                     $regionCode = $dados->address->state->abbreviation;
                     $countryCode = 'BR';
-                    $region = $objectManager->create('Magento\Directory\Model\Region');
+                    $region = $objectManager->create('\Magento\Directory\Model\Region');
                     $regionId = $region->loadByCode($regionCode, $countryCode)->getId();
 
                     $telefone = $dados->phoneNumber;
@@ -321,7 +313,7 @@ class UserPlugin
                 $this->_messageManager->addError("Erro ao conectar com Germini");
             }
         }
-        $this->flushCache();
+        $this->cleanCache();
         $result->setPath('customer/account/');
         $this->_messageManager->getMessages(true);
         return $result;
