@@ -37,6 +37,9 @@ class UserPlugin
     protected $_sessionFactory;
     protected $scopeConfig;
 
+    protected $cacheTypeList;
+    protected $cacheFrontendPool;
+
 
 
     public function __construct(
@@ -70,12 +73,23 @@ class UserPlugin
         $this->customerRepository = $customerRepository;
         $this->customerSession = $customerSession;
         $this->cacheManager = $cacheManager;
+
+        $this->cacheTypeList = $cacheTypeList;
+        $this->cacheFrontendPool = $cacheFrontendPool;
     }
 
     private function cleanCache()
     {
-        $this->cacheManager->flush($this->cacheManager->getAvailableTypes());
-        $this->cacheManager->clean($this->cacheManager->getAvailableTypes());
+        //$this->cacheManager->flush($this->cacheManager->getAvailableTypes());
+        //$this->cacheManager->clean($this->cacheManager->getAvailableTypes());
+        $types = array('full_page');
+
+        foreach ($types as $type) {
+            $this->cacheTypeList->cleanType($type);
+        }
+        foreach ($this->cacheFrontendPool as $cacheFrontend) {
+            $cacheFrontend->getBackend()->clean();
+        }
     }
 
     // Autentica o usuário
@@ -188,7 +202,7 @@ class UserPlugin
 
             $result->setPath('customer/account/');
             $this->_messageManager->getMessages(true);
-            // $this->cleanCache();
+            $this->cleanCache();
             return $result;
         } else {
             // Tenta realizar a autenticação com JWT
@@ -313,7 +327,7 @@ class UserPlugin
                 $this->_messageManager->addError("Erro ao conectar com Germini");
             }
         }
-        // $this->cleanCache();
+        $this->cleanCache();
         $result->setPath('customer/account/');
         $this->_messageManager->getMessages(true);
         return $result;
