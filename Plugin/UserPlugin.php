@@ -56,8 +56,9 @@ class UserPlugin
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         CustomerRepositoryInterface $customerRepository,
         CustomerSession $customerSession,
-        \Magento\Framework\App\Cache\Manager $cacheManager
-
+        \Magento\Framework\App\Cache\Manager $cacheManager,
+        TypeListInterface $cacheTypeList,
+        Pool $cacheFrontendPool
     ) {
         $this->quoteRepository = $quoteRepository;
         $this->_sessionFactory = $sessionFactory;
