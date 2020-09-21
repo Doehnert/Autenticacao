@@ -88,9 +88,9 @@ class UserPlugin
         foreach ($types as $type) {
             $this->cacheTypeList->cleanType($type);
         }
-        foreach ($this->cacheFrontendPool as $cacheFrontend) {
-            $cacheFrontend->getBackend()->clean();
-        }
+        //foreach ($this->cacheFrontendPool as $cacheFrontend) {
+        //    $cacheFrontend->getBackend()->clean();
+        //}
     }
 
     // Autentica o usuário
