@@ -110,7 +110,6 @@ class AdminLogin
             } else {
                 if (isset($resultado->error)) {
                     $messageManager->addError('Erro ao conectar com germini');
-                    return;
                 } else {
                     $token = json_decode($response)->access_token;
                      // Salva o token em uma variável de sessão

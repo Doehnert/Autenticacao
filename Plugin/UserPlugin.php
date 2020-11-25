@@ -40,6 +40,13 @@ class UserPlugin
     protected $cacheTypeList;
     protected $cacheFrontendPool;
 
+    private function cleanCache()
+    {
+        $types = array('full_page');
+        foreach ($types as $type) {
+            $this->cacheTypeList->cleanType($type);
+        }
+    }
 
 
     public function __construct(
@@ -77,20 +84,6 @@ class UserPlugin
 
         $this->cacheTypeList = $cacheTypeList;
         $this->cacheFrontendPool = $cacheFrontendPool;
-    }
-
-    private function cleanCache()
-    {
-        //$this->cacheManager->flush($this->cacheManager->getAvailableTypes());
-        //$this->cacheManager->clean($this->cacheManager->getAvailableTypes());
-        $types = array('full_page');
-
-        foreach ($types as $type) {
-            $this->cacheTypeList->cleanType($type);
-        }
-        //foreach ($this->cacheFrontendPool as $cacheFrontend) {
-        //    $cacheFrontend->getBackend()->clean();
-        //}
     }
 
     // Autentica o usuário
