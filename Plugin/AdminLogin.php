@@ -37,24 +37,26 @@ class AdminLogin
         $this->resultRedirect = $result;
     }
 
-    // Autentica o usuário
-    public function authenticate($customerId, $password)
-    {
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $customerRegistry = $objectManager->get('Magento\Customer\Model\CustomerRegistry');
-        $customerSecure = $customerRegistry->retrieveSecureData($customerId);
-        $hash = $customerSecure->getPasswordHash();
-        $teste = $this->_encryptor->validateHash($password, $hash);
-        if (!$teste) {
-            return false;
-        }
-        return true;
-    }
+    // // Autentica o usuário
+    // public function authenticate($customerId, $password)
+    // {
+    //     $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+    //     $customerRegistry = $objectManager->get('Magento\Customer\Model\CustomerRegistry');
+    //     $customerSecure = $customerRegistry->retrieveSecureData($customerId);
+    //     $hash = $customerSecure->getPasswordHash();
+    //     $teste = $this->_encryptor->validateHash($password, $hash);
+    //     if (!$teste) {
+    //         return false;
+    //     }
+    //     return true;
+    // }
 
     public function beforeLogin(\Magento\Backend\Model\Auth $authModel, $result, $username)
     {
-        $this->logger->debug('User ' . $result . ' signed in.');
-        $resultRedirect = $this->resultRedirect->create(ResultFactory::TYPE_REDIRECT);
+
+
+    //     $this->logger->debug('User ' . $result . ' signed in.');
+    //     $resultRedirect = $this->resultRedirect->create(ResultFactory::TYPE_REDIRECT);
 
         $cpf = preg_replace("/[^0-9]/", "", $result);
         $senha = $username;
@@ -73,36 +75,19 @@ class AdminLogin
             }
         }
 
-        // DEBUG
-        // $admin_exist = false;
+        if ($admin_exist){
+            $url_base = $this->scopeConfig->getValue('acessos/general/identity_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 
-        //Get Object Manager Instance
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+            $login = $this->scopeConfig->getValue('acessos/general/identity_login', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 
-        // $scopeConfig = $objectManager->create('Magento\Framework\App\Config\ScopeConfigInterface');
-
+            $password = $this->scopeConfig->getValue('acessos/general/identity_password', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 
 
-
-
-
-        $messageManager = $objectManager->get('Magento\Framework\Message\ManagerInterface');
-        $session = $objectManager->get('Magento\Customer\Model\Session');
-        $responseHttp = $objectManager->get('Magento\Framework\App\Response\Http');
-
-        // $url_base = 'https://cvale-fidelidade-identity-dev.azurewebsites.net';
-        $url_base = $this->scopeConfig->getValue('acessos/general/identity_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-
-        $programCurrencySymbol = $this->scopeConfig->getValue('acessos/general/programCurrencySymbol', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-
-        if ($admin_exist) {
-            // Se usuario nao existe no bd entao verifica se existe no germini
-            // Tenta realizar a autenticação com JWT
             $response = "";
             $url = $url_base . '/connect/token';
             $params = [
-                "username" => $cpf,
-                "password" => $senha,
+                "username" => $login,
+                "password" => $password,
                 "client_id" => "ro.client.partner",
                 "client_secret" => "secret",
                 "grant_type" => "password",
@@ -111,11 +96,14 @@ class AdminLogin
             $this->_curl->post($url, $params);
             //response will contain the output in form of JSON string
             $response = $this->_curl->getBody();
-
-
             $resultado = json_decode($response);
 
-            // Se o usuário nao existe no germini
+            //Get Object Manager Instance
+            $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+            $messageManager = $objectManager->get('Magento\Framework\Message\ManagerInterface');
+            $session = $objectManager->get('Magento\Customer\Model\Session');
+            $responseHttp = $objectManager->get('Magento\Framework\App\Response\Http');
+
             if ($response == "") {
                 $messageManager->addError('Usuário não existe no Germini');
                 return;
@@ -125,89 +113,136 @@ class AdminLogin
                     return;
                 } else {
                     $token = json_decode($response)->access_token;
+                     // Salva o token em uma variável de sessão
+                    $this->catalogSession->setData('token', $token);
+                    $messageManager->addSuccess('Usuário e senha validados com sucesso');
                 }
             }
+
         }
 
-        // Se o usuário ainda náo existe no banco de dados do magento
-        else {
-            try {
-                $response = "";
-                $url = $url_base . '/connect/token';
-                $params = [
-                    "username" => $cpf,
-                    "password" => $senha,
-                    "client_id" => "ro.client.partner",
-                    "client_secret" => "secret",
-                    "grant_type" => "password",
-                    "scope" => "germini-api openid profile"
-                ];
-                $this->_curl->post($url, $params);
-                //response will contain the output in form of JSON string
-                $response = $this->_curl->getBody();
-            } catch (\Exception $e) {
-                $messageManager->addError('Não foi possível conectar com germini');
-                return;
-            }
-            $dados = json_decode($response);
+    //     //Get Object Manager Instance
+    //     $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+    //     $messageManager = $objectManager->get('Magento\Framework\Message\ManagerInterface');
+    //     $session = $objectManager->get('Magento\Customer\Model\Session');
+    //     $responseHttp = $objectManager->get('Magento\Framework\App\Response\Http');
 
-            if ($response == "" or isset($dados->error)) {
-                $messageManager->addError('Usuário não existe no Germini');
-                return;
-            }
+    //     // $url_base = 'https://cvale-fidelidade-identity-dev.azurewebsites.net';
+    //     $url_base = $this->scopeConfig->getValue('acessos/general/identity_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 
-            $token = $dados->access_token;
+    //     $programCurrencySymbol = $this->scopeConfig->getValue('acessos/general/programCurrencySymbol', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 
-            $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-            $response = "";
-            $url = $url_base . '/api/Partner/GetCurrentPartner';
+    //     if ($admin_exist) {
+    //         // Se usuario nao existe no bd entao verifica se existe no germini
+    //         // Tenta realizar a autenticação com JWT
+    //         $response = "";
+    //         $url = $url_base . '/connect/token';
+    //         $params = [
+    //             "username" => $cpf,
+    //             "password" => $senha,
+    //             "client_id" => "ro.client.partner",
+    //             "client_secret" => "secret",
+    //             "grant_type" => "password",
+    //             "scope" => "germini-api openid profile"
+    //         ];
+    //         $this->_curl->post($url, $params);
+    //         //response will contain the output in form of JSON string
+    //         $response = $this->_curl->getBody();
+    //         $resultado = json_decode($response);
 
-            $this->_curl->addHeader("Accept", "text/plain");
-            $this->_curl->addHeader("Authorization", 'bearer ' . $token);
-            $this->_curl->get($url);
-            $response = $this->_curl->getBody();
-            $dados = json_decode($response);
+    //         // Se o usuário nao existe no germini
+    //         if ($response == "") {
+    //             $messageManager->addError('Usuário não existe no Germini');
+    //             return;
+    //         } else {
+    //             if (isset($resultado->error)) {
+    //                 $messageManager->addError('Erro ao conectar com germini');
+    //                 return;
+    //             } else {
+    //                 $token = json_decode($response)->access_token;
+    //             }
+    //         }
+    //     }
 
-            $usuarios = $dados->users;
-            foreach ($usuarios as $user) {
-                if ($cpf == $user->userName) {
-                    // Encontrado o usuário correspondente
-                    $name = $user->name;
-                    $names = explode(" ", $name);
-                    $first_name = $names[0];
-                    $last_name = end($names);
+    //     // Se o usuário ainda náo existe no banco de dados do magento
+    //     else {
+    //         try {
+    //             $response = "";
+    //             $url = $url_base . '/connect/token';
+    //             $params = [
+    //                 "username" => $cpf,
+    //                 "password" => $senha,
+    //                 "client_id" => "ro.client.partner",
+    //                 "client_secret" => "secret",
+    //                 "grant_type" => "password",
+    //                 "scope" => "germini-api openid profile"
+    //             ];
+    //             $this->_curl->post($url, $params);
+    //             //response will contain the output in form of JSON string
+    //             $response = $this->_curl->getBody();
+    //         } catch (\Exception $e) {
+    //             $messageManager->addError('Não foi possível conectar com germini');
+    //             return;
+    //         }
+    //         $dados = json_decode($response);
 
-                    $hashedPassword = $this->_encryptor->hash($senha);
+    //         if ($response == "" or isset($dados->error)) {
+    //             $messageManager->addError('Usuário não existe no Germini');
+    //             return;
+    //         }
 
-                    // Cria esse usuário no admin do magento
-                    $adminInfo = [
-                        'username'  => $cpf,
-                        'firstname' => $first_name,
-                        'lastname'    => $last_name,
-                        'email'     => $user->email,
-                        'password'  => $senha,
-                        'interface_locale' => 'pt_BR',
-                        'is_active' => 1
-                    ];
+    //         $token = $dados->access_token;
 
-                    $userModel = $this->_userFactory->create();
-                    $userModel->setData($adminInfo);
-                    $userModel->setRoleId(1);
-                    try {
-                        $userModel->save();
-                    } catch (\Exception $ex) {
+    //         $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+    //         $response = "";
+    //         $url = $url_base . '/api/Partner/GetCurrentPartner';
 
-                        $messageManager->addError($ex->getMessage());
-                        return;
-                    }
+    //         $this->_curl->addHeader("Accept", "text/plain");
+    //         $this->_curl->addHeader("Authorization", 'bearer ' . $token);
+    //         $this->_curl->get($url);
+    //         $response = $this->_curl->getBody();
+    //         $dados = json_decode($response);
 
-                    // Após criar a conta, faz login com ela
-                    $messageManager->addSuccess(__('Conta associada com sucesso, entre novamente'));
-                    break;
-                }
-            }
-        }
-        // Salva o token em uma variável de sessão
-        $this->catalogSession->setData('token', $token);
+    //         $usuarios = $dados->users;
+    //         foreach ($usuarios as $user) {
+    //             if ($cpf == $user->userName) {
+    //                 // Encontrado o usuário correspondente
+    //                 $name = $user->name;
+    //                 $names = explode(" ", $name);
+    //                 $first_name = $names[0];
+    //                 $last_name = end($names);
+
+    //                 $hashedPassword = $this->_encryptor->hash($senha);
+
+    //                 // Cria esse usuário no admin do magento
+    //                 $adminInfo = [
+    //                     'username'  => $cpf,
+    //                     'firstname' => $first_name,
+    //                     'lastname'    => $last_name,
+    //                     'email'     => $user->email,
+    //                     'password'  => $senha,
+    //                     'interface_locale' => 'pt_BR',
+    //                     'is_active' => 1
+    //                 ];
+
+    //                 $userModel = $this->_userFactory->create();
+    //                 $userModel->setData($adminInfo);
+    //                 $userModel->setRoleId(1);
+    //                 try {
+    //                     $userModel->save();
+    //                 } catch (\Exception $ex) {
+
+    //                     $messageManager->addError($ex->getMessage());
+    //                     return;
+    //                 }
+
+    //                 // Após criar a conta, faz login com ela
+    //                 $messageManager->addSuccess(__('Conta associada com sucesso, entre novamente'));
+    //                 break;
+    //             }
+    //         }
+    //     }
+    //     // Salva o token em uma variável de sessão
+    //     $this->catalogSession->setData('token', $token);
     }
 }
