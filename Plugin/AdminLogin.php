@@ -55,11 +55,11 @@ class AdminLogin
     {
 
 
-    //     $this->logger->debug('User ' . $result . ' signed in.');
-    //     $resultRedirect = $this->resultRedirect->create(ResultFactory::TYPE_REDIRECT);
+        //Get Object Manager Instance
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $messageManager = $objectManager->get('Magento\Framework\Message\ManagerInterface');
 
         $cpf = preg_replace("/[^0-9]/", "", $result);
-        $senha = $username;
 
         $adminUsers = $this->_userFactoryCollection->create();
 
@@ -100,12 +100,6 @@ class AdminLogin
             //response will contain the output in form of JSON string
             $response = $this->_curl->getBody();
             $resultado = json_decode($response);
-
-            //Get Object Manager Instance
-            $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-            $messageManager = $objectManager->get('Magento\Framework\Message\ManagerInterface');
-            $session = $objectManager->get('Magento\Customer\Model\Session');
-            $responseHttp = $objectManager->get('Magento\Framework\App\Response\Http');
 
             if ($response == "") {
                 $messageManager->addError('Usuário não existe no Germini');
