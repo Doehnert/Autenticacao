@@ -64,8 +64,11 @@ class AdminLogin
 
             $login = $this->scopeConfig->getValue('acessos/general/identity_login', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 
-            if ($login == null)
+            if ($login == null){
+                $messageManager->addError('Login vazio');
                 return;
+            }
+
 
             $password = $this->scopeConfig->getValue('acessos/general/identity_password', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 
@@ -94,8 +97,6 @@ class AdminLogin
                 // Salva o token em uma variável de sessão
             $this->catalogSession->setData('token', $token);
             $messageManager->addSuccess('Usuário e senha validados com sucesso');
-
-
         }
 
     //     //Get Object Manager Instance
