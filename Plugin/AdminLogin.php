@@ -80,6 +80,9 @@ class AdminLogin
 
             $login = $this->scopeConfig->getValue('acessos/general/identity_login', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 
+            if ($login == null)
+                return;
+
             $password = $this->scopeConfig->getValue('acessos/general/identity_password', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 
 

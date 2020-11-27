@@ -13,5 +13,10 @@
             type="Vexpro\Autenticacao\Plugin\PontosZero"/>
   </type>
 
+  <!-- <type name="Magento\Customer\Controller\Account\CreatePost">
+    <plugin name="CreateUserInGermini"
+            type="Vexpro\Autenticacao\Plugin\CreateUserInGermini"/>
+  </type> -->
+
 
 </config>
