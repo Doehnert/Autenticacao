@@ -8,7 +8,6 @@ use Magento\Framework\Controller\ResultFactory;
 
 class AdminLogin
 {
-    private $logger;
     protected $_userFactoryCollection;
     protected $_userFactory;
     protected $_curl;
@@ -37,24 +36,9 @@ class AdminLogin
         $this->resultRedirect = $result;
     }
 
-    // // Autentica o usuário
-    // public function authenticate($customerId, $password)
-    // {
-    //     $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-    //     $customerRegistry = $objectManager->get('Magento\Customer\Model\CustomerRegistry');
-    //     $customerSecure = $customerRegistry->retrieveSecureData($customerId);
-    //     $hash = $customerSecure->getPasswordHash();
-    //     $teste = $this->_encryptor->validateHash($password, $hash);
-    //     if (!$teste) {
-    //         return false;
-    //     }
-    //     return true;
-    // }
 
     public function beforeLogin(\Magento\Backend\Model\Auth $authModel, $result, $username)
     {
-
-
         //Get Object Manager Instance
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $messageManager = $objectManager->get('Magento\Framework\Message\ManagerInterface');
@@ -101,19 +85,16 @@ class AdminLogin
             $response = $this->_curl->getBody();
             $resultado = json_decode($response);
 
-            if ($response == "") {
-                $messageManager->addError('Usuário não existe no Germini');
+            if ($response == "" || isset($resultado->error)){
+                $messageManager->addError('Erro ao conectar com germini ou usuário e senha incorretos');
                 return;
-            } else {
-                if (isset($resultado->error)) {
-                    $messageManager->addError('Erro ao conectar com germini');
-                } else {
-                    $token = json_decode($response)->access_token;
-                     // Salva o token em uma variável de sessão
-                    $this->catalogSession->setData('token', $token);
-                    $messageManager->addSuccess('Usuário e senha validados com sucesso');
-                }
             }
+
+            $token = json_decode($response)->access_token;
+                // Salva o token em uma variável de sessão
+            $this->catalogSession->setData('token', $token);
+            $messageManager->addSuccess('Usuário e senha validados com sucesso');
+
 
         }
 
