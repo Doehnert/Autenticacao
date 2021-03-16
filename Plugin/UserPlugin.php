@@ -190,6 +190,9 @@ class UserPlugin
             }
 
             $customer->setCustomAttribute('pontos_cliente', $pontos);
+
+            $teste = $customer->getCustomAttribute('pontos_cliente');
+
             $this->customerRepository->save($customer);
 
             $this->customerSession->setCustomerDataAsLoggedIn($customer);
