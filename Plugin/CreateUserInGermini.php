@@ -84,8 +84,8 @@ class CreateUserInGermini
         $gender = $subject->getRequest()->getParam('gender');
 
         $location = $subject->getRequest()->getParam('street')[0];
-        $number = $subject->getRequest()->getParam('street')[1];
-        $district = $subject->getRequest()->getParam('street')[2];
+        $number = $subject->getRequest()->getParam('street')[2];
+        $district = $subject->getRequest()->getParam('street')[1];
         $zipCode = $subject->getRequest()->getParam('postcode');
 
         $regionId = $subject->getRequest()->getParam('region_id'); //499
