@@ -1,0 +1,145 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+?>
+
+<?php
+    $OrderStatus = [
+        "pending" => 0,
+        "processing" => 1,
+        "preparando" => 2,
+        "transito" => 3,
+        "complete" => 4
+    ];
+
+    $estado = $OrderStatus[$block->escapeHtml($block->getOrder()->getStatus())];
+
+    // $shipment = $block->getOrder()->getShipmentsCollection()->getData();
+
+    // $shipment_date = $shipment->getCreatedAt();
+?>
+
+<!--
+    1. Aguardando pagamento / pagamento pendente - pending_payment
+    2. Processando - processing
+    3. Preparando para envio - preparando
+    4. Pedido em transito / Pedido disponivel para retirada - transito
+    5. Concluido / Não entregue - complete
+ -->
+
+
+<style>
+    .container {
+        width: 100%;
+        /* position: absolute; */
+        z-index: 1;
+    }
+
+    .progressbar {
+        counter-reset: step;
+        /* display: flex; */
+    }
+
+    .progressbar li {
+        float: left;
+        width: 20%;
+        position: relative;
+        text-align: center;
+        list-style-type: none;
+    }
+
+    .progressbar li:before {
+        content: counter(step);
+        counter-increment: step;
+        width: 30px;
+        height: 30px;
+        border: 2px solid #bebebe;
+        display: block;
+        margin: 0 auto 10px auto;
+        border-radius: 50%;
+        line-height: 27px;
+        background: white;
+        color: #bebebe;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .progressbar li:after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 3px;
+        background: #979797;
+        top: 15px;
+        left: -50%;
+        z-index: -1;
+    }
+
+    .progressbar li:first-child:after {
+        content: none;
+    }
+
+    /* .progressbar li.active + li:after{
+ background: red;
+} */
+
+    .progressbar li.active:before {
+        border-color: #21409A;
+        background: #21409A;
+        color: white;
+
+    }
+
+    .progressbar li.active+li:after {
+        background-color: #21409A;
+    }
+
+</style>
+
+<div class="root">
+    <div class="container">
+        <ul class="progressbar">
+            <li <?php
+        if ($estado >=0)
+        {
+            echo "class='active'";
+        }
+        ?>>Pagamento Pendente</li>
+            <li <?php
+        if ($estado >=1)
+        {
+            echo "class='active'";
+        }
+        ?>>Processando</li>
+            <li <?php
+        if ($estado >=2)
+        {
+            echo "class='active'";
+        }
+        ?>>Preparando para envio</li>
+            <li <?php
+        if ($estado >=3)
+        {
+            echo "class='active'";
+        }
+        ?>>
+
+        <?php if ($block->getOrder()->getShippingDescription() == "Free Shipping - Free"){
+            echo "Pedido pronto para retirada";
+        } else {
+            echo "Pedido em transito";
+        }
+        ?>
+        </li>
+            <li <?php
+        if ($estado >=4)
+        {
+            echo "class='active'";
+        }
+        ?>>Pedido Concluído</li>
+
+        </ul>
+    </div>
+</div>

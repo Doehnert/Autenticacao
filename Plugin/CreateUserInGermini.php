@@ -235,9 +235,7 @@ class CreateUserInGermini
         curl_close($ch);
         $resultado = json_decode($response);
 
-        if (empty($resultado->errors)){
-            return $proceed();
-        } else {
+        if (!empty($resultado->errors) || $response == ''){
             foreach ($resultado->errors as $error){
                 $this->messageManager->addErrorMessage(
                     $error->message
@@ -248,5 +246,6 @@ class CreateUserInGermini
                 'customer/account/create'
             );
         }
+        return $proceed();
     }
 }

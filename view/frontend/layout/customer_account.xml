@@ -20,9 +20,6 @@
 
             <block class="Magento\Framework\View\Element\Template" name="sidebar.main.account_nav" template="Magento_Theme::html/collapsible.phtml" >
 
-
-
-
                 <arguments>
                     <argument name="block_css" xsi:type="string">account-nav</argument>
                 </arguments>
@@ -31,9 +28,6 @@
                     <arguments>
                         <argument name="css_class" xsi:type="string">nav items</argument>
                     </arguments>
-
-
-
 
                     <block class="Magento\Customer\Block\Account\SortLinkInterface" name="customer-account-navigation-account-link">
                         <arguments>

@@ -96,6 +96,7 @@ class AdminLogin
             $token = json_decode($response)->access_token;
                 // Salva o token em uma variável de sessão
             $this->catalogSession->setData('token', $token);
+
             $messageManager->addSuccess('Usuário e senha validados com sucesso');
         }
 

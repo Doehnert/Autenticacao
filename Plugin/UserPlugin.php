@@ -164,18 +164,47 @@ class UserPlugin
                 return $result;
             }
 
-            $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-            $url = $url_base . '/api/ConsumerWallet/GetConsumerPoints';
+            // $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+            // $url = $url_base . '/api/ConsumerWallet/GetConsumerPoints';
 
-            $url = $url . '?cpfCnpj=' . $cpf_apenas_numeros . '&password=' . $senha;
+            // $url = $url . '?cpfCnpj=' . $cpf_apenas_numeros . '&password=' . $senha;
 
-            // get method
-            $this->_curl->get($url);
+            // // get method
+            // $this->_curl->get($url);
+
+            // Tenta realizar a autenticação com JWT
+            $url_base = $this->scopeConfig->getValue('acessos/general/identity_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+            // $url_base = 'https://vxp-germini-identity-dev.azurewebsites.net/';
+            $url = $url_base . '/connect/token';
+
+            $params = [
+                "username" => $cpf_apenas_numeros,
+                "password" => $senha,
+                "client_id" => "ro.client.consumer",
+                "client_secret" => "secret",
+                "grant_type" => "password",
+                "scope" => "germini-api openid profile"
+            ];
+            $this->_curl->post($url, $params);
 
             // output of curl request
             $response = $this->_curl->getBody();
 
             $dados = json_decode($response);
+
+            $token = $dados->access_token;
+
+            $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+
+            $url = $url_base . '/api/Consumer/GetCurrentConsumer';
+
+            $this->_curl->addHeader("Accept", "text/plain");
+            $this->_curl->addHeader("Authorization", 'bearer ' . $token);
+            $this->_curl->get($url);
+            $response = $this->_curl->getBody();
+            $dados = json_decode($response);
+
+
 
             if ($dados == "") {
                 // $this->_messageManager->addError('Não foi possível conectar com germini');
@@ -183,7 +212,7 @@ class UserPlugin
                 // return $result;
                 $pontos = 0;
             } else {
-                $pontos = $dados->data;
+                $pontos = $dados->points;
                 if ($pontos == "") {
                     $pontos = 0;
                 }
@@ -191,7 +220,8 @@ class UserPlugin
 
             $customer->setCustomAttribute('pontos_cliente', $pontos);
 
-            $teste = $customer->getCustomAttribute('pontos_cliente');
+            $customerSession = $objectManager->get('\Magento\Customer\Model\Session');
+            $customerSession->setCustomerToken($token);
 
             $this->customerRepository->save($customer);
 
@@ -235,6 +265,9 @@ class UserPlugin
                     return $result;
                 }
                 $token = json_decode($response)->access_token;
+
+                $customerSession = $objectManager->get('\Magento\Customer\Model\Session');
+                $customerSession->setCustomerToken($token);
 
                 // Com o token, cria o usuário com as informações do sistema germini
 
@@ -320,6 +353,7 @@ class UserPlugin
                 // Crio a sessão desse usuário
                 $sessionManager = $this->_sessionFactory->create();
                 $sessionManager->setCustomerAsLoggedIn($new_customer);
+                $sessionManager->setConsumerPoints($pontos);
             } else {
                 $this->_messageManager->addError("Erro ao conectar com Germini");
             }
