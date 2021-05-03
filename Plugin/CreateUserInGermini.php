@@ -235,6 +235,12 @@ class CreateUserInGermini
         curl_close($ch);
         $resultado = json_decode($response);
 
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $logger = $objectManager->create('\Psr\Log\LoggerInterface');
+        $logger->info("Resposta Germini: " .$response);
+
+
+
         if (!empty($resultado->errors) || $response == ''){
             foreach ($resultado->errors as $error){
                 $this->messageManager->addErrorMessage(
