@@ -192,6 +192,15 @@ class UserPlugin
 
             $dados = json_decode($response);
 
+            // if (isset($dados->error)){
+            //     $this->_messageManager->addError("Erro conectando com Germini");
+            //     $result->setPath('customer/account/');
+            //     return $result;
+            // }
+
+            if (!isset($dados->access_token))
+                return $result;
+
             $token = $dados->access_token;
 
             $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);

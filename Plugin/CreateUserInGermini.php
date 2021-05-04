@@ -69,8 +69,54 @@ class CreateUserInGermini
         \Closure $proceed
     )
     {
+        $is_fidelidade = $subject->getRequest()->getParam('is_fidelidade');
+
+        if ($is_fidelidade == null)
+            return $proceed();
+
+
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $logger = $objectManager->create('\Psr\Log\LoggerInterface');
+
+        $cpf = $subject->getRequest()->getParam('cpf');
+
+        // Verifica se o cliente já existe no germini
+        // caso exista encerra o plugin
+        $url_base = $this->scopeConfig->getValue('acessos/general/identity_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        $url = $url_base . '/api/Account/ListUsersByLogin/'. preg_replace("/[^0-9]/", "", $cpf);
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'GET',
+            CURLOPT_HTTPHEADER => array(
+                'Accept: text/plain'
+            ),
+        ));
+
+        $response = curl_exec($curl);
+        $resultado = json_decode($response);
+
+        if (count($resultado)>0){
+            $this->messageManager->addErrorMessage(
+                    "Usuário com esse CPF já existe no CVale Fidelidade. Efetue o Login"
+                );
+            return $this->resultRedirectFactory->create()
+            ->setPath(
+                'customer/account/login'
+            );
+        }
+
+
+
+
         /** @var \Magento\Framework\App\RequestInterface $request */
 
         $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
@@ -81,7 +127,7 @@ class CreateUserInGermini
         $lastname = $subject->getRequest()->getParam('lastname');
         $password = $subject->getRequest()->getParam('password');
         $password_confirmation = $subject->getRequest()->getParam('password_confirmation');
-        $cpf = $subject->getRequest()->getParam('cpf');
+
         $dob = $subject->getRequest()->getParam('dob');
         $gender = $subject->getRequest()->getParam('gender');
 

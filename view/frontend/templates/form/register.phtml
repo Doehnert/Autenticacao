@@ -40,11 +40,6 @@
 
         <?php echo $block->getLayout()->createBlock('Magento\Customer\Block\Widget\Name')->setObject($block->getFormData())->setForceUseCustomerAttributes(true)->toHtml() ?>
 
-        <?php $_persontype = $block->getLayout()->createBlock('SystemCode\BrazilCustomerAttributes\Block\Magento\Customer\Widget\Persontype')->setTemplate('SystemCode_BrazilCustomerAttributes::widget/persontypefields.phtml') ?>
-        <?php if ($_persontype->getConfigAdmin  ("general", "enabled")): ?>
-            <?php echo $_persontype->toHtml() ?>
-        <?php endif ?>
-
 
         <?php if ($block->isNewsletterEnabled()): ?>
             <div class="field choice newsletter">
@@ -84,6 +79,8 @@
 
             <?php echo $block->getLayout()->createBlock('SystemCode\BrazilCustomerAttributes\Block\Magento\Customer\Widget\StreetprefixRegister')->toHtml() ?>
             <?php echo $block->getLayout()->createBlock('SystemCode\BrazilCustomerAttributes\Block\Magento\Customer\Widget\Street')->toHtml() ?>
+
+
 
             <div class="field required">
                 <label for="city" class="label"><span><?php /* @escapeNotVerified */ echo __('City') ?></span></label>
@@ -131,6 +128,13 @@
                 </div>
             </div>
 
+            <div class="field required">
+                <label for="email_address" class="label"><span><?php /* @escapeNotVerified */ echo __('Email') ?></span></label>
+                <div class="control">
+                    <input type="email" name="email" autocomplete="email" id="email_address" value="<?php echo $block->escapeHtml($block->getFormData()->getEmail()) ?>" title="<?php /* @escapeNotVerified */ echo __('Email') ?>" class="input-text" data-validate="{required:true, 'validate-email':true}">
+                </div>
+            </div>
+
             <input type="hidden" name="default_billing" value="1">
             <input type="hidden" name="default_shipping" value="1">
         </fieldset>
@@ -138,12 +142,13 @@
     <?php endif; ?>
     <fieldset class="fieldset create account" data-hasrequired="<?php /* @escapeNotVerified */ echo __('* Required Fields') ?>">
         <legend class="legend"><span><?php /* @escapeNotVerified */ echo __('Sign-in Information') ?></span></legend><br>
-        <div class="field required">
-            <label for="email_address" class="label"><span><?php /* @escapeNotVerified */ echo __('Email') ?></span></label>
-            <div class="control">
-                <input type="email" name="email" autocomplete="email" id="email_address" value="<?php echo $block->escapeHtml($block->getFormData()->getEmail()) ?>" title="<?php /* @escapeNotVerified */ echo __('Email') ?>" class="input-text" data-validate="{required:true, 'validate-email':true}">
-            </div>
-        </div>
+
+
+        <?php $_persontype = $block->getLayout()->createBlock('SystemCode\BrazilCustomerAttributes\Block\Magento\Customer\Widget\Persontype')->setTemplate('SystemCode_BrazilCustomerAttributes::widget/persontypefields.phtml') ?>
+        <?php if ($_persontype->getConfigAdmin  ("general", "enabled")): ?>
+            <?php echo $_persontype->toHtml() ?>
+        <?php endif ?>
+
         <div class="field password required" data-mage-init='{"passwordStrengthIndicator": {}}'>
             <label for="password" class="label"><span><?php /* @escapeNotVerified */ echo __('Password (6 números)') ?></span></label>
             <div class="control">
@@ -164,6 +169,15 @@
             </div>
         </div>
         <?php echo $block->getChildHtml('form_additional_info'); ?>
+
+        <div class="field choice">
+            <input type="checkbox" name="is_fidelidade" title="<?php /* @escapeNotVerified */ echo __('Participar do CVale Fidelidade') ?>" value="1" id="is_fidelidade" class="checkbox">
+            <label for="is_fidelidade" class="label"><span><?php /* @escapeNotVerified */ echo __('Participar do CVale Fidelidade') ?></span></label>
+        </div>
+
+        <input type="hidden" name="is_fidelidade" value="1" />
+
+
     </fieldset>
     <div class="actions-toolbar">
         <div class="primary">
