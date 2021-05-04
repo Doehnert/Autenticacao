@@ -101,36 +101,37 @@ class CreateUserInGermini
         $phone2 = preg_replace("/[^0-9]/", "",$phone2);
 
         // Get countryId from Germini
-        $response = "";
-        $url = $url_base . '/api/Country';
+        // $response = "";
+        // $url = $url_base . '/api/Country';
 
-        $curl = curl_init();
+        // $curl = curl_init();
 
-        curl_setopt_array($curl, array(
-        CURLOPT_URL => $url,
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => '',
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 0,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => 'GET',
-        CURLOPT_HTTPHEADER => array(
-            'Accept: text/plain'
-        ),
-        ));
+        // curl_setopt_array($curl, array(
+        // CURLOPT_URL => $url,
+        // CURLOPT_RETURNTRANSFER => true,
+        // CURLOPT_ENCODING => '',
+        // CURLOPT_MAXREDIRS => 10,
+        // CURLOPT_TIMEOUT => 0,
+        // CURLOPT_FOLLOWLOCATION => true,
+        // CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        // CURLOPT_CUSTOMREQUEST => 'GET',
+        // CURLOPT_HTTPHEADER => array(
+        //     'Accept: text/plain'
+        // ),
+        // ));
 
-        $response = curl_exec($curl);
-        $resultado = json_decode($response);
+        // $response = curl_exec($curl);
+        // $resultado = json_decode($response);
 
-        foreach ($resultado as $res){
-            if ($res->name == $countryName){
-                $countryId = $res->id;
-            }
-        }
-        $logger->info("countryId: " . $countryId);
+        // foreach ($resultado as $res){
+        //     if ($res->name == $countryName){
+        //         $countryId = $res->id;
+        //     }
+        // }
 
-        curl_close($curl);
+        $countryId = "20b32dbd-8bda-4563-bcd5-0a7e827fc5e4";
+
+        // curl_close($curl);
         ///////////////////////////////
 
         // Get stateId from Germini
