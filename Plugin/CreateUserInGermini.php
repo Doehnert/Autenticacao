@@ -121,8 +121,6 @@ class CreateUserInGermini
         ));
 
         $response = curl_exec($curl);
-        $logger->info("Primeira resp: " . $response);
-        $logger->info("countryName: " . $countryName);
         $resultado = json_decode($response);
 
         foreach ($resultado as $res){
@@ -130,6 +128,7 @@ class CreateUserInGermini
                 $countryId = $res->id;
             }
         }
+        $logger->info("countryId: " . $countryId);
 
         curl_close($curl);
         ///////////////////////////////
@@ -244,7 +243,7 @@ class CreateUserInGermini
 
 
 
-        if (!empty($resultado->errors) || $response == ''){
+        if (!empty($resultado->errors) || $response == '' || $resultado->success != True){
             foreach ($resultado->errors as $error){
                 $this->messageManager->addErrorMessage(
                     $error->message
