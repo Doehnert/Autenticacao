@@ -69,6 +69,8 @@ class CreateUserInGermini
         \Closure $proceed
     )
     {
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $logger = $objectManager->create('\Psr\Log\LoggerInterface');
         /** @var \Magento\Framework\App\RequestInterface $request */
 
         $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
@@ -119,6 +121,8 @@ class CreateUserInGermini
         ));
 
         $response = curl_exec($curl);
+        $logger->info("Primeira resp: " . $response);
+        $logger->info("countryName: " . $countryName);
         $resultado = json_decode($response);
 
         foreach ($resultado as $res){
@@ -235,8 +239,7 @@ class CreateUserInGermini
         curl_close($ch);
         $resultado = json_decode($response);
 
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $logger = $objectManager->create('\Psr\Log\LoggerInterface');
+
         $logger->info("Resposta Germini: " .$response);
 
 
