@@ -6,6 +6,7 @@ use Magento\Framework\UrlFactory;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Directory\Model\RegionFactory;
+use Magento\Framework\UrlInterface;
 
 class CreateUserInGermini
 {
@@ -15,6 +16,7 @@ class CreateUserInGermini
     protected $scopeConfig;
     protected $resultRedirect;
     protected $_countryFactory;
+    protected $urlBuilder;
 
     /** @var \Magento\Framework\UrlInterface */
     protected $urlModel;
@@ -44,7 +46,8 @@ class CreateUserInGermini
         ResultFactory $result,
         \Magento\Framework\Stdlib\DateTime\TimezoneInterface $timezone,
         RegionFactory $regionFactory,
-        \Magento\Directory\Model\CountryFactory $countryFactory
+        \Magento\Directory\Model\CountryFactory $countryFactory,
+        UrlInterface $urlBuilder
     )
     {
         $this->_countryFactory = $countryFactory;
@@ -56,6 +59,7 @@ class CreateUserInGermini
         $this->resultRedirect = $result;
         $this->timezone = $timezone;
         $this->regionFactory = $regionFactory;
+        $this->urlBuilder = $urlBuilder;
     }
 
     /**
@@ -104,18 +108,14 @@ class CreateUserInGermini
         $response = curl_exec($curl);
         $resultado = json_decode($response);
 
-        if (count($resultado)>0){
+        if (count($resultado)>0)
+        {
             $this->messageManager->addErrorMessage(
                     "Usuário com esse CPF já existe no CVale Fidelidade. Efetue o Login"
                 );
-            return $this->resultRedirectFactory->create()
-            ->setPath(
-                'customer/account/login'
-            );
+            $params = array('cpf' => $cpf);
+            return $this->resultRedirectFactory->create()->setPath('customer/account/login', $params);
         }
-
-
-
 
         /** @var \Magento\Framework\App\RequestInterface $request */
 
