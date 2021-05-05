@@ -295,7 +295,7 @@ class UserPlugin
 
                 // Preparing data for new customer
                 $new_customer->setEmail($dados->email);
-                $name = $dados->name;
+                $name = str_ireplace (' ', '', $dados->name);
                 $names = explode(" ", $name, 2);
                 $first_name = $names[0];
                 if (sizeof($names) > 1) {
