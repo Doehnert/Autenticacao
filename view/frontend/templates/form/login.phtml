@@ -28,7 +28,10 @@
                             <input type="text"
                             id="cpf"
                             name="login[username]"
-                            value="<?php echo $block->getRequest()->getParams()['cpf'] ?>"
+                            value="<?php if (isset($block->getRequest()->getParams()['cpf'])){
+                                echo $block->getRequest()->getParams()['cpf'];
+                            }
+                            ?>"
                             title="<?php /* @escapeNotVerified */ echo __('CPF') ?>"
                             class="input-text"
                             data-validate="{required:<?php echo var_export($block->getStatus("required", "cpf", "cpf"), true) ?>, 'validate-cpf':true}">
