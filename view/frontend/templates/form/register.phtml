@@ -518,11 +518,13 @@
     <hr>
     <div id="fidelidade_field">
         <div class="field choice" style="display: flex; align-items: center;">
-            <input type="checkbox" name="is_fidelidade" id="is_fidelidade"
+            <div style="display: flex; align-items: baseline;">
+                <input type="checkbox" name="is_fidelidade" id="is_fidelidade"
                 title="<?php /* @escapeNotVerified */ echo __('Quero Participar do PROGRAMA DE FIDELIDADE') ?>"
                 value="1" id="is_fidelidade" class="checkbox" />
-            <label for="is_fidelidade" style="font-weight: bold"
-                class="label"><span><?php /* @escapeNotVerified */ echo __('Quero Participar do PROGRAMA DE FIDELIDADE') ?></span></label>
+                <label for="is_fidelidade" style="font-weight: bold"
+                    class="label"><span><?php /* @escapeNotVerified */ echo __('Quero Participar do PROGRAMA DE FIDELIDADE') ?></span></label>
+            </div>
 
             <span style="margin-left: 1em; border-radius: 6px" id="conheca" class="action submit primary"><span>Conheça o C.VALE
                     FIDELIDADE</span></span>
