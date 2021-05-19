@@ -3,41 +3,7 @@
         --num-of-grid-columns: 6;
     }
 
-    .tooltip {
-        position: relative;
-        display: inline-block;
-        border-bottom: 1px dotted black;
-    }
 
-    .tooltip .tooltiptext {
-        visibility: hidden;
-        width: 300px;
-        background-color: black;
-        color: #fff;
-        text-align: left;
-        border-radius: 6px;
-        padding: 5px 0;
-        position: absolute;
-        z-index: 1;
-        bottom: 150%;
-        left: 50%;
-        margin-left: -60px;
-    }
-
-    .tooltip .tooltiptext::after {
-        content: "";
-        position: absolute;
-        top: 100%;
-        left: 50%;
-        margin-left: -5px;
-        border-width: 5px;
-        border-style: solid;
-        border-color: black transparent transparent transparent;
-    }
-
-    .tooltip:hover .tooltiptext {
-        visibility: visible;
-    }
 
     form {
         width: 100% !important;
@@ -48,8 +14,10 @@
         display: grid;
         background: #f8f8f8 !important;
         grid-template-columns: repeat(var(--num-of-grid-columns), 1fr);
-        grid-gap: 30px;
-        grid-template-areas: "cpf_field nome1 nome2 nome2 nasc genero"
+        grid-gap: 20px;
+        grid-template-areas:
+            "text1_field text2_field text2_field . . ."
+            "cpf_field nome1 nome2 nome2 nasc genero"
             "email email email email celular telefone"
             "cep endereco endereco endereco numero complemento"
             "bairro cidade uf pais . ."
@@ -162,12 +130,22 @@
         grid-area: conf_senha;
     }
 
+    #text1_field {
+        grid-area: text1_field;
+    }
+
+    #text2_field {
+        color: red;
+        grid-area: text2_field;
+    }
+
     .label {
         width: auto !important;
     }
 
     .modal-inner-wrap {
         max-width: 550px;
+        border-radius: 8px;
     }
 
     #box {
@@ -199,7 +177,6 @@
     .tooltip {
         display: inline-block;
         position: relative;
-        border-bottom: 1px dotted #444444;
         text-align: left;
     }
 
@@ -247,23 +224,18 @@
         height: 15px;
         left: 50%;
         transform: translate(-50%, -50%) rotate(45deg);
-        background-color: #ddd;
+        background-color: #444444;
         box-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
     }
 
-    .tooltip {
-        display: inline-block;
-        position: relative;
-        border-bottom: 1px dotted #666;
-        text-align: left;
-    }
+
 
     .tooltip h3 {
         margin: 12px 0;
     }
 
     .tooltip .right {
-        min-width: 200px;
+        min-width: 400px;
         max-width: 400px;
         top: 50%;
         left: 100%;
@@ -333,6 +305,9 @@
 
     <div class="counteudo">
 
+        <div id="text1_field">Campos Obrigatórios *</div>
+        <div id="text2_field">** CPF utilizado no programa</div>
+
         <div id="cpf_field">
             <div class="field fieldset individual" style="display: flex;
     align-items: center;">
@@ -345,9 +320,9 @@
                 </div>
 
                 <div class="tooltip">
-                    <i class="fas fa-info-circle" style="font-size: large;"></i>
+                    <i class="fas fa-info-circle" style="font-size: large; color: #5D5D5D; margin-left: 5px"></i>
                     <div class="top">
-                        <h3>Esse dado será usado no login do sistema</h3>
+                        <span>Esse dado será usado no login do sistema</span>
                         <i></i>
                     </div>
                 </div>
@@ -387,7 +362,7 @@
                 <div class="field required">
                     <label for="genero" class="label">Gênero</label>
                     <select id="genero" name="genero" aria-required="true" validate-select="true">
-                        <option value=""><?php /* @escapeNotVerified */ echo __('Selecione uma opção.') ?></option>
+                        <option value=""><?php /* @escapeNotVerified */ echo __('') ?></option>
                         <option value="m">Masculino</option>
                         <option value="f">Feminino</option>
                     </select>
@@ -481,7 +456,7 @@
                         title="<?php /* @escapeNotVerified */ echo __('State/Province') ?>" class="validate-select"
                         style="display:none;">
                         <option value="">
-                            <?php /* @escapeNotVerified */ echo __('Please select a region, state or province.') ?>
+                            <?php /* @escapeNotVerified */ echo __('') ?>
                         </option>
                     </select>
                     <input type="text" id="region" name="region"
@@ -519,12 +494,12 @@
                     <input type="password" name="password_confirmation"
                         title="<?php /* @escapeNotVerified */ echo __('Confirm Password') ?>" id="password-confirmation"
                         class="input-text" data-validate="{required:true, equalTo:'#password'}" autocomplete="off">
-                    <div style="float: right;">
-                        <span>Políticas de senha</span>
+                    <div style="float: right; margin-top: 5px">
+                        <span style="color: #7E7E7E;" >Políticas de senha</span>
                         <div class="tooltip">
-                            <i class="fas fa-info-circle" style="font-size: large;"></i>
+                            <i class="fas fa-info-circle" style="font-size: large; color: #5D5D5D"></i>
                             <div class="right">
-                                <h3>Regras</h3>
+                                <span style="font-weight: bold; margin-left: 30px">Regras:</span>
                                 <ul>
                                     <li>No mínimo 6 números</li>
                                     <li>Não pode ter mais de 3 números sequenciais</li>
@@ -542,14 +517,14 @@
 
     <hr>
     <div id="fidelidade_field">
-        <div class="field choice">
+        <div class="field choice" style="display: flex; align-items: center;">
             <input type="checkbox" name="is_fidelidade" id="is_fidelidade"
                 title="<?php /* @escapeNotVerified */ echo __('Quero Participar do PROGRAMA DE FIDELIDADE') ?>"
                 value="1" id="is_fidelidade" class="checkbox" />
-            <label for="is_fidelidade"
+            <label for="is_fidelidade" style="font-weight: bold"
                 class="label"><span><?php /* @escapeNotVerified */ echo __('Quero Participar do PROGRAMA DE FIDELIDADE') ?></span></label>
 
-            <span style="margin-left: 1em" id="conheca" class="action submit primary"><span>Conheça o C.VALE
+            <span style="margin-left: 1em; border-radius: 6px" id="conheca" class="action submit primary"><span>Conheça o C.VALE
                     FIDELIDADE</span></span>
 
         </div>
@@ -591,7 +566,7 @@
 
     <div>
         <div class="primary">
-            <button type="submit" class="action submit primary" id="button_create"
+            <button type="submit" style="border-radius: 6px !important; margin-top: 20px" class="action submit primary" id="button_create"
                 title="<?php /* @escapeNotVerified */ echo __('Create an Account') ?>"><span><?php /* @escapeNotVerified */ echo __('Create an Account') ?></span></button>
         </div>
     </div>
@@ -614,9 +589,7 @@
     <div id="modal-content">
         <div class="modal-inner-content">
             <p>O CPF <span id="cpf_modal" style="color: #21409A;
-    font-weight: bold;"></span> já está cadastrado no programa de fidelidade.<br />Você pode utilizar a mesma senha
-                para acessar a loja da C.VALE.</p>
-
+    font-weight: bold;"></span> já está cadastrado no programa de fidelidade.<br />Você pode utilizar a mesma senha para acessar a loja da C.VALE.</p>
             <p><a target="_blank" href="/customer/account/forgotpassword/">ESQUECI A SENHA</a></p>
         </div>
     </div>
@@ -769,6 +742,7 @@
             type: 'popup',
             responsive: true,
             title: 'O QUE É O C.VALE FIDELIDADE?',
+            buttons: []
         };
         var options3 = {
             type: 'popup',
