@@ -1,0 +1,1117 @@
+import React from "react";
+import { withTranslation } from "react-i18next";
+import Alert from "react-bootstrap-sweetalert";
+import * as _ from "lodash";
+import { Formik } from "formik";
+import * as Yup from "yup";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import * as moment from "moment";
+
+// @material-ui/core components
+import withStyles from "@material-ui/core/styles/withStyles";
+
+// core components
+import registerStyle from "assets/jss/material-dashboard-pro-react/views/extendedFormsStyle.jsx";
+import Loader from "components/Loader/Loader.jsx";
+
+// Utils
+import compose from "utils/compose";
+
+// REDIX INIT
+
+import * as API from "../../redux/api/user";
+import { verifyIndicationCode } from "../../redux/api/user";
+
+import {
+  GetConsumerByToken,
+  GetRegulationData,
+  ValidateDocument,
+  RegisterConsumer,
+  GetCountryData,
+  GetStateData,
+  GetCityData,
+  GetPlatformRulesData,
+  ShowLoader,
+  HideLoader,
+} from "../../redux/actions";
+
+import Form from "./Components/Register";
+
+
+import { connectRouterState } from "utils/connectRouterState";
+
+import styles from "./register.module.scss";
+
+import { ErrorBox } from "./Components/styles";
+import ModalMobile from "./Components/ModalMobileError";
+import { Radio, FormControlLabel, RadioGroup } from "@material-ui/core";
+import { CheckCircle } from "@material-ui/icons";
+require("moment/locale/pt-br");
+
+const message = "Campo obrigatório"
+const validationSchema = Yup.object({
+  associatedData: Yup.boolean(),
+  name: Yup.string().when("associatedData", {
+    is: true,
+    then: Yup.string().nullable(),
+    otherwise: Yup.string().required(message).typeError(message),
+  }),
+  dateOfBirth: Yup.mixed().when("associatedData", {
+    is: true,
+    then: Yup.string().nullable(),
+    otherwise: Yup.date().when("cpf", (cpf, dateOfBirth) =>
+      cpf && cpf.replace(/[^\d]+/g, "").length > 11
+        ? dateOfBirth.nullable()
+        : dateOfBirth.typeError("inválido").required(message).typeError(message),
+    ),
+  }),
+  cpf: Yup.string().min(11, 'Qtd mínima: 11').max(18, 'Qtd máxima: 18').required(message).typeError(message),
+  responsableCpf: Yup.string().when("cpf", (cpfField, myField) => {
+    return cpfField.replace(/[^\d]+/g, "").length > 11
+      ? myField.min(11, 'Qtd mínima: 11').required(message).typeError(message)
+      : myField;
+  }),
+  responsableEmail: Yup.string().when("cpf", (cpfField, myField) =>
+    cpfField.replace(/[^\d]+/g, "").length > 11
+      ? myField.email("inválido").required(message).typeError(message)
+      : myField
+  ),
+  responsableName: Yup.string().when("cpf", (cpfField, myField) => {
+    return cpfField.replace(/[^\d]+/g, "").length > 11
+      ? myField.required(message).typeError(message)
+      : myField;
+  }),
+  gender: Yup.string().when("cpf", (cpf, gender) =>
+    cpf && cpf.replace(/[^\d]+/g, "").length > 11
+      ? gender.nullable()
+      : gender.required(message).typeError(message)
+  ),
+  email: Yup.string().nullable().email("inválido").required(message).typeError(message),
+  zipCode: Yup.string().when("associatedData", {
+    is: true,
+    then: Yup.string().nullable(),
+    otherwise: Yup.string().required(message).typeError(message),
+  }),
+  location: Yup.string().when("associatedData", {
+    is: true,
+    then: Yup.string().nullable(),
+    otherwise: Yup.string().required(message).typeError(message),
+  }),
+  number: Yup.string().when("associatedData", {
+    is: true,
+    then: Yup.string().nullable(),
+    otherwise: Yup.string().required(message).typeError(message),
+  }),
+  phoneNumber2: Yup.string().when("phoneNumber", (phoneNumberField, myField) =>
+    phoneNumberField && phoneNumberField.replace(/[^\d]+/g, "").length >= 10 ? myField.nullable()
+      : myField.required(message).typeError(message)
+        .test(
+          "valid",
+          "inválido",
+          (x) => x && x.replace(/[^\d]+/g, "").length >= 10
+        ),
+  ),
+  phoneNumber: Yup.string().nullable(),
+  stateId: Yup.string().when("associatedData", {
+    is: true,
+    then: Yup.string().nullable(),
+    otherwise: Yup.string().required(message).typeError(message),
+  }),
+  cityId: Yup.string().when("associatedData", {
+    is: true,
+    then: Yup.string().nullable(),
+    otherwise: Yup.string().required(message).typeError(message),
+  }),
+  district: Yup.string().when("associatedData", {
+    is: true,
+    then: Yup.string().nullable(),
+    otherwise: Yup.string().required(message).typeError(message),
+  }),
+  aditionalInfo: Yup.string().notRequired(),
+  password: Yup.mixed().test(
+    "password policy test",
+    message,
+    function (item) {
+      if (item) {
+        const { cpf, dateOfBirth, phoneNumber, phoneNumber2 } = this.parent;
+        if (
+          item.length === 6 &&
+          ((dateOfBirth &&
+            moment(dateOfBirth).format("DDMMYY").includes(item)) ||
+            (cpf && cpf.replace(/\.|-|\/|\(|\)|\/| /g, "").includes(item)) ||
+            (phoneNumber &&
+              phoneNumber.replace(/\.|-|\/|\(|\)|\/| /g, "").includes(item)) ||
+            (phoneNumber2 &&
+              phoneNumber2.replace(/\.|-|\/|\(|\)|\/| /g, "").includes(item)))
+        ) {
+          return this.createError({
+            path: `${this.path}`,
+            message:
+              "Senha não pode estar contida em CPF/CNPJ, DATA DE NASCIMENTO, CEL OU TEL",
+          });
+        }
+
+        if (/(?:(?=012|123|234|345|456|567|678|789)\d)+\d/.test(item)) {
+          return this.createError({
+            path: `${this.path}`,
+            message: "Não é permitido ter 3 números sequenciais",
+          });
+        }
+        if (/(\d)\1\1/.test(item)) {
+          return this.createError({
+            path: `${this.path}`,
+            message: "Não é permitido ter 3 números repetidos",
+          });
+        }
+        if (!(Number(item, 10) && item.length === 6)) {
+          return this.createError({
+            path: `${this.path}`,
+            message: "A senha deve ser numérica e ter 6 caracteres",
+          });
+        }
+      }
+
+      // if (item === this.parent)
+
+      return item;
+    }
+  ),
+  confirmPassword: Yup.string()
+    .required(message).typeError(message)
+    .oneOf([Yup.ref("password"), null], "Campo confirmar diferente de senha"),
+  useTerms: Yup.mixed()
+    .oneOf([true], "You need to accept the Terms of Use.")
+    .required(message).typeError(message),
+  useRegulation: Yup.mixed()
+    .oneOf([true], "You need to accept the Terms of Use.")
+    .required(message).typeError(message),
+  newsletter: Yup.boolean().notRequired(),
+});
+// .test("phone", null, (obj) => {
+// 	if (!obj.phoneNumber || obj.phoneNumber.replace(/[^\d]+/g, '').length >= 10) {
+// 		return true;
+// 	}
+// 	return new Yup.ValidationError('inválido', null, 'phoneNumber');
+// })
+class Register extends React.Component {
+  constructor(props) {
+    super(props);
+    this.formik = React.createRef();
+    // we use this to make the card to appear after the page has been rendered
+    this.state = {
+      responsableCpfValid: { error: false, message: "" },
+      responsableCpf: "",
+      responsableName: "",
+      responsableEmail: "",
+      name: "",
+      countryId: "",
+      cpf: "",
+      gender: "",
+      dateOfBirth: "",
+      email: "",
+      phoneNumber: "",
+      zipCode: "",
+      location: "",
+      district: "",
+      number: "",
+      statesmsReceiveNumberId: "",
+      smsReceiveNumber: 0,
+      cityId: "",
+      token: "",
+      selectAll: false,
+      phoneNumber2: "",
+      aditionalInfo: "",
+      useTerms: false,
+      useRegulation: false,
+      newsletter: false,
+      password: "",
+      confirmPassword: "",
+      alert: false,
+      alertError: false,
+      userCpf: true,
+      selectListCountry: [],
+      selectListState: [],
+      selectListCity: [],
+      cpfError: "",
+      richTextValuePR: "",
+      richTextValueRG: "",
+      indicationCode: "",
+      tokenIndication: '',
+      number1: '',
+      number2: '',
+      number3: '',
+      number4: '',
+      number5: '',
+      number6: '',
+      indicationCodeDisable: false,
+      identityId: "",
+      // pwdMsg: "",
+      modalError: { one: false, two: false, textError: "" },
+      disabledForm: false,
+      associatedData: false,
+      associatedAddressData: false,
+      blockCPF: false,
+      cellphoneDuplicateError: { error: false, text: "" },
+    };
+    moment.locale("pt-br");
+  }
+
+  componentDidMount() {
+    this.setState({ alert: <Loader /> });
+    this.props.GetRegulationData();
+    this.props.GetPlatformRulesData();
+    this.props.GetCountryData();
+    // we add a hidden class to the card and after 700 ms we delete it and the transition appears
+    this.setState({ ...this.props.urlState });
+    if (this.props.urlState.token) {
+      this.props.GetConsumerByToken(this.props.urlState.token);
+    }
+    //
+    this.timeOutFunction = setTimeout(
+      function () {
+        this.setState({ cardAnimaton: "" });
+      }.bind(this),
+      700
+    );
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.regulationData !== this.props.regulationData) {
+      if (this.props.regulationData) {
+        this.setState({
+          richTextValueRG: this.props.regulationData.regulation,
+        });
+      }
+    }
+    // IF PARA QUANDO O TOKEN VEM DO EMAIL
+    if (this.state.tokenIndication !== null && prevState.tokenIndication !== this.state.tokenIndication) {
+      verifyIndicationCode(this.state.tokenIndication).then(response => {
+        let numberPosition = response.data.indicationCode.split("");
+        if (numberPosition.length === 6) {
+
+          this.setState({
+            number1: numberPosition[0],
+            number2: numberPosition[1],
+            number3: numberPosition[2],
+            number4: numberPosition[3],
+            number5: numberPosition[4],
+            number6: numberPosition[5],
+            indicationCodeDisable: true
+          });
+        } else {
+          this.setState({ indicationCodeDisable: false })
+        }
+      })
+    }
+
+    if (prevProps.regulationDataFailed !== this.props.regulationDataFailed) {
+      console.error("---> ", this.props.regulationDataFailed);
+    }
+
+    if (prevProps.userDataFail !== this.props.userDataFail && this.props.userDataFail) {
+      const sweetAlert = (
+        <Alert
+          warning
+          style={{ display: "block", marginTop: "-100px" }}
+          title={"Atenção!"}
+          onConfirm={() => this.setState({ alertError: null })}
+          confirmBtnCssClass={
+            this.props.classes.button +
+            " " +
+            this.props.classes.greenButtonColor
+          }
+          confirmBtnText={"OK"}
+        >
+          {this.props.t("FIELD_ALERT_FAIL")}
+        </Alert>
+      );
+      this.setState({ alertError: sweetAlert });
+
+    }
+
+    if (prevProps.consumerByToken !== this.props.consumerByToken) {
+      let result = this.props.consumerByToken;
+      if (result.data.success) {
+        this.setState({
+          ...result.data.data,
+          blockCPF: true,
+          responsableCpf: result.data.data.representative
+            ? result.data.data.representative.cpf
+            : "",
+          responsableEmail: result.data.data.representative
+            ? result.data.data.representative.email
+            : "",
+          responsableName: result.data.data.representative
+            ? result.data.data.representative.name
+            : "",
+        });
+      } else {
+        if (result.data.errors[0].message == "token - INVALID_VALUE") {
+          const sweetAlert = (
+            <Alert
+              warning
+              style={{ display: "block", marginTop: "-100px" }}
+              title={"Atenção!"}
+              onConfirm={() => this.setState({ alertError: null })}
+              confirmBtnCssClass={
+                this.props.classes.button +
+                " " +
+                this.props.classes.greenButtonColor
+              }
+              confirmBtnText={"OK"}
+            >
+              {this.props.t("INVALID_TOKEN")}
+            </Alert>
+          );
+          this.setState({ alertError: sweetAlert });
+        }
+      }
+    }
+
+    if (prevProps.consumerByTokenFailed !== this.props.consumerByTokenFailed) {
+    }
+
+    if (prevProps.userPost !== this.props.userPost) {
+      let rest = this.props.userPost;
+
+      if (rest.success) {
+        window.localStorage.setItem("cpfUser", rest.data.cpf);
+        const sweetAlert = (
+          <Alert
+            success
+            style={{ display: "block", marginTop: "-100px" }}
+            title={null}
+            onConfirm={() => this.handleNext()}
+            confirmBtnCssClass={
+              this.props.classes.button +
+              " " +
+              this.props.classes.greenButtonColor
+            }
+            confirmBtnText={"OK"}
+          >
+            {this.props.t("FIELD_ALERT_SUCCESS")}
+          </Alert>
+        );
+        this.setState({ alert: sweetAlert });
+      } else {
+        const associatedDataError =
+          rest.errors.length &&
+          rest.errors.find(
+            (item) => item.message === "Associated - INVALID_VALUE"
+          );
+
+        const cellphonenumberError =
+          rest.errors.length &&
+          rest.errors.find(
+            (item) => item.message === "cellphonenumber - NOT_FOUND"
+          );
+
+        const cellphoneDuplicate =
+          rest.errors.length &&
+          rest.errors.find(
+            (item) => item.message === "cellphonenumber - DUPLICATED"
+          );
+
+        const addressAssociatedError =
+          rest.errors.length &&
+          rest.errors.find((item) => item.message === "address - NOT_FOUND");
+
+        if (addressAssociatedError && this.state.associatedData) {
+          return this.setState({
+            alert: null,
+            modalError: {
+              ...this.state.modalError,
+              one: true,
+              textError: <p>{`Identificamos que seu endereço está incompleto.`}</p>,
+            },
+          });
+        }
+
+        if (associatedDataError) {
+          return this.setState({
+            alert: null,
+            modalError: {
+              ...this.state.modalError,
+              one: true,
+              textError: <p>{"Encontramos divergência nos seus dados. Por gentileza entrar em contato com o suporte CVale nos canais abaixo."}</p>,
+            },
+          });
+        }
+
+        if (cellphoneDuplicate && this.state.associatedData) {
+          return this.setState({
+            cellphoneDuplicateError: { error: true, text: "" },
+            phoneNumber: rest.data.phoneNumber,
+            phoneNumber2: rest.data.phoneNumber2,
+            alert: null,
+            modalError: { ...this.state.modalError, two: true },
+          });
+        }
+
+        if (cellphoneDuplicate && !this.state.associatedData) {
+          return this.setState({
+            cellphoneDuplicateError: { error: true, text: "" },
+            alert: null,
+            modalError: { ...this.state.modalError, two: true },
+          });
+        }
+
+        if (cellphonenumberError && this.state.associatedData) {
+          return this.setState({
+            alert: null,
+            modalError: { ...this.state.modalError, one: true, textError: "" },
+          });
+        }
+
+        const sweetAlert = (
+          <Alert
+            warning
+            style={{ display: "block" }}
+            title={"Erro"}
+            onConfirm={() => this.setState({ alert: null })}
+            confirmBtnCssClass={
+              this.props.classes.button +
+              " " +
+              this.props.classes.greenButtonColor
+            }
+            confirmBtnText={"Ok"}
+          >
+            {_.isArray(rest.errors) &&
+              rest.errors.map((error) => [
+                error.field.indexOf(
+                  "The Password must be at least 6 and at max 100 characters long."
+                ) > -1 ? (
+                  this.props.t("PasswordSize")
+                ) : error.field.indexOf(
+                  "The Name must be at least 2 and at max 50 characters long."
+                ) > -1 ? (
+                  this.props.t("NameSize")
+                ) : (
+                  <div>{this.props.t(error.message)}</div>
+                ),
+              ])}
+          </Alert>
+        );
+
+        this.setState({ alert: sweetAlert });
+      }
+    }
+
+    if (prevProps.userCpf !== this.props.userCpf) {
+      this.setState({
+        userCpf: this.props.userCpf.success,
+        blockCPF: this.props.userCpf.success,
+        identityId: this.props.userCpf.identityId,
+      });
+
+      if (!this.props.userCpf.success) {
+        if (_.find(this.props.userCpf.errors, x => x.message.includes("ZipCode") || x.message.includes("DateOfBirth"))) {
+          this.setState({
+            modalError: {
+              ...this.state.modalError,
+              one: true,
+              textError: <>
+                <div><p>{"Encontramos as seguintes pendências em seu pré-cadastro:"}</p></div>
+                <ul>
+                  {
+                    this.props.userCpf.errors.filter(x => x.message.includes("ZipCode") || x.message.includes("DateOfBirth")).map((error, index) => ([
+                      <li><p key={index} style={{ fontWeight: 600 }}>{this.props.t(error.message)}</p></li>
+                    ]))}
+                </ul>
+                <div><p>{"Para atualização dos seus dados cadastrais, entre em contato com o suporte nos canais abaixo."}</p></div>
+              </>
+            },
+          });
+        } else {
+          this.props.userCpf.errors.forEach((error) => {
+            this.setState({ cpfError: error.message });
+          });
+
+        }
+      }
+
+      if (this.props.userCpf.success && this.props.userCpf.data) {
+        let _data = this.props.userCpf.data;
+        this.setState({ associatedData: true });
+        this.setState(
+          {
+            ..._data,
+            dateOfBirth: _data.dateOfBirthMasked,
+            responsableCpf: _data.representative
+              ? _data.representative.cpf
+              : "",
+            responsableEmail: _data.representative
+              ? _data.representative.email
+              : "",
+            responsableName: _data.representative
+              ? _data.representative.name
+              : "",
+          },
+          () => {
+            // if (this.state.smsReceiveNumber == 0) {
+            //   this.setState({ smsReceiveNumber: null });
+            // }
+            if (_.isEmpty(this.state.phoneNumber2)) {
+              this.setState({ phoneNumber2: "00000000000000" });
+            }
+          }
+        );
+        //
+        if (_data.address && _data.address !== null) {
+          this.setState({
+            location: _data.address.location,
+            stateId: _data.address.state ? _data.address.state.name : "",
+            countryId: _data.address.country ? _data.address.country.id : "",
+            cityId: _data.address.city ? _data.address.city.name : "",
+            zipCode: _data.address.zipCode ? _data.address.zipCode : "",
+            district: _data.address.district ? _data.address.district : "",
+            number: _data.address.number ? _data.address.number : "",
+            aditionalInfo: _data.address.aditionalInfo
+              ? _data.address.aditionalInfo
+              : "",
+          }, () => {
+            this.setState({
+              associatedAddressData: Boolean(this.state.zipCode) && this.state.zipCode !== ""
+            })
+          });
+        }
+      }
+      this.setState({ alert: null });
+    }
+
+    if (prevProps.platformRulesData !== this.props.platformRulesData) {
+      this.setState({ richTextValuePR: this.props.platformRulesData.useTerms });
+      this.setState({ alert: null });
+    }
+
+    if (prevProps.countryData !== this.props.countryData) {
+      let id = this.props.countryData.find((x) => x.name === "Brazil").id;
+      this.setState(
+        { countryId: id, selectListCountry: this.props.countryData },
+        () => this.props.GetStateData(this.state.countryId)
+      );
+      this.setState({ alert: null });
+    }
+
+    if (prevProps.stateData !== this.props.stateData) {
+      this.setState({ selectListState: this.props.stateData });
+    }
+
+    if (prevProps.cityData !== this.props.cityData) {
+      this.setState({ selectListCity: this.props.cityData });
+    }
+
+    if (prevState.stateId !== this.state.stateId) {
+      this.props.GetCityData(this.state.stateId);
+    }
+
+    if (
+      prevProps.platformRulesDataFailed !== this.props.platformRulesDataFailed
+    ) {
+      alert("Ocorreu um erro ao carregar os dados da página.");
+      this.setState({ alert: "" });
+    }
+
+    if (prevState.cpf !== this.state.cpf) {
+      // this.verifyDocument(this.state.cpf);
+    }
+  }
+
+  handleStateChange = (state, newValue) => {
+    this.props.GetCityData(newValue);
+  };
+
+  verifyDocument = (document) => {
+    if (document) {
+      this.setState({ alert: <Loader /> });
+      this.props.ValidateDocument(_.trim(document), true);
+    }
+  };
+  async verifyDocumentResponsable(document) {
+    if (document) {
+      try {
+        this.setState({ alert: <Loader /> });
+        const response = await API.ValidateDocument(_.trim(document), true);
+        if (!response.success) {
+          return this.setState({
+            responsableCpfValid: {
+              error: true,
+              message: this.props.t(response.errors[0].message),
+            },
+          });
+        }
+        this.setState({
+          responsableCpfValid: { error: false, message: "valid" },
+        });
+      } catch (error) {
+      } finally {
+        this.setState({ alert: false });
+      }
+    }
+  }
+
+  handleSave(values) {
+    //debugger;
+    const {
+      aditionalInfo,
+      associatedData, associatedAddressData,
+      cityId,
+      confirmPassword,
+      countryId,
+      cpf,
+      dateOfBirth,
+      district,
+      email,
+      gender,
+      location,
+      name,
+      newsletter,
+      number,
+      password,
+      phoneNumber,
+      phoneNumber2,
+      selectAll,
+      smsReceiveNumber,
+      stateId,
+      useRegulation,
+      useTerms,
+      responsableCpf,
+      indicationCode,
+      tokenIndication,
+      responsableName,
+      responsableEmail,
+      zipCode,
+      responsableCpfValid,
+      number1,
+      number2,
+      number3,
+      number4,
+      number5,
+      number6,
+    } = this.state;
+    const stateValue = {
+      associatedData, associatedAddressData,
+      name,
+      selectAll,
+      countryId,
+      cpf,
+      gender,
+      dateOfBirth,
+      email,
+      phoneNumber2,
+      phoneNumber,
+      number,
+      zipCode,
+      responsableCpf,
+      responsableName,
+      responsableEmail,
+      location,
+      district,
+      stateId,
+      cityId,
+      aditionalInfo,
+      smsReceiveNumber,
+      useTerms,
+      password,
+      confirmPassword,
+      useRegulation,
+      newsletter,
+      number1,
+      number2,
+      number3,
+      number4,
+      number5,
+      number6,
+    };
+    if (responsableCpfValid.error) {
+      return;
+    }
+    if (
+      this.state.cellphoneDuplicateError.error &&
+      !this.state.smsReceiveNumber
+    ) {
+      return this.setState({
+        cellphoneDuplicateError: {
+          error: true,
+          text: "Escolha de celular obrigatória",
+        },
+      });
+    }
+    //debugger;
+    const isValidDateState =
+      this.state.dateOfBirth && moment.isDate(new Date(this.state.dateOfBirth));
+    const isValidDateValues =
+      values && moment.isDate(new Date(values.dateOfBirth));
+
+    if (isValidDateState || isValidDateValues) {
+      const years = moment().diff(
+        this.state.dateOfBirth || (values && values.dateOfBirth),
+        "years"
+      );
+
+      if (years < 18) {
+        const sweetAlert = (
+          <Alert
+            warning
+            style={{ display: "block", marginTop: "-100px" }}
+            title={"Atenção!"}
+            onConfirm={() => this.setState({ alert: null })}
+            confirmBtnCssClass={
+              this.props.classes.button +
+              " " +
+              this.props.classes.greenButtonColor
+            }
+            confirmBtnText={"OK"}
+          >
+            {this.props.t("FIELD_YOU_MUST_BE_OVER_17")}
+          </Alert>
+        );
+        this.setState({ alert: sweetAlert });
+        return false;
+      }
+    }
+
+    this.setState({ alert: <Loader /> });
+    const address = {
+      location: values ? values.location : location,
+      district: values ? values.district : district,
+      stateId: values ? values.stateId : stateId,
+      cityId: values ? values.cityId : cityId,
+      aditionalInfo: values ? values.aditionalInfo : aditionalInfo,
+      number: values ? values.number : number,
+      countryId: values ? values.countryId : countryId,
+      zipCode: values ? values.zipCode : zipCode,
+      addressType: cpf.length > 14 ? 2 : 1,
+    };
+    const representative = {
+      name: values ? values.responsableName : responsableName,
+      cpf: values ? values.responsableCpf : responsableCpf,
+      email: values ? values.responsableEmail : responsableEmail,
+    };
+    let obj = values
+      ? {
+        ...values,
+        address,
+        representative: representative.cpf ? { ...representative } : "",
+      }
+      : {
+        ...stateValue,
+        address,
+        representative:
+          responsableCpfValid.message === "valid"
+            ? { ...representative }
+            : "",
+      };
+    // **********************************************
+    if (this.state.associatedData) {
+      let item = this.props.userCpf.data;
+      //
+      obj.name = item.name;
+      obj.cpf = item.cpf;
+      obj.gender = values?.gender || this.state.gender;
+      obj.dateOfBirth = null;
+      obj.email = values?.email || this.state.email;
+      obj.phoneNumber = values?.phoneNumber || this.state.phoneNumber;
+      obj.smsReceiveNumber =
+        this.state.smsReceiveNumber || values.smsReceiveNumber;
+      obj.phoneNumber2 = values?.phoneNumber2 || this.state.phoneNumber2;
+
+      // obj.maskedData = true;
+      //
+      if (item.address && item.address !== null && item.address.zipCode && item.address.zipCode !== null) {
+        obj.address.location = item.address.location;
+        obj.address.stateId = item.address.state && item.address.state.id;
+        obj.address.countryId = item.address.country && item.address.country.id;
+        obj.address.cityId = item.address.city && item.address.city.id;
+        obj.address.zipCode = item.address.zipCode && item.address.zipCode;
+        obj.address.district = item.address.district && item.address.district;
+        obj.address.number = item.address.number && item.address.number;
+        obj.address.aditionalInfo =
+          item.address.aditionalInfo && item.address.aditionalInfo;
+      }
+    }
+    // **********************************************
+    // console.log("OBJ: ", obj);
+    ;
+    this.setState({
+      ...values,
+      modalError: { ...this.state.modalError, two: false },
+      cellphoneDuplicateError: {
+        error: false,
+        text: "",
+      },
+    });
+
+    if (values) {
+      obj.indicatorCode = `${values.number1}${values.number2}${values.number3}${values.number4}${values.number5}${values.number6}`;
+    } else {
+      obj.indicatorCode = `${stateValue.number1}${stateValue.number2}${stateValue.number3}${stateValue.number4}${stateValue.number5}${stateValue.number6}`;
+    }
+
+    this.props.RegisterConsumer(obj);
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.timeOutFunction);
+    this.timeOutFunction = null;
+  }
+
+  handleClose() {
+    this.setState({ alert: null });
+    this.props.history.push(`/`);
+  }
+
+  handleNext() {
+    this.setState({ alert: null });
+    this.props.history.push(`/authenticateAccess`);
+  }
+
+  handleRadioChange(val) {
+    this.setState({ smsReceiveNumber: val });
+  }
+
+  render() {
+    const {
+      name,
+      countryId,
+      selectAll,
+      // pwdMsg,
+      cpf,
+      identityId,
+      gender,
+      dateOfBirth,
+      email,
+      phoneNumber2,
+      phoneNumber,
+      number,
+      zipCode,
+      location,
+      district,
+      stateId,
+      cityId,
+      smsReceiveNumber,
+      aditionalInfo,
+      useTerms,
+      newsletter,
+      password,
+      confirmPassword,
+      selectListCountry,
+      useRegulation,
+      selectListState,
+      selectListCity,
+      cpfError,
+      associatedData,
+      associatedAddressData,
+      responsableCpf,
+      responsableName,
+      indicationCode,
+      tokenIndication,
+      number1,
+      number2,
+      number3,
+      number4,
+      number5,
+      number6,
+      indicationCodeDisable,
+      responsableCpfValid,
+      responsableEmail,
+    } = this.state;
+    const values = {
+      associatedData,
+      associatedAddressData,
+      name,
+      selectAll,
+      countryId,
+      cpf,
+      gender,
+      dateOfBirth,
+      email,
+      phoneNumber2,
+      phoneNumber,
+      number,
+      zipCode,
+      location,
+      district,
+      stateId,
+      cityId,
+      smsReceiveNumber,
+      aditionalInfo,
+      useTerms,
+      password,
+      responsableCpf,
+      responsableName,
+      indicationCode,
+      tokenIndication,
+      number1,
+      number2,
+      number3,
+      number4,
+      number5,
+      number6,
+      responsableEmail,
+      confirmPassword,
+      useRegulation,
+      newsletter,
+    };
+    return (
+      <div>
+        {this.state.alert}
+        {this.state.alertError}
+
+        <Formik
+          render={(props) => (
+            <Form
+              {...props}
+              handleClose={this.handleClose.bind(this)}
+              handleStateChange={this.handleStateChange.bind(this)}
+              verifyDocument={this.verifyDocument.bind(this)}
+              verifyDocumentResponsable={this.verifyDocumentResponsable.bind(
+                this
+              )}
+              //ValidateDocument={ValidateDocument}
+              selectListCountry={selectListCountry}
+              selectListState={selectListState}
+              selectListCity={selectListCity}
+              history={this.props.history}
+              indicationCodeDisable={indicationCodeDisable}
+              // pwdMsg={pwdMsg}
+              cpfError={cpfError}
+              responsableCpfValid={responsableCpfValid}
+              userCpf={this.state.userCpf}
+              identityId={identityId}
+              platformRules={this.state.richTextValuePR}
+              regulation={this.state.richTextValueRG}
+              associatedData={associatedData}
+              associatedAddressData={associatedAddressData}
+              blockCPF={this.state.blockCPF}
+            >
+
+            </Form>
+
+          )}
+          validationSchema={validationSchema}
+          onSubmit={this.handleSave.bind(this)}
+          initialValues={values}
+          enableReinitialize={true}
+        />
+
+        <ModalMobile
+          maxWidth="700px"
+          open={this.state.modalError.one}
+          closeByClick={() =>
+            this.setState({
+              modalError: { ...this.state.modalError, one: false },
+            })
+          }
+        >
+          <ErrorBox>
+            {this.state.modalError.textError
+              ? this.state.modalError.textError
+              :
+              <p>{`Identificamos que o número de celular informado está incorreto. É
+              importante que seja corrigido para o recebimento do SMS de
+              liberação do seu cadastro. Para atualização entre em contato com o suporte nos canais abaixo.`}</p>}
+
+            <p className="mt-2">
+              Contato:{" "}
+              <a
+                href="mailto:suporte@cvale.com.br?Subject=Suporte"
+                target="_top"
+              >
+                suporte@cvale.com.br
+              </a>{" "}
+              | {" "}
+              <span>55 42 99999-9999.</span>
+            </p>
+          </ErrorBox>
+        </ModalMobile>
+        <ModalMobile
+          maxWidth="700px"
+          changeModal
+          open={this.state.modalError.two}
+          sendSubmit={() => this.handleSave()}
+          closeByClick={() =>
+            this.setState({
+              modalError: { ...this.state.modalError, two: false },
+              cellphoneDuplicateError: {
+                error: false,
+                text: "",
+              },
+              smsReceiveNumber: 0,
+            })
+          }
+        >
+          <ErrorBox>
+            <p>
+              Para prosseguir com a autenticação do seu login é necessário
+              informar em qual nº deseja receber o SMS com o código de ativação.
+            </p>
+            <div>
+              <RadioGroup
+                value={this.state.smsReceiveNumber}
+                className={
+                  this.state.cellphoneDuplicateError.text ? "error" : ""
+                }
+                onChange={(e) => this.handleRadioChange(e.target.value)}
+              >
+                <FormControlLabel
+                  value="2"
+                  control={<Radio checkedIcon={<CheckCircle />} />}
+                  label={this.state.phoneNumber2}
+                />
+                <FormControlLabel
+                  value="1"
+                  control={<Radio checkedIcon={<CheckCircle />} />}
+                  label={this.state.phoneNumber}
+                />
+              </RadioGroup>
+            </div>
+          </ErrorBox>
+        </ModalMobile>
+      </div>
+    );
+  }
+}
+
+const mapStateToProps = (state) => {
+  return {
+    userPost: state.users.userPost,
+    userDataFail: state.users.userDataFail,
+    userCpf: state.users.userCpf,
+    consumerByToken: state.users.consumerByToken,
+    consumerByTokenFailed: state.users.consumerByTokenFailed,
+    countryData: state.location.countryData,
+    stateData: state.location.stateData,
+    cityData: state.location.cityData,
+    platformRulesData: state.platformRules.platformRulesData,
+    platformRulesDataFailed: state.platformRules.platformRulesDataFailed,
+
+    regulationData: state.regulation.regulationData,
+    regulationDataFailed: state.regulation.regulationDataFailed,
+  };
+};
+
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      ValidateDocument,
+      GetConsumerByToken,
+      GetRegulationData,
+      RegisterConsumer,
+      GetCountryData,
+      GetStateData,
+      GetCityData,
+      GetPlatformRulesData,
+      ShowLoader,
+      HideLoader,
+    },
+    dispatch
+  );
+
+export default compose(
+  connect(mapStateToProps, mapDispatchToProps),
+  withStyles(registerStyle),
+  withTranslation(),
+  connectRouterState({ cpf: "", indicationCode: "", tokenIndication: "" }),
+)(Register);

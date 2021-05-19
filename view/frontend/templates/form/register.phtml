@@ -1,224 +1,830 @@
-<?php
-/**
- *
- * Edit customer register template
- *
- *
- * NOTICE OF LICENSE
- *
- * @category   SystemCode
- * @package    Systemcode_BrazilCustomerAttributes
- * @author     Eduardo Diogo Dias <contato@systemcode.com.br>
- * @copyright  System Code LTDA-ME
- * @license    http://opensource.org/licenses/osl-3.0.php
- */
-?>
-<?php
-/** @var \Magento\Customer\Block\Form\Register $block */
-?>
-<?php
-/**
- * Create account form template
- *
- * @var $block \Magento\Customer\Block\Form\Register
- */
-?>
+<style>
+
+    :root {
+        --num-of-grid-columns: 6;
+    }
+
+    .tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 300px;
+  background-color: black;
+  color: #fff;
+  text-align: left;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 150%;
+  left: 50%;
+  margin-left: -60px;
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: black transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+    form {
+        width: 100% !important;
+    }
+
+
+    .container {
+        display: grid;
+        grid-template-columns: repeat(var(--num-of-grid-columns), 1fr);
+        grid-gap: 30px;
+        grid-template-areas: "cpf_field nome1 nome2 nome2 nasc genero"
+            "email email email email celular telefone"
+            "cep endereco endereco endereco numero complemento"
+            "bairro cidade uf pais . ."
+            "senha senha conf_senha conf_senha . ."
+    }
+
+    @media screen and (max-width: 786px) {
+        :root {
+            --num-of-grid-columns: 1;
+        }
+        .container {
+            grid-template-areas: "cpf_field"
+                                 "nome1"
+                                 "nome2"
+                                 "nasc"
+                                 "genero"
+                                 "email"
+                                 "celular"
+                                 "telefone"
+                                 "cep"
+                                 "endereco"
+                                 "numero"
+                                 "complemento"
+                                 "bairro"
+                                 "cidade"
+                                 "uf"
+                                 "pais"
+                                 "senha"
+                                 "conf_senha"
+        }
+    }
+
+    #cpf_field {
+        grid-area: cpf_field;
+    }
+
+    #firstname_field {
+        grid-area: nome1;
+    }
+
+    #lastname_field {
+        grid-area: nome2;
+    }
+
+    #nasc_field {
+        grid-area: nasc;
+    }
+
+    #gender_field {
+        grid-area: genero;
+    }
+
+    #email_field {
+        grid-area: email;
+    }
+
+    #phone_field {
+        grid-area: celular;
+    }
+
+    #phone_field2 {
+        grid-area: telefone;
+    }
+
+    #zip_field {
+        grid-area: cep;
+    }
+
+    #address_field {
+        grid-area: endereco;
+    }
+
+    #number_field {
+        grid-area: numero;
+    }
+
+    #complement_field {
+        grid-area: complemento;
+    }
+
+    #bairro_field {
+        grid-area: bairro;
+    }
+
+
+    #city_field {
+        grid-area: cidade;
+    }
+
+    #uf_field {
+        grid-area: uf;
+    }
+
+    #pais_field {
+        grid-area: pais;
+    }
+
+    #password_field {
+        grid-area: senha;
+    }
+
+    #password_field2 {
+        grid-area: conf_senha;
+    }
+
+    .label {
+        width: auto !important;
+    }
+
+    .modal-inner-wrap{
+        max-width: 550px;
+    }
+
+    #box {
+        padding: 20px;
+        background: #fff;
+        border-radius: 10px;
+        margin-top: 20px;
+        height: 100px;
+        display: flex;
+    }
+    #left {
+        height: 100%;
+        width: 30%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+    }
+    #right {
+        height: 100%;
+        width: 70%;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    .tooltip {
+    display:inline-block;
+    position:relative;
+    border-bottom:1px dotted #444444;
+    text-align:left;
+}
+
+.tooltip h3 {margin:12px 0;}
+
+.tooltip .top {
+    min-width:200px;
+    max-width:400px;
+    top:-20px;
+    left:50%;
+    transform:translate(-30%,-100%);
+    padding:10px 20px;
+    color:#ffffff;
+    background-color:#444444;
+    font-weight:normal;
+    font-size:14px;
+    border-radius:8px;
+    position:absolute;
+    z-index:99999999;
+    box-sizing:border-box;
+    box-shadow:0 1px 8px rgba(0,0,0,0.5);
+    display:none;
+}
+
+.tooltip:hover .top {
+    display:block;
+}
+
+.tooltip .top i {
+    position:absolute;
+    top:100%;
+    left:30%;
+    margin-left:-15px;
+    width:30px;
+    height:15px;
+    overflow:hidden;
+}
+
+.tooltip .top i::after {
+    content:'';
+    position:absolute;
+    width:15px;
+    height:15px;
+    left:50%;
+    transform:translate(-50%,-50%) rotate(45deg);
+    background-color:#ddd;
+    box-shadow:0 1px 8px rgba(0,0,0,0.5);
+}
+
+.tooltip {
+    display:inline-block;
+    position:relative;
+    border-bottom:1px dotted #666;
+    text-align:left;
+}
+
+.tooltip h3 {margin:12px 0;}
+
+.tooltip .right {
+    min-width:200px;
+    max-width:400px;
+    top:50%;
+    left:100%;
+    margin-left:20px;
+    transform:translate(0, -50%);
+    padding:0;
+    color:#EEEEEE;
+    background-color:#444444;
+    font-weight:normal;
+    font-size:13px;
+    border-radius:8px;
+    position:absolute;
+    z-index:99999999;
+    box-sizing:border-box;
+    box-shadow:0 1px 8px rgba(0,0,0,0.5);
+    visibility:hidden; opacity:0; transition:opacity 0.8s;
+}
+
+.tooltip:hover .right {
+    visibility:visible; opacity:1;
+}
+
+.tooltip .right img {
+    width:400px;
+    border-radius:8px 8px 0 0;
+}
+.tooltip .text-content {
+    padding:10px 20px;
+}
+
+.tooltip .right i {
+    position:absolute;
+    top:50%;
+    right:100%;
+    margin-top:-12px;
+    width:12px;
+    height:24px;
+    overflow:hidden;
+}
+.tooltip .right i::after {
+    content:'';
+    position:absolute;
+    width:12px;
+    height:12px;
+    left:0;
+    top:50%;
+    transform:translate(50%,-50%) rotate(-45deg);
+    background-color:#444444;
+    box-shadow:0 1px 8px rgba(0,0,0,0.5);
+}
+</style>
+
 <?php echo $block->getChildHtml('form_fields_before')?>
 <?php /* Extensions placeholder */ ?>
 <?php echo $block->getChildHtml('customer.form.register.extra')?>
-<form class="form create account form-create-account" action="<?php /* @escapeNotVerified */ echo $block->getPostActionUrl() ?>" method="post" id="form-validate" enctype="multipart/form-data" autocomplete="off">
+
+<form class="form create account form-create-account"
+    action="<?php /* @escapeNotVerified */ echo $block->getPostActionUrl() ?>" method="post" id="form-validate"
+    enctype="multipart/form-data" autocomplete="off" data-mage-init='{"validation": {}}'>
     <?php echo $block->getBlockHtml('formkey'); ?>
-    <fieldset class="fieldset create info">
-        <legend class="legend"><span><?php /* @escapeNotVerified */ echo __('Personal Information') ?></span></legend><br>
-        <input type="hidden" name="success_url" value="<?php /* @escapeNotVerified */ echo $block->getSuccessUrl() ?>">
-        <input type="hidden" name="error_url" value="<?php /* @escapeNotVerified */ echo $block->getErrorUrl() ?>">
 
-        <?php $_persontype = $block->getLayout()->createBlock('SystemCode\BrazilCustomerAttributes\Block\Magento\Customer\Widget\Persontype')->setTemplate('SystemCode_BrazilCustomerAttributes::widget/persontypetoggle.phtml') ?>
-        <?php if ($_persontype->getConfigAdmin  ("general", "enabled")): ?>
-            <?php echo $_persontype->toHtml() ?>
-        <?php endif ?>
+    <div class="container">
 
-        <?php echo $block->getLayout()->createBlock('Magento\Customer\Block\Widget\Name')->setObject($block->getFormData())->setForceUseCustomerAttributes(true)->toHtml() ?>
+        <div id="cpf_field">
+            <div class="field fieldset individual" style="display: flex;
+    align-items: center;">
+                <div class="field required">
+                    <label for="cpf" class="label">CPF</label>
+                    <div>
+                        <input type="text" id="cpf" name="cpf" value="" title="CPF" class="input-text"
+                            data-validate='{"required":true}' autocomplete="off" aria-required="true">
+                    </div>
+                </div>
 
+                <div class="tooltip">
+                    <i class="fas fa-info-circle" style="font-size: large;"></i>
+                    <div class="top">
+                        <h3>Esse dado será usado no login do sistema</h3>
+                        <i></i>
+                    </div>
+                </div>
 
-        <?php if ($block->isNewsletterEnabled()): ?>
-            <div class="field choice newsletter">
-                <input type="checkbox" name="is_subscribed" title="<?php /* @escapeNotVerified */ echo __('Sign Up for Newsletter') ?>" value="1" id="is_subscribed"<?php if ($block->getFormData()->getIsSubscribed()): ?> checked="checked"<?php endif; ?> class="checkbox">
-                <label for="is_subscribed" class="label"><span><?php /* @escapeNotVerified */ echo __('Sign Up for Newsletter') ?></span></label>
             </div>
-            <?php /* Extensions placeholder */ ?>
-            <?php echo $block->getChildHtml('customer.form.register.newsletter')?>
-        <?php endif ?>
+        </div>
 
-        <?php $_dob = $block->getLayout()->createBlock('Magento\Customer\Block\Widget\Dob') ?>
-        <?php if ($_dob->isEnabled()): ?>
-            <?php echo $_dob->setDate($block->getFormData()->getDob())->toHtml() ?>
-        <?php endif ?>
-
-        <?php $_taxvat = $block->getLayout()->createBlock('Magento\Customer\Block\Widget\Taxvat') ?>
-        <?php if ($_taxvat->isEnabled()): ?>
-            <?php echo $_taxvat->setTaxvat($block->getFormData()->getTaxvat())->toHtml() ?>
-        <?php endif ?>
-
-        <?php $_gender = $block->getLayout()->createBlock('Magento\Customer\Block\Widget\Gender') ?>
-        <?php if ($_gender->isEnabled()): ?>
-            <?php echo $_gender->setGender($block->getFormData()->getGender())->toHtml() ?>
-        <?php endif ?>
-    </fieldset>
-    <?php if (true): ?>
-        <fieldset class="fieldset address">
-            <legend class="legend"><span><?php /* @escapeNotVerified */ echo __('Address Information') ?></span></legend><br>
-            <input type="hidden" name="create_address" value="1" />
-
-            <div class="field zip required">
-                <label for="zip" class="label"><span><?php /* @escapeNotVerified */ echo __('Zip/Postal Code') ?></span></label>
-                <div class="control">
-                    <input type="text" id="postcode" name="postcode" value="<?php echo $block->escapeHtml($block->getFormData()->getPostcode()) ?>" title="<?php /* @escapeNotVerified */ echo __('Zip/Postal Code') ?>" id="zip" class="input-text validate-zip-international <?php /* @escapeNotVerified */ echo $this->helper('Magento\Customer\Helper\Address')->getAttributeValidationClass('postcode') ?>">
+        <div id="firstname_field">
+            <div class="field fieldset individual">
+                <div class="field required">
+                    <label for="firstname" class="label">Nome</label>
+                    <input id="firstname" name="firstname" type="text" class="input-text required-entry"
+                        data-validate="{required:true}" aria-required="true"  />
                 </div>
             </div>
-
-            <?php echo $block->getLayout()->createBlock('SystemCode\BrazilCustomerAttributes\Block\Magento\Customer\Widget\StreetprefixRegister')->toHtml() ?>
-            <?php echo $block->getLayout()->createBlock('SystemCode\BrazilCustomerAttributes\Block\Magento\Customer\Widget\Street')->toHtml() ?>
-
-
-
-            <div class="field required">
-                <label for="city" class="label"><span><?php /* @escapeNotVerified */ echo __('City') ?></span></label>
-                <div class="control">
-                    <input type="text" name="city" value="<?php echo $block->escapeHtml($block->getFormData()->getCity()) ?>" title="<?php /* @escapeNotVerified */ echo __('City') ?>" class="input-text <?php /* @escapeNotVerified */ echo $this->helper('Magento\Customer\Helper\Address')->getAttributeValidationClass('city') ?>" id="city">
+        </div>
+        <div id="lastname_field">
+            <div class="field fieldset individual">
+                <div class="field required">
+                    <label for="lastname" class="label">Sobrenome</label>
+                    <input name="lastname" type="text" id="lastname" class="input-text required-entry"
+                        data-validate="{required:true}" aria-required="true" />
                 </div>
             </div>
-
-            <div class="field country required">
-                <label for="country" class="label"><span><?php /* @escapeNotVerified */ echo __('Country') ?></span></label>
-                <div class="control">
+        </div>
+        <div id="nasc_field">
+            <div class="field fieldset individual">
+                <div class="field required">
+                    <label for="nasc" class="label">Data de nasc.</label>
+                    <input name="nasc" id="nasc" type="text" class="input-text required-entry" data-validate="{required:true}" aria-required="true"/>
+                </div>
+            </div>
+        </div>
+        <div id="gender_field">
+            <div class="field fieldset individual">
+                <div class="field required">
+                    <label for="genero" class="label">Gênero</label>
+                    <select id="genero" name="genero" aria-required="true" validate-select="true">
+                        <option value=""><?php /* @escapeNotVerified */ echo __('Selecione uma opção.') ?></option>
+                        <option value="m">Masculino</option>
+                        <option value="f">Feminino</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div id="email_field">
+            <div class="field fieldset individual">
+                <div class="field required">
+                    <label for="email_address" class="label">Email</label>
+                    <input type="email" name="email" autocomplete="email" id="email_address"
+                        value="<?php echo $block->escapeHtml($block->getFormData()->getEmail()) ?>"
+                        title="<?php /* @escapeNotVerified */ echo __('Email') ?>" class="input-text"
+                        data-validate="{required:true, 'validate-email':true}">
+                </div>
+            </div>
+        </div>
+        <div id="phone_field">
+            <div class="field fieldset individual">
+                <div class="field required">
+                    <label for="telephone" class="label">Celular</label>
+                    <input name="telephone" type="text" id="telephone" class="input-text required-entry" validate-phoneStrict
+                        aria-required="true" />
+                </div>
+            </div>
+        </div>
+        <div id="phone_field2">
+            <div class="field fieldset individual">
+                <div class="field">
+                    <label for="telephone2" class="label">Telefone</label>
+                    <input name="telephone2" id="telephone2" type="text" class="input-text" validate-phoneStrict />
+                </div>
+            </div>
+        </div>
+        <div id="zip_field">
+            <div class="field fieldset individual">
+                <div class="field required">
+                    <label for="postcode" class="label">CEP</label>
+                    <input id="postcode" name="postcode" type="text" class="input-text validate-zip-international required-entry"
+                        aria-required="true" />
+                </div>
+            </div>
+        </div>
+        <div id="address_field">
+            <div class="field fieldset individual">
+                <div class="field required">
+                    <label for="street_1" class="label">Endereço</label>
+                    <input name="street[0]" id="street_1" type="text" class="input-text required-entry"
+                        aria-required="true" />
+                </div>
+            </div>
+        </div>
+        <div id="number_field">
+            <div class="field fieldset individual">
+                <div class="field required">
+                    <label for="street_2" class="label">Número</label>
+                    <input name="street[1]" id="street_2" class="input-text required" type="text"
+                       />
+                </div>
+            </div>
+        </div>
+        <div id="complement_field">
+            <div class="field fieldset individual">
+                <div class="field">
+                    <label for="complemento" class="label">Complemento</label>
+                    <input name="complemento" id="complemento" type="text" class="input-text" />
+                </div>
+            </div>
+        </div>
+        <div id="bairro_field">
+            <div class="field fieldset individual">
+                <div class="field required">
+                    <label for="street_3" class="label">Bairro</label>
+                    <input name="street[2]" id="street_3" type="text" class="input-text required-entry"
+                        aria-required="true" />
+                </div>
+            </div>
+        </div>
+        <div id="city_field">
+            <div class="field fieldset individual">
+                <div class="field required">
+                    <label for="city" class="label">Cidade</label>
+                    <input name="city" id="city" type="text" class="input-text required-entry" aria-required="true" />
+                </div>
+            </div>
+        </div>
+        <div id="uf_field">
+            <div class="field fieldset individual">
+                <div class="field required">
+                    <label for="region_id" class="label">UF</label>
+                    <select id="region_id" name="region_id"
+                        title="<?php /* @escapeNotVerified */ echo __('State/Province') ?>" class="validate-select"
+                        style="display:none;">
+                        <option value="">
+                            <?php /* @escapeNotVerified */ echo __('Please select a region, state or province.') ?>
+                        </option>
+                    </select>
+                    <input type="text" id="region" name="region"
+                        value="<?php echo $block->escapeHtml($block->getRegion()) ?>"
+                        title="<?php /* @escapeNotVerified */ echo __('State/Province') ?>"
+                        class="input-text <?php /* @escapeNotVerified */ echo $this->helper('Magento\Customer\Helper\Address')->getAttributeValidationClass('region') ?>"
+                        style="display:none;">
+                </div>
+            </div>
+        </div>
+        <div id="pais_field">
+            <div class="field fieldset individual">
+                <div class="field required">
+                    <label class="label">País</label>
                     <?php echo $block->getCountryHtmlSelect() ?>
                 </div>
             </div>
-
-            <div class="field region required">
-                <label for="region_id" class="label"><span><?php /* @escapeNotVerified */ echo __('State/Province') ?></span></label>
-                <div class="control">
-                    <select id="region_id" name="region_id" title="<?php /* @escapeNotVerified */ echo __('State/Province') ?>" class="validate-select" style="display:none;">
-                        <option value=""><?php /* @escapeNotVerified */ echo __('Please select a region, state or province.') ?></option>
-                    </select>
-                    <input type="text" id="region" name="region" value="<?php echo $block->escapeHtml($block->getRegion()) ?>" title="<?php /* @escapeNotVerified */ echo __('State/Province') ?>" class="input-text <?php /* @escapeNotVerified */ echo $this->helper('Magento\Customer\Helper\Address')->getAttributeValidationClass('region') ?>" style="display:none;">
+        </div>
+        <div id="password_field">
+            <div class="field fieldset individual">
+                <div class="field required">
+                    <label for="password" class="label">Senha</label>
+                    <input maxlength="6" pattern="\d{6}" data-validate="{required:true, germiniPassword:true, germiniPassword2:true,germiniPassword3:true,germiniPassword4:true}" type="password" name="password" validate-password
+                        id="password" title="<?php /* @escapeNotVerified */ echo __('Password') ?>" class="input-text"
+                        autocomplete="off">
                 </div>
             </div>
-
-
-            <?php $addressAttributes = $block->getChildBlock('customer_form_address_user_attributes');?>
-            <?php if ($addressAttributes): ?>
-                <?php $addressAttributes->setEntityType('customer_address'); ?>
-                <?php $addressAttributes->setFieldIdFormat('address:%1$s')->setFieldNameFormat('address[%1$s]');?>
-                <?php $block->restoreSessionData($addressAttributes->getMetadataForm(), 'address');?>
-                <?php echo $addressAttributes->setShowContainer(false)->toHtml()?>
-            <?php endif;?>
-
-            <div class="field company">
-                <label for="company" class="label"><span><?php /* @escapeNotVerified */ echo __('Company') ?></span></label>
-                <div class="control">
-                    <input type="text" name="company" id="company" value="<?php echo $block->escapeHtml($block->getFormData()->getCompany()) ?>" title="<?php /* @escapeNotVerified */ echo __('Company') ?>" class="input-text <?php /* @escapeNotVerified */ echo $this->helper('Magento\Customer\Helper\Address')->getAttributeValidationClass('company') ?>">
+        </div>
+        <div id="password_field2">
+            <div class="field fieldset individual">
+                <div class="field required">
+                    <label for="password-confirmation" class="label">Confirmar senha</label>
+                    <input type="password" name="password_confirmation"
+                        title="<?php /* @escapeNotVerified */ echo __('Confirm Password') ?>" id="password-confirmation"
+                        class="input-text" data-validate="{required:true, equalTo:'#password'}" autocomplete="off">
+                    <div style="float: right;">
+                        <span>Políticas de senha</span>
+                        <div class="tooltip">
+                        <i class="fas fa-info-circle" style="font-size: large;"></i>
+                        <div class="right">
+                            <h3>Regras</h3>
+                            <ul>
+                                <li>No mínimo 6 números</li>
+                                <li>Não pode ter mais de 3 números sequenciais</li>
+                                <li>Não pode ter números repetidos em ordem</li>
+                                <li>Não ser igual ao CPF, CNPJ, data de nascimento, telefone ou celular.</li>
+                            </ul>
+                            <i></i>
+                        </div>
+                    </div>
+                    </div>
                 </div>
             </div>
-            <div class="field telephone required">
-                <label for="telephone" class="label"><span><?php /* @escapeNotVerified */ echo __('Phone Number - Celular') ?></span></label>
-                <div class="control">
-                    <input type="text" name="telephone" id="telephone" value="<?php echo $block->escapeHtml($block->getFormData()->getTelephone()) ?>" title="<?php /* @escapeNotVerified */ echo __('Phone Number') ?>" class="input-text <?php /* @escapeNotVerified */ echo $this->helper('Magento\Customer\Helper\Address')->getAttributeValidationClass('telephone') ?>">
-                </div>
-            </div>
-
-            <div class="field required">
-                <label for="email_address" class="label"><span><?php /* @escapeNotVerified */ echo __('Email') ?></span></label>
-                <div class="control">
-                    <input type="email" name="email" autocomplete="email" id="email_address" value="<?php echo $block->escapeHtml($block->getFormData()->getEmail()) ?>" title="<?php /* @escapeNotVerified */ echo __('Email') ?>" class="input-text" data-validate="{required:true, 'validate-email':true}">
-                </div>
-            </div>
-
-            <input type="hidden" name="default_billing" value="1">
-            <input type="hidden" name="default_shipping" value="1">
-        </fieldset>
-
-    <?php endif; ?>
-    <fieldset class="fieldset create account" data-hasrequired="<?php /* @escapeNotVerified */ echo __('* Required Fields') ?>">
-        <legend class="legend"><span><?php /* @escapeNotVerified */ echo __('Sign-in Information') ?></span></legend><br>
-
-
-        <?php $_persontype = $block->getLayout()->createBlock('SystemCode\BrazilCustomerAttributes\Block\Magento\Customer\Widget\Persontype')->setTemplate('SystemCode_BrazilCustomerAttributes::widget/persontypefields.phtml') ?>
-        <?php if ($_persontype->getConfigAdmin  ("general", "enabled")): ?>
-            <?php echo $_persontype->toHtml() ?>
-        <?php endif ?>
-
-        <div class="field password required" data-mage-init='{"passwordStrengthIndicator": {}}'>
-            <label for="password" class="label"><span><?php /* @escapeNotVerified */ echo __('Password (6 números)') ?></span></label>
-            <div class="control">
-                <input
-                maxlength="6" pattern="\d{6}" data-validate="{required:true}"
-                type="password" name="password" id="password"
-                       title="<?php /* @escapeNotVerified */ echo __('Password') ?>"
-                       class="input-text"
-                       autocomplete="off">
-
-            </div>
-
-        </div>
-        <div class="field confirmation required">
-            <label for="password-confirmation" class="label"><span><?php /* @escapeNotVerified */ echo __('Confirm Password') ?></span></label>
-            <div class="control">
-                <input type="password" name="password_confirmation" title="<?php /* @escapeNotVerified */ echo __('Confirm Password') ?>" id="password-confirmation" class="input-text" data-validate="{required:true, equalTo:'#password'}" autocomplete="off">
-            </div>
-        </div>
-        <?php echo $block->getChildHtml('form_additional_info'); ?>
-
-        <div class="field choice">
-            <input type="checkbox" name="is_fidelidade" title="<?php /* @escapeNotVerified */ echo __('Participar do CVale Fidelidade') ?>" value="1" id="is_fidelidade" class="checkbox">
-            <label for="is_fidelidade" class="label"><span><?php /* @escapeNotVerified */ echo __('Participar do CVale Fidelidade') ?></span></label>
-        </div>
-
-        <input type="hidden" name="is_fidelidade" value="1" />
-
-
-    </fieldset>
-    <div class="actions-toolbar">
-        <div class="primary">
-            <button type="submit" class="action submit primary" title="<?php /* @escapeNotVerified */ echo __('Create an Account') ?>"><span><?php /* @escapeNotVerified */ echo __('Create an Account') ?></span></button>
-        </div>
-        <div class="secondary">
-            <a class="action back" href="<?php echo $block->escapeUrl($block->getBackUrl()) ?>"><span><?php /* @escapeNotVerified */ echo __('Back') ?></span></a>
         </div>
     </div>
+
+    <hr>
+    <div id="fidelidade_field">
+        <div class="field choice">
+            <input type="checkbox" name="is_fidelidade" id="is_fidelidade"
+                title="<?php /* @escapeNotVerified */ echo __('Quero Participar do PROGRAMA DE FIDELIDADE') ?>"
+                value="1" id="is_fidelidade" class="checkbox" />
+            <label for="is_fidelidade"
+                class="label"><span><?php /* @escapeNotVerified */ echo __('Quero Participar do PROGRAMA DE FIDELIDADE') ?></span></label>
+
+            <span style="margin-left: 1em" id="conheca" class="action submit primary"><span>Conheça o C.VALE FIDELIDADE</span></span>
+
+        </div>
+    </div>
+
+    <div id="box">
+        <div id="left">
+            <div>
+                <input type="checkbox" name="selecionar_todos" id="selecionar_todos"
+                value="1" class="checkbox" />
+                <span>Selecionar todos</span>
+            </div>
+        </div>
+        <div id="right">
+            <div>
+                <input type="checkbox" name="aceito_termos_uso" id="aceito_termos_uso" value="1" class="checkbox" />
+                <span>Aceito os <a id='tu'>Termos de Uso</a>.</span>
+            </div>
+            <div>
+                <input type="checkbox" name="aceito_regulamento" id="aceito_regulamento" value="1" class="checkbox" />
+                <span>Aceito o Regulamento do programa de fidelidade.</span>
+            </div>
+            <div>
+                <input type="checkbox" name="desejo_notificacao" id="desejo_notificacao" value="1" class="checkbox" />
+                <span>Desejo receber notificação sobre o programa.</span>
+            </div>
+
+        </div>
+    </div>
+
+
+
+    <hr>
+
+		<?php echo $block->getChildHtml('form_additional_info'); ?>
+		<input type="hidden" name="is_fidelidade" value="1" />
+		<input type="hidden" name="create_address" value="1" />
+		<input type="hidden" name="default_billing" value="1">
+		<input type="hidden" name="default_shipping" value="1">
+
+    <div>
+        <div class="primary">
+            <button type="submit" class="action submit primary" id="button_create"
+                title="<?php /* @escapeNotVerified */ echo __('Create an Account') ?>"><span><?php /* @escapeNotVerified */ echo __('Create an Account') ?></span></button>
+        </div>
+    </div>
+
+    <!--MODAL-->
+    <div id="modal-termos">
+        <div class="modal-inner-content">
+            <p>Termos de uso</p>
+        </div>
+    </div>
+
+    <!--MODAL-->
+    <div id="modal-regulamentos">
+        <div class="modal-inner-content">
+            <p>Regulamentos</p>
+        </div>
+    </div>
+
+    <!--MODAL-->
+    <div id="modal-content">
+        <div class="modal-inner-content">
+            <p>O CPF <span id="cpf_modal" style="color: #21409A;
+    font-weight: bold;"></span> já está cadastrado no programa de fidelidade.<br/>Você pode utilizar a mesma senha para acessar a loja da C.VALE.</p>
+
+            <p><a target="_blank"
+            href="/customer/account/forgotpassword/">ESQUECI A SENHA</a></p>
+        </div>
+    </div>
+
+    <!--MODAL CONHECA-->
+    <div id="modal-conheca">
+        <div class="modal-inner-content">
+            <p>O Programa C.Vale Fidelidade, nasceu para valorizar você que é nosso cliente. Com nossa "moeda" Seed (SD$) você estará em casa para comprar produtos de excelente qualidade e ainda acumular pontos.</p>
+
+            <p>C.Vale Fidelidade está disponível em nossa rede de Supermercados, Hipermercados e Posto de combustível. Você acumula pontos e tem a oportunidade de trocar por produtos em promoções especiais.</p>
+
+
+            <p>Para participar basta realizar o cadastro no programa C.Vale Fidelidade e identificar suas compras em nossas lojas indicando seu CPF no momento da emissão do cupom fiscal. Caso você não tenha se identificado nos cupons de compra, abra nosso aplicativo ou site e vincule seus pontos através da leitura do QR Code do seu cupom.</p>
+
+
+            <p>Você acumula nos produtos identificados e em nossas campanhas exclusivas.</p>
+
+            <p>Venha acumular Seeds, aproveite!</p>
+        </div>
+    </div>
+
 </form>
-<script>
-require([
-    'jquery',
-    'mage/mage'
-], function($){
 
-    var dataForm = $('#form-validate');
-    var ignore = <?php /* @escapeNotVerified */ echo $_dob->isEnabled() ? '\'input[id$="full"]\'' : 'null'; ?>;
-
-    dataForm.mage('validation', {
-    <?php if ($_dob->isEnabled()): ?>
-        errorPlacement: function(error, element) {
-            if (element.prop('id').search('full') !== -1) {
-                var dobElement = $(element).parents('.customer-dob'),
-                    errorClass = error.prop('class');
-                error.insertAfter(element.parent());
-                dobElement.find('.validate-custom').addClass(errorClass)
-                    .after('<div class="' + errorClass + '"></div>');
-            }
-            else {
-                error.insertAfter(element);
-            }
-        },
-        ignore: ':hidden:not(' + ignore + ')'
-    <?php else: ?>
-        ignore: ignore ? ':hidden:not(' + ignore + ')' : ':hidden'
-    <?php endif ?>
-    }).find('input:text').attr('autocomplete', 'off');
-});
+<script type="text/x-magento-init">
+   {
+       "*": {
+           "passwordValidate": {}
+       }
+   }
 </script>
+<script type="text/x-magento-init">
+   {
+       "*": {
+           "passwordValidate2": {}
+       }
+   }
+</script>
+<script type="text/x-magento-init">
+   {
+       "*": {
+           "passwordValidate3": {}
+       }
+   }
+</script>
+<script type="text/x-magento-init">
+   {
+       "*": {
+           "passwordValidate4": {}
+       }
+   }
+</script>
+<script>
+    require([
+        'jquery',
+        'Magento_Ui/js/modal/modal',
+        'redirectUrl',
+        'mage/mage',
+        'mage/calendar',
+        'jquery.mask',
+    ], function ($, modal) {
+
+        $("#button_create").prop("disabled",true);
+
+        console.log($("#aceito_termos_uso").prop("checked"));
+
+        function checkTerms(){
+            if ($("#aceito_termos_uso").prop("checked") == true && $("#aceito_regulamento").prop("checked") == true)
+            {
+                $("#button_create").prop("disabled",false);
+            } else {
+                $("#button_create").prop("disabled",true);
+            }
+        }
+
+        $("#aceito_termos_uso").click(function() {
+            checkTerms()
+        });
+        $("#aceito_regulamento").click(function() {
+            checkTerms()
+        });
+
+
+        $("#box").hide();
+
+        $("#is_fidelidade").click(function() {
+            $("#box").toggle();
+        })
+
+        $("#selecionar_todos").click(function() {
+            if ($("#selecionar_todos").prop("checked")==true)
+            {
+                $("#aceito_termos_uso").prop("checked", true);
+                $("#aceito_regulamento").prop("checked", true);
+                $("#desejo_notificacao").prop("checked", true);
+                checkTerms();
+            }
+        })
+
+        var options = {
+            onKeyPress: function (cpf, ev, el, op) {
+                var masks = ["000.000.000-000", "00.000.000/0000-00"];
+                $("#cpf").mask(masks[0], op);
+            },
+        };
+
+        $("#cpf").mask("000.000.000-00#", options);
+
+        $("#telephone").mask("(00) 00000-0000");
+        $("#telephone2").mask("(00) 00000-0000");
+        $("#nasc").mask("00/00/0000");
+
+        $('#nasc').calendar({
+            changeMonth: true,
+            changeYear: true,
+            showButtonPanel: true,
+            currentText: 'Go Today',
+            closeText: 'Close',
+            showWeek: true,
+            yearRange: "-100:+0", // last hundred years
+        });
+
+        var options = {
+            type: 'popup',
+            responsive: true,
+            innerScroll: true,
+            title: 'CPF CADASTRADO',
+            buttons: [{
+                    text: $.mage.__('ACESSAR A LOJA'),
+                    class: 'modal-close',
+                    click: function () {
+                        var cpf = $("#cpf").val();
+                        window.location.href = `/customer/account/login?cpf=${cpf}`;
+                    }
+                },
+                {
+                    text: $.mage.__('CRIAR NOVA CONTA'),
+                    class: 'modal-login',
+                    click: function () {
+                        window.location.href = `/customer/account/create`;
+                    }
+                }
+            ]
+        };
+
+        var options2 = {
+            type: 'popup',
+            responsive: true,
+            title: 'O QUE É O C.VALE FIDELIDADE?',
+        };
+        var options3 = {
+            type: 'popup',
+            responsive: true,
+            title: 'Termos de Uso',
+        };
+        var options4 = {
+            type: 'popup',
+            responsive: true,
+            title: 'Regulamento do programa de fidelidade',
+        };
+
+        $(".modal-login").redirectUrl({
+            url: 'http://example.com'
+        });
+
+        modal(options, $('#modal-content'));
+        modal(options2, $('#modal-conheca'));
+
+        modal(options3, $('#modal-termos'));
+        modal(options4, $('#modal-regulamentos'));
+
+        $("#conheca").click(function() {
+            $("#modal-conheca").modal("openModal");
+        })
+        $("#tu").click(function() {
+            $("#modal-termos").modal("openModal");
+        })
+
+        $("#postcode").blur(function() {
+            // debugger;
+            $.ajax({
+                url: "/autentica/germini/endereco",
+                type: "POST",
+                data: {
+                    postcode: $("#postcode").val(),
+                },
+                success: function (result) {
+                    $("#street_1").val(result.location);
+                    $("#street_2").val(result.number);
+                    $("#street_3").val(result.district);
+                    $("#city").val(result.city);
+                    $("#region_id").val(result.state);
+                },
+                error: function (err) {
+                    console.log("Error : " + JSON.stringify(err));
+                }
+            });
+
+        })
+
+        $("#cpf").blur(function () {
+
+            $("#cpf_modal").text($("#cpf").val());
+
+            $.ajax({
+                url: "/autentica/germini/recebe",
+                type: "POST",
+                data: {
+                    cpf: $("#cpf").val(),
+                },
+                success: function (result) {
+                    if (result == true)
+                        $("#modal-content").modal("openModal");
+                },
+                error: function (err) {
+                    console.log("Error : " + JSON.stringify(err));
+                }
+            });
+        });
+
+
+        var dataForm = $('#form-validate');
+
+
+    });
+
+</script>
+
 <?php if (true): ?>
+
 <script type="text/x-magento-init">
     {
         "#country": {
@@ -226,7 +832,7 @@ require([
                 "optionalRegionAllowed": <?php /* @escapeNotVerified */ echo($block->getConfig('general/region/display_all') ? 'true' : 'false'); ?>,
                 "regionListId": "#region_id",
                 "regionInputId": "#region",
-                "postcodeId": "#zip",
+                "postcodeId": "#postcode",
                 "form": "#form-validate",
                 "regionJson": <?php /* @escapeNotVerified */ echo $this->helper('Magento\Directory\Helper\Data')->getRegionJson() ?>,
                 "defaultRegion": "<?php /* @escapeNotVerified */ echo $block->getFormData()->getRegionId() ?>",

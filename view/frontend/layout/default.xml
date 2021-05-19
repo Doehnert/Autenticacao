@@ -2,6 +2,15 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
 
     <body>
+    <!-- <referenceBlock name="register-link" remove="true" />
+    <referenceBlock name="top.links">
+			<block class="Magento\Framework\View\Element\Html\Link" name="add-new-header-link">
+					<arguments>
+							<argument name="label" xsi:type="string" translate="true">Create an Account</argument>
+							<argument name="path" xsi:type="string" translate="true">https://www.google.com</argument>
+					</arguments>
+			</block>
+    </referenceBlock> -->
         <referenceBlock name="authentication-popup">
             <arguments>
                 <argument name="jsLayout" xsi:type="array">

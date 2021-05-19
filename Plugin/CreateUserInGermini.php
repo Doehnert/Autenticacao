@@ -84,6 +84,9 @@ class CreateUserInGermini
 
         $cpf = $subject->getRequest()->getParam('cpf');
 
+        if ($cpf == "")
+            return $proceed();
+
         // Verifica se o cliente já existe no germini
         // caso exista encerra o plugin
         $url_base = $this->scopeConfig->getValue('acessos/general/identity_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
@@ -122,19 +125,25 @@ class CreateUserInGermini
         $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 
 
-        $email = $subject->getRequest()->getParam('email');
         $firstname = $subject->getRequest()->getParam('firstname');
         $lastname = $subject->getRequest()->getParam('lastname');
+        $nasc = $subject->getRequest()->getParam('nasc');
+        $genero = $subject->getRequest()->getParam('genero');
+        $email = $subject->getRequest()->getParam('email');
+        $telephone = $subject->getRequest()->getParam('telephone');
+        $telephone = preg_replace("/[^0-9]/", "",$telephone);
+        $telephone2 = $subject->getRequest()->getParam('telephone2');
+        $telephone2 = preg_replace("/[^0-9]/", "",$telephone2);
+
         $password = $subject->getRequest()->getParam('password');
         $password_confirmation = $subject->getRequest()->getParam('password_confirmation');
 
-        $dob = $subject->getRequest()->getParam('dob');
-        $gender = $subject->getRequest()->getParam('gender');
+        $zipCode = $subject->getRequest()->getParam('postcode');
 
         $location = $subject->getRequest()->getParam('street')[0];
         $number = $subject->getRequest()->getParam('street')[1];
         $district = $subject->getRequest()->getParam('street')[2];
-        $zipCode = $subject->getRequest()->getParam('postcode');
+        $complemento = $subject->getRequest()->getParam('complemento');
 
         $regionId = $subject->getRequest()->getParam('region_id'); //499
         $region = $this->regionFactory->create()->load($regionId);
@@ -143,8 +152,8 @@ class CreateUserInGermini
         $country = $this->_countryFactory->create()->loadByCode($countryId);
         $countryName = $country->getName();
         $cityId = $subject->getRequest()->getParam('city');
-        $phone2 = $subject->getRequest()->getParam('telephone');
-        $phone2 = preg_replace("/[^0-9]/", "",$phone2);
+
+
 
         // Get countryId from Germini
         // $response = "";
@@ -245,8 +254,8 @@ class CreateUserInGermini
         ///////////////////////////////
 
 
-        $gender = $gender === "2" ? 'f' : 'm';
-        $dob = date("Y-m-d H:i:s", strtotime($dob));
+        //$gender = $gender === "2" ? 'f' : 'm';
+        $dob = date("Y-m-d H:i:s", strtotime($nasc));
 
         // Cria usuário no Germini
         $response = "";
@@ -254,17 +263,19 @@ class CreateUserInGermini
         $params = [
             "name" => $firstname,
             "cpf" => $cpf,
+            "gender" => $genero,
+            "dateOfBirth" => $dob,
             "email" => $email,
             "password" => $password,
             "confirmPassword" => $password_confirmation,
-            "gender" => $gender,
-            "dateOfBirth" => $dob,
-            "phoneNumber2" => $phone2,
+            "phoneNumber" => $telephone,
+            "phoneNumber2" => $telephone2,
             "address" => [
                 "addressType" => 1,
                 "location" => $location,
                 "district" => $district,
                 "number" => $number,
+                "aditionalInfo" => $complemento,
                 "zipCode" => $zipCode,
                 "stateId" => $stateId,
                 "cityId" => $cityId,
