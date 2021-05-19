@@ -1,44 +1,47 @@
 <style>
+    .container {
+        background: #f8f8f8;
+    }
 
     :root {
         --num-of-grid-columns: 6;
     }
 
     .tooltip {
-  position: relative;
-  display: inline-block;
-  border-bottom: 1px dotted black;
-}
+        position: relative;
+        display: inline-block;
+        border-bottom: 1px dotted black;
+    }
 
-.tooltip .tooltiptext {
-  visibility: hidden;
-  width: 300px;
-  background-color: black;
-  color: #fff;
-  text-align: left;
-  border-radius: 6px;
-  padding: 5px 0;
-  position: absolute;
-  z-index: 1;
-  bottom: 150%;
-  left: 50%;
-  margin-left: -60px;
-}
+    .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 300px;
+        background-color: black;
+        color: #fff;
+        text-align: left;
+        border-radius: 6px;
+        padding: 5px 0;
+        position: absolute;
+        z-index: 1;
+        bottom: 150%;
+        left: 50%;
+        margin-left: -60px;
+    }
 
-.tooltip .tooltiptext::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  margin-left: -5px;
-  border-width: 5px;
-  border-style: solid;
-  border-color: black transparent transparent transparent;
-}
+    .tooltip .tooltiptext::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: black transparent transparent transparent;
+    }
 
-.tooltip:hover .tooltiptext {
-  visibility: visible;
-}
+    .tooltip:hover .tooltiptext {
+        visibility: visible;
+    }
 
     form {
         width: 100% !important;
@@ -56,30 +59,30 @@
             "senha senha conf_senha conf_senha . ."
     }
 
-    @media screen and (max-width: 786px) {
-        :root {
-            --num-of-grid-columns: 1;
-        }
-        .container {
-            grid-template-areas: "cpf_field"
-                                 "nome1"
-                                 "nome2"
-                                 "nasc"
-                                 "genero"
-                                 "email"
-                                 "celular"
-                                 "telefone"
-                                 "cep"
-                                 "endereco"
-                                 "numero"
-                                 "complemento"
-                                 "bairro"
-                                 "cidade"
-                                 "uf"
-                                 "pais"
-                                 "senha"
-                                 "conf_senha"
-        }
+    <blade media|%20screen%20and%20(max-width%3A%20786px)%20%7B> :root {
+        --num-of-grid-columns: 1;
+    }
+
+    .container {
+        grid-template-areas: "cpf_field"
+            "nome1"
+            "nome2"
+            "nasc"
+            "genero"
+            "email"
+            "celular"
+            "telefone"
+            "cep"
+            "endereco"
+            "numero"
+            "complemento"
+            "bairro"
+            "cidade"
+            "uf"
+            "pais"
+            "senha"
+            "conf_senha"
+    }
     }
 
     #cpf_field {
@@ -159,7 +162,7 @@
         width: auto !important;
     }
 
-    .modal-inner-wrap{
+    .modal-inner-wrap {
         max-width: 550px;
     }
 
@@ -171,6 +174,7 @@
         height: 100px;
         display: flex;
     }
+
     #left {
         height: 100%;
         width: 30%;
@@ -179,6 +183,7 @@
         align-items: center;
         font-weight: bold;
     }
+
     #right {
         height: 100%;
         width: 70%;
@@ -188,119 +193,129 @@
     }
 
     .tooltip {
-    display:inline-block;
-    position:relative;
-    border-bottom:1px dotted #444444;
-    text-align:left;
-}
+        display: inline-block;
+        position: relative;
+        border-bottom: 1px dotted #444444;
+        text-align: left;
+    }
 
-.tooltip h3 {margin:12px 0;}
+    .tooltip h3 {
+        margin: 12px 0;
+    }
 
-.tooltip .top {
-    min-width:200px;
-    max-width:400px;
-    top:-20px;
-    left:50%;
-    transform:translate(-30%,-100%);
-    padding:10px 20px;
-    color:#ffffff;
-    background-color:#444444;
-    font-weight:normal;
-    font-size:14px;
-    border-radius:8px;
-    position:absolute;
-    z-index:99999999;
-    box-sizing:border-box;
-    box-shadow:0 1px 8px rgba(0,0,0,0.5);
-    display:none;
-}
+    .tooltip .top {
+        min-width: 200px;
+        max-width: 400px;
+        top: -20px;
+        left: 50%;
+        transform: translate(-30%, -100%);
+        padding: 10px 20px;
+        color: #ffffff;
+        background-color: #444444;
+        font-weight: normal;
+        font-size: 14px;
+        border-radius: 8px;
+        position: absolute;
+        z-index: 99999999;
+        box-sizing: border-box;
+        box-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
+        display: none;
+    }
 
-.tooltip:hover .top {
-    display:block;
-}
+    .tooltip:hover .top {
+        display: block;
+    }
 
-.tooltip .top i {
-    position:absolute;
-    top:100%;
-    left:30%;
-    margin-left:-15px;
-    width:30px;
-    height:15px;
-    overflow:hidden;
-}
+    .tooltip .top i {
+        position: absolute;
+        top: 100%;
+        left: 30%;
+        margin-left: -15px;
+        width: 30px;
+        height: 15px;
+        overflow: hidden;
+    }
 
-.tooltip .top i::after {
-    content:'';
-    position:absolute;
-    width:15px;
-    height:15px;
-    left:50%;
-    transform:translate(-50%,-50%) rotate(45deg);
-    background-color:#ddd;
-    box-shadow:0 1px 8px rgba(0,0,0,0.5);
-}
+    .tooltip .top i::after {
+        content: '';
+        position: absolute;
+        width: 15px;
+        height: 15px;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(45deg);
+        background-color: #ddd;
+        box-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
+    }
 
-.tooltip {
-    display:inline-block;
-    position:relative;
-    border-bottom:1px dotted #666;
-    text-align:left;
-}
+    .tooltip {
+        display: inline-block;
+        position: relative;
+        border-bottom: 1px dotted #666;
+        text-align: left;
+    }
 
-.tooltip h3 {margin:12px 0;}
+    .tooltip h3 {
+        margin: 12px 0;
+    }
 
-.tooltip .right {
-    min-width:200px;
-    max-width:400px;
-    top:50%;
-    left:100%;
-    margin-left:20px;
-    transform:translate(0, -50%);
-    padding:0;
-    color:#EEEEEE;
-    background-color:#444444;
-    font-weight:normal;
-    font-size:13px;
-    border-radius:8px;
-    position:absolute;
-    z-index:99999999;
-    box-sizing:border-box;
-    box-shadow:0 1px 8px rgba(0,0,0,0.5);
-    visibility:hidden; opacity:0; transition:opacity 0.8s;
-}
+    .tooltip .right {
+        min-width: 200px;
+        max-width: 400px;
+        top: 50%;
+        left: 100%;
+        margin-left: 20px;
+        transform: translate(0, -50%);
+        padding: 0;
+        color: #EEEEEE;
+        background-color: #444444;
+        font-weight: normal;
+        font-size: 13px;
+        border-radius: 8px;
+        position: absolute;
+        z-index: 99999999;
+        box-sizing: border-box;
+        box-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
+        visibility: hidden;
+        opacity: 0;
+        transition: opacity 0.8s;
+    }
 
-.tooltip:hover .right {
-    visibility:visible; opacity:1;
-}
+    .tooltip:hover .right {
+        visibility: visible;
+        opacity: 1;
+    }
 
-.tooltip .right img {
-    width:400px;
-    border-radius:8px 8px 0 0;
-}
-.tooltip .text-content {
-    padding:10px 20px;
-}
+    .tooltip .right img {
+        width: 400px;
+        border-radius: 8px 8px 0 0;
+    }
 
-.tooltip .right i {
-    position:absolute;
-    top:50%;
-    right:100%;
-    margin-top:-12px;
-    width:12px;
-    height:24px;
-    overflow:hidden;
-}
-.tooltip .right i::after {
-    content:'';
-    position:absolute;
-    width:12px;
-    height:12px;
-    left:0;
-    top:50%;
-    transform:translate(50%,-50%) rotate(-45deg);
-    background-color:#444444;
-    box-shadow:0 1px 8px rgba(0,0,0,0.5);
-}
+    .tooltip .text-content {
+        padding: 10px 20px;
+    }
+
+    .tooltip .right i {
+        position: absolute;
+        top: 50%;
+        right: 100%;
+        margin-top: -12px;
+        width: 12px;
+        height: 24px;
+        overflow: hidden;
+    }
+
+    .tooltip .right i::after {
+        content: '';
+        position: absolute;
+        width: 12px;
+        height: 12px;
+        left: 0;
+        top: 50%;
+        transform: translate(50%, -50%) rotate(-45deg);
+        background-color: #444444;
+        box-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
+    }
+
 </style>
 
 <?php echo $block->getChildHtml('form_fields_before')?>
@@ -341,7 +356,7 @@
                 <div class="field required">
                     <label for="firstname" class="label">Nome</label>
                     <input id="firstname" name="firstname" type="text" class="input-text required-entry"
-                        data-validate="{required:true}" aria-required="true"  />
+                        data-validate="{required:true}" aria-required="true" />
                 </div>
             </div>
         </div>
@@ -358,7 +373,8 @@
             <div class="field fieldset individual">
                 <div class="field required">
                     <label for="nasc" class="label">Data de nasc.</label>
-                    <input name="nasc" id="nasc" type="text" class="input-text required-entry" data-validate="{required:true}" aria-required="true"/>
+                    <input name="nasc" id="nasc" type="text" class="input-text required-entry"
+                        data-validate="{required:true}" aria-required="true" />
                 </div>
             </div>
         </div>
@@ -389,8 +405,8 @@
             <div class="field fieldset individual">
                 <div class="field required">
                     <label for="telephone" class="label">Celular</label>
-                    <input name="telephone" type="text" id="telephone" class="input-text required-entry" validate-phoneStrict
-                        aria-required="true" />
+                    <input name="telephone" type="text" id="telephone" class="input-text required-entry"
+                        validate-phoneStrict aria-required="true" />
                 </div>
             </div>
         </div>
@@ -406,8 +422,8 @@
             <div class="field fieldset individual">
                 <div class="field required">
                     <label for="postcode" class="label">CEP</label>
-                    <input id="postcode" name="postcode" type="text" class="input-text validate-zip-international required-entry"
-                        aria-required="true" />
+                    <input id="postcode" name="postcode" type="text"
+                        class="input-text validate-zip-international required-entry" aria-required="true" />
                 </div>
             </div>
         </div>
@@ -424,8 +440,7 @@
             <div class="field fieldset individual">
                 <div class="field required">
                     <label for="street_2" class="label">Número</label>
-                    <input name="street[1]" id="street_2" class="input-text required" type="text"
-                       />
+                    <input name="street[1]" id="street_2" class="input-text required" type="text" />
                 </div>
             </div>
         </div>
@@ -485,8 +500,10 @@
             <div class="field fieldset individual">
                 <div class="field required">
                     <label for="password" class="label">Senha</label>
-                    <input maxlength="6" pattern="\d{6}" data-validate="{required:true, germiniPassword:true, germiniPassword2:true,germiniPassword3:true,germiniPassword4:true}" type="password" name="password" validate-password
-                        id="password" title="<?php /* @escapeNotVerified */ echo __('Password') ?>" class="input-text"
+                    <input maxlength="6" pattern="\d{6}"
+                        data-validate="{required:true, germiniPassword:true, germiniPassword2:true,germiniPassword3:true,germiniPassword4:true}"
+                        type="password" name="password" validate-password id="password"
+                        title="<?php /* @escapeNotVerified */ echo __('Password') ?>" class="input-text"
                         autocomplete="off">
                 </div>
             </div>
@@ -501,18 +518,18 @@
                     <div style="float: right;">
                         <span>Políticas de senha</span>
                         <div class="tooltip">
-                        <i class="fas fa-info-circle" style="font-size: large;"></i>
-                        <div class="right">
-                            <h3>Regras</h3>
-                            <ul>
-                                <li>No mínimo 6 números</li>
-                                <li>Não pode ter mais de 3 números sequenciais</li>
-                                <li>Não pode ter números repetidos em ordem</li>
-                                <li>Não ser igual ao CPF, CNPJ, data de nascimento, telefone ou celular.</li>
-                            </ul>
-                            <i></i>
+                            <i class="fas fa-info-circle" style="font-size: large;"></i>
+                            <div class="right">
+                                <h3>Regras</h3>
+                                <ul>
+                                    <li>No mínimo 6 números</li>
+                                    <li>Não pode ter mais de 3 números sequenciais</li>
+                                    <li>Não pode ter números repetidos em ordem</li>
+                                    <li>Não ser igual ao CPF, CNPJ, data de nascimento, telefone ou celular.</li>
+                                </ul>
+                                <i></i>
+                            </div>
                         </div>
-                    </div>
                     </div>
                 </div>
             </div>
@@ -528,7 +545,8 @@
             <label for="is_fidelidade"
                 class="label"><span><?php /* @escapeNotVerified */ echo __('Quero Participar do PROGRAMA DE FIDELIDADE') ?></span></label>
 
-            <span style="margin-left: 1em" id="conheca" class="action submit primary"><span>Conheça o C.VALE FIDELIDADE</span></span>
+            <span style="margin-left: 1em" id="conheca" class="action submit primary"><span>Conheça o C.VALE
+                    FIDELIDADE</span></span>
 
         </div>
     </div>
@@ -536,8 +554,7 @@
     <div id="box">
         <div id="left">
             <div>
-                <input type="checkbox" name="selecionar_todos" id="selecionar_todos"
-                value="1" class="checkbox" />
+                <input type="checkbox" name="selecionar_todos" id="selecionar_todos" value="1" class="checkbox" />
                 <span>Selecionar todos</span>
             </div>
         </div>
@@ -562,11 +579,11 @@
 
     <hr>
 
-		<?php echo $block->getChildHtml('form_additional_info'); ?>
-		<input type="hidden" name="is_fidelidade" value="1" />
-		<input type="hidden" name="create_address" value="1" />
-		<input type="hidden" name="default_billing" value="1">
-		<input type="hidden" name="default_shipping" value="1">
+    <?php echo $block->getChildHtml('form_additional_info'); ?>
+    <input type="hidden" name="is_fidelidade" value="1" />
+    <input type="hidden" name="create_address" value="1" />
+    <input type="hidden" name="default_billing" value="1">
+    <input type="hidden" name="default_shipping" value="1">
 
     <div>
         <div class="primary">
@@ -593,22 +610,27 @@
     <div id="modal-content">
         <div class="modal-inner-content">
             <p>O CPF <span id="cpf_modal" style="color: #21409A;
-    font-weight: bold;"></span> já está cadastrado no programa de fidelidade.<br/>Você pode utilizar a mesma senha para acessar a loja da C.VALE.</p>
+    font-weight: bold;"></span> já está cadastrado no programa de fidelidade.<br />Você pode utilizar a mesma senha
+                para acessar a loja da C.VALE.</p>
 
-            <p><a target="_blank"
-            href="/customer/account/forgotpassword/">ESQUECI A SENHA</a></p>
+            <p><a target="_blank" href="/customer/account/forgotpassword/">ESQUECI A SENHA</a></p>
         </div>
     </div>
 
     <!--MODAL CONHECA-->
     <div id="modal-conheca">
         <div class="modal-inner-content">
-            <p>O Programa C.Vale Fidelidade, nasceu para valorizar você que é nosso cliente. Com nossa "moeda" Seed (SD$) você estará em casa para comprar produtos de excelente qualidade e ainda acumular pontos.</p>
+            <p>O Programa C.Vale Fidelidade, nasceu para valorizar você que é nosso cliente. Com nossa "moeda" Seed
+                (SD$) você estará em casa para comprar produtos de excelente qualidade e ainda acumular pontos.</p>
 
-            <p>C.Vale Fidelidade está disponível em nossa rede de Supermercados, Hipermercados e Posto de combustível. Você acumula pontos e tem a oportunidade de trocar por produtos em promoções especiais.</p>
+            <p>C.Vale Fidelidade está disponível em nossa rede de Supermercados, Hipermercados e Posto de combustível.
+                Você acumula pontos e tem a oportunidade de trocar por produtos em promoções especiais.</p>
 
 
-            <p>Para participar basta realizar o cadastro no programa C.Vale Fidelidade e identificar suas compras em nossas lojas indicando seu CPF no momento da emissão do cupom fiscal. Caso você não tenha se identificado nos cupons de compra, abra nosso aplicativo ou site e vincule seus pontos através da leitura do QR Code do seu cupom.</p>
+            <p>Para participar basta realizar o cadastro no programa C.Vale Fidelidade e identificar suas compras em
+                nossas lojas indicando seu CPF no momento da emissão do cupom fiscal. Caso você não tenha se
+                identificado nos cupons de compra, abra nosso aplicativo ou site e vincule seus pontos através da
+                leitura do QR Code do seu cupom.</p>
 
 
             <p>Você acumula nos produtos identificados e em nossas campanhas exclusivas.</p>
@@ -620,28 +642,28 @@
 </form>
 
 <script type="text/x-magento-init">
-   {
+    {
        "*": {
            "passwordValidate": {}
        }
    }
 </script>
 <script type="text/x-magento-init">
-   {
+    {
        "*": {
            "passwordValidate2": {}
        }
    }
 </script>
 <script type="text/x-magento-init">
-   {
+    {
        "*": {
            "passwordValidate3": {}
        }
    }
 </script>
 <script type="text/x-magento-init">
-   {
+    {
        "*": {
            "passwordValidate4": {}
        }
@@ -657,36 +679,35 @@
         'jquery.mask',
     ], function ($, modal) {
 
-        $("#button_create").prop("disabled",true);
+        $("#button_create").prop("disabled", true);
 
         console.log($("#aceito_termos_uso").prop("checked"));
 
-        function checkTerms(){
-            if ($("#aceito_termos_uso").prop("checked") == true && $("#aceito_regulamento").prop("checked") == true)
-            {
-                $("#button_create").prop("disabled",false);
+        function checkTerms() {
+            if ($("#aceito_termos_uso").prop("checked") == true && $("#aceito_regulamento").prop("checked") ==
+                true) {
+                $("#button_create").prop("disabled", false);
             } else {
-                $("#button_create").prop("disabled",true);
+                $("#button_create").prop("disabled", true);
             }
         }
 
-        $("#aceito_termos_uso").click(function() {
+        $("#aceito_termos_uso").click(function () {
             checkTerms()
         });
-        $("#aceito_regulamento").click(function() {
+        $("#aceito_regulamento").click(function () {
             checkTerms()
         });
 
 
         $("#box").hide();
 
-        $("#is_fidelidade").click(function() {
+        $("#is_fidelidade").click(function () {
             $("#box").toggle();
         })
 
-        $("#selecionar_todos").click(function() {
-            if ($("#selecionar_todos").prop("checked")==true)
-            {
+        $("#selecionar_todos").click(function () {
+            if ($("#selecionar_todos").prop("checked") == true) {
                 $("#aceito_termos_uso").prop("checked", true);
                 $("#aceito_regulamento").prop("checked", true);
                 $("#desejo_notificacao").prop("checked", true);
@@ -766,14 +787,14 @@
         modal(options3, $('#modal-termos'));
         modal(options4, $('#modal-regulamentos'));
 
-        $("#conheca").click(function() {
+        $("#conheca").click(function () {
             $("#modal-conheca").modal("openModal");
         })
-        $("#tu").click(function() {
+        $("#tu").click(function () {
             $("#modal-termos").modal("openModal");
         })
 
-        $("#postcode").blur(function() {
+        $("#postcode").blur(function () {
             // debugger;
             $.ajax({
                 url: "/autentica/germini/endereco",
