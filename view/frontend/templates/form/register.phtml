@@ -1,8 +1,4 @@
 <style>
-    .container {
-        background: #f8f8f8 !important;
-    }
-
     :root {
         --num-of-grid-columns: 6;
     }
@@ -48,8 +44,9 @@
     }
 
 
-    .container {
+    .counteudo {
         display: grid;
+        background: #f8f8f8 !important;
         grid-template-columns: repeat(var(--num-of-grid-columns), 1fr);
         grid-gap: 30px;
         grid-template-areas: "cpf_field nome1 nome2 nome2 nasc genero"
@@ -59,11 +56,15 @@
             "senha senha conf_senha conf_senha . ."
     }
 
-    <blade media|%20screen%20and%20(max-width%3A%20786px)%20%7B> :root {
-        --num-of-grid-columns: 1;
-    }
-
-    .container {
+    @media screen and (max-width: 768px) {
+    :root {
+            --num-of-grid-columns: 1;
+        }
+        .counteudo {
+            display: grid;
+        background: #f8f8f8 !important;
+        grid-template-columns: repeat(var(--num-of-grid-columns), 1fr);
+        grid-gap: 30px;
         grid-template-areas: "cpf_field"
             "nome1"
             "nome2"
@@ -83,7 +84,10 @@
             "senha"
             "conf_senha"
     }
-    }
+}
+
+
+
 
     #cpf_field {
         grid-area: cpf_field;
@@ -327,7 +331,7 @@
     enctype="multipart/form-data" autocomplete="off" data-mage-init='{"validation": {}}'>
     <?php echo $block->getBlockHtml('formkey'); ?>
 
-    <div class="container">
+    <div class="counteudo">
 
         <div id="cpf_field">
             <div class="field fieldset individual" style="display: flex;
