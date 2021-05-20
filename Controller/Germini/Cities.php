@@ -63,6 +63,10 @@ class Cities extends Action
             $response = curl_exec($curl);
             $estados = json_decode($response);
 
+            $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+            $logger = $objectManager->create('\Psr\Log\LoggerInterface');
+            $logger->info($estados);
+
             $meu_estado = '';
             foreach ($estados as $estado){
                 if ($estado->abbreviation == $region_code){
