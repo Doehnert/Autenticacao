@@ -65,10 +65,11 @@ class Cities extends Action
 
             $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
             $logger = $objectManager->create('\Psr\Log\LoggerInterface');
-            $logger->info($estados);
+
 
             $meu_estado = '';
             foreach ($estados as $estado){
+                $logger->info($estado->abbreviation);
                 if ($estado->abbreviation == $region_code){
                     $meu_estado = $estado;
                     break;
