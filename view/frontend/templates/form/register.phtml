@@ -832,6 +832,7 @@
         });
 
         $("#region_id").change(async function() {
+            console.log("mudando estado");
             result = await $.ajax({
                 url: "/autentica/germini/cities",
                 type: "POST",
@@ -846,11 +847,7 @@
             })
         })
 
-
-
-
         var dataForm = $('#form-validate');
-
 
     });
 
