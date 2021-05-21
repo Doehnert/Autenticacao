@@ -1,14 +1,21 @@
 <style>
+
+    .modal-inner-content {
+        line-height: 20px;
+    }
+
+    ul > li, ol > li {
+        margin-top: 0rem;
+        margin-bottom: 0px !important;
+    }
+
     :root {
         --num-of-grid-columns: 6;
     }
 
-
-
     form {
         width: 100% !important;
     }
-
 
     .counteudo {
         display: grid;
@@ -16,7 +23,6 @@
         grid-template-columns: repeat(var(--num-of-grid-columns), 1fr);
         grid-gap: 20px;
         grid-template-areas:
-            "text1_field text2_field text2_field . . ."
             "cpf_field nome1 nome2 nome2 nasc genero"
             "email email email email celular telefone"
             "cep endereco endereco endereco numero complemento"
@@ -51,11 +57,8 @@
             "pais"
             "senha"
             "conf_senha"
+        }
     }
-}
-
-
-
 
     #cpf_field {
         grid-area: cpf_field;
@@ -130,21 +133,11 @@
         grid-area: conf_senha;
     }
 
-    #text1_field {
-        grid-area: text1_field;
-    }
-
-    #text2_field {
-        color: red;
-        grid-area: text2_field;
-    }
-
     .label {
         width: auto !important;
     }
 
     .modal-inner-wrap {
-        max-width: 550px;
         border-radius: 8px;
     }
 
@@ -161,7 +154,7 @@
         height: 100%;
         width: 30%;
         display: flex;
-        justify-content: center;
+        justify-content: left;
         align-items: center;
         font-weight: bold;
     }
@@ -171,6 +164,7 @@
         width: 70%;
         display: flex;
         justify-content: center;
+        align-items: start;
         flex-direction: column;
     }
 
@@ -185,7 +179,7 @@
     }
 
     .tooltip .top {
-        min-width: 200px;
+        min-width: 280px;
         max-width: 400px;
         top: -20px;
         left: 50%;
@@ -305,9 +299,6 @@
 
     <div class="counteudo">
 
-        <div id="text1_field">Campos Obrigatórios *</div>
-        <div id="text2_field">** CPF utilizado no programa</div>
-
         <div id="cpf_field">
             <div class="field fieldset individual" style="display: flex;
     align-items: center;">
@@ -322,7 +313,7 @@
                 <div class="tooltip">
                     <i class="fas fa-info-circle" style="font-size: large; color: #5D5D5D; margin-left: 5px"></i>
                     <div class="top">
-                        <span>Esse dado será usado no login do sistema</span>
+                        <span style="font-size: 12px">Esse dado será usado no login do sistema.</span>
                         <i></i>
                     </div>
                 </div>
@@ -503,14 +494,16 @@
                         <div class="tooltip">
                             <i class="fas fa-info-circle" style="font-size: large; color: #5D5D5D"></i>
                             <div class="right">
-                                <span style="font-weight: bold; margin-left: 30px">Regras:</span>
-                                <ul>
-                                    <li>No mínimo 6 números</li>
-                                    <li>Não pode ter mais de 3 números sequenciais</li>
-                                    <li>Não pode ter números repetidos em ordem</li>
-                                    <li>Não ser igual ao CPF, CNPJ, data de nascimento, telefone ou celular.</li>
-                                </ul>
-                                <i></i>
+                                <div style="position: relative;top: 5px;left: -15px;">
+                                    <span style="font-weight: bold; margin-left: 30px; font-size: 12px;">Regras:</span>
+                                    <ul>
+                                        <li>No mínimo 6 números</li>
+                                        <li>Não pode ter mais de 3 números sequenciais</li>
+                                        <li>Não pode ter números repetidos em ordem</li>
+                                        <li>Não ser igual ao CPF, CNPJ, data de nascimento, telefone ou celular.</li>
+                                    </ul>
+                                    <i></i>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -546,11 +539,11 @@
         <div id="right">
             <div>
                 <input type="checkbox" name="aceito_termos_uso" id="aceito_termos_uso" value="1" class="checkbox" />
-                <span>Aceito os <a id='tu'>Termos de Uso</a>.</span>
+                <span>Aceito os <a id='tu' style="cursor: pointer;">Termos de Uso</a>.</span>
             </div>
             <div>
                 <input type="checkbox" name="aceito_regulamento" id="aceito_regulamento" value="1" class="checkbox" />
-                <span>Aceito o Regulamento do programa de fidelidade.</span>
+                <span>Aceito o <a id='reg' style="cursor: pointer;">Regulamento do programa de fidelidade</a>.</span>
             </div>
             <div>
                 <input type="checkbox" name="desejo_notificacao" id="desejo_notificacao" value="1" class="checkbox" />
@@ -572,22 +565,20 @@
 
     <div>
         <div class="primary">
-            <button type="submit" style="border-radius: 6px !important; margin-top: 20px" class="action submit primary" id="button_create"
+            <button type="submit" style="border-radius: 6px !important; margin-top: 20px;margin-bottom: 20px" class="action submit primary" id="button_create"
                 title="<?php /* @escapeNotVerified */ echo __('Create an Account') ?>"><span><?php /* @escapeNotVerified */ echo __('Create an Account') ?></span></button>
         </div>
     </div>
 
     <!--MODAL-->
     <div id="modal-termos">
-        <div class="modal-inner-content">
-            <p>Termos de uso</p>
+        <div class="modal-inner-content" id="conteuto-termos">
         </div>
     </div>
 
     <!--MODAL-->
     <div id="modal-regulamentos">
-        <div class="modal-inner-content">
-            <p>Regulamentos</p>
+        <div class="modal-inner-content" id="conteudo-regulamentos">
         </div>
     </div>
 
@@ -660,6 +651,7 @@
         'mage/mage',
         'mage/calendar',
         'jquery.mask',
+        'loader'
     ], function ($, modal) {
 
         $("#button_create").prop("disabled", true);
@@ -692,6 +684,11 @@
                 $("#aceito_termos_uso").prop("checked", true);
                 $("#aceito_regulamento").prop("checked", true);
                 $("#desejo_notificacao").prop("checked", true);
+                checkTerms();
+            } else {
+                $("#aceito_termos_uso").prop("checked", false);
+                $("#aceito_regulamento").prop("checked", false);
+                $("#desejo_notificacao").prop("checked", false);
                 checkTerms();
             }
         })
@@ -772,12 +769,34 @@
         $("#conheca").click(function () {
             $("#modal-conheca").modal("openModal");
         })
-        $("#tu").click(function () {
+        $("#tu").click(async function () {
+            var body = $('body').loader();
+            body.loader('show');
+            regras = await $.ajax({
+                url: "/autentica/germini/regras",
+                type: "GET"
+            });
+
+            $("#conteuto-termos").html(regras.useTerms);
             $("#modal-termos").modal("openModal");
+            body.loader('hide');
+        })
+        $("#reg").click(async function () {
+            var body = $('body').loader();
+            body.loader('show');
+            regulamentos = await $.ajax({
+                url: "/autentica/germini/regulamentos",
+                type: "GET"
+            });
+
+            $("#conteuto-termos").html(regulamentos.regulation);
+            $("#modal-termos").modal("openModal");
+            body.loader('hide');
         })
 
         $("#postcode").blur(async function () {
-            // debugger;
+            var body = $('body').loader();
+            body.loader('show');
             address = await $.ajax({
                 url: "/autentica/germini/endereco",
                 type: "POST",
@@ -806,12 +825,15 @@
             $("#street_1").val(address.location);
             $("#street_2").val(address.number);
             $("#street_3").val(address.district);
+            body.loader('hide');
         })
 
         $("#cpf").blur(function () {
 
             if ($("#cpf").val().length >= 14)
             {
+                var body = $('body').loader();
+                body.loader('show');
                 $("#cpf_modal").text($("#cpf").val());
 
                 $.ajax({
@@ -828,11 +850,13 @@
                         console.log("Error : " + JSON.stringify(err));
                     }
                 });
+                body.loader('hide');
             }
         });
 
         $("#region_id").change(async function() {
-            console.log("mudando estado");
+            var body = $('body').loader();
+            body.loader('show');
             result = await $.ajax({
                 url: "/autentica/germini/cities",
                 type: "POST",
@@ -845,6 +869,7 @@
             result.forEach((city) => {
                 $('#city').append(`<option value="${city.name}">${city.name}</option>`);
             })
+            body.loader('hide');
         })
 
         var dataForm = $('#form-validate');
