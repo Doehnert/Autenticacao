@@ -152,39 +152,40 @@ class CreateUserInGermini
         $country = $this->_countryFactory->create()->loadByCode($countryId);
         $countryName = $country->getName();
         $cityId = $subject->getRequest()->getParam('city');
+        $countryCode = $subject->getRequest()->getParam('country_id');
 
 
 
         // Get countryId from Germini
-        // $response = "";
-        // $url = $url_base . '/api/Country';
+        $response = "";
+        $url = $url_base . '/api/Country';
 
-        // $curl = curl_init();
+        $curl = curl_init();
 
-        // curl_setopt_array($curl, array(
-        // CURLOPT_URL => $url,
-        // CURLOPT_RETURNTRANSFER => true,
-        // CURLOPT_ENCODING => '',
-        // CURLOPT_MAXREDIRS => 10,
-        // CURLOPT_TIMEOUT => 0,
-        // CURLOPT_FOLLOWLOCATION => true,
-        // CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        // CURLOPT_CUSTOMREQUEST => 'GET',
-        // CURLOPT_HTTPHEADER => array(
-        //     'Accept: text/plain'
-        // ),
-        // ));
+        curl_setopt_array($curl, array(
+        CURLOPT_URL => $url,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'GET',
+        CURLOPT_HTTPHEADER => array(
+            'Accept: text/plain'
+        ),
+        ));
 
-        // $response = curl_exec($curl);
-        // $resultado = json_decode($response);
+        $response = curl_exec($curl);
+        $resultado = json_decode($response);
 
-        // foreach ($resultado as $res){
-        //     if ($res->name == $countryName){
-        //         $countryId = $res->id;
-        //     }
-        // }
+        foreach ($resultado as $res){
+            if ($res->code == $countryCode){
+                $countryId = $res->id;
+            }
+        }
 
-        $countryId = "20b32dbd-8bda-4563-bcd5-0a7e827fc5e4";
+        //$countryId = "20b32dbd-8bda-4563-bcd5-0a7e827fc5e4";
 
         // curl_close($curl);
         ///////////////////////////////
@@ -254,7 +255,7 @@ class CreateUserInGermini
         ///////////////////////////////
 
 
-        //$gender = $gender === "2" ? 'f' : 'm';
+        // $genero = $genero === "2" ? 'f' : 'm';
         $dob = date("Y-m-d H:i:s", strtotime($nasc));
 
         // Cria usuário no Germini
@@ -263,13 +264,13 @@ class CreateUserInGermini
         $params = [
             "name" => $firstname,
             "cpf" => $cpf,
-            "gender" => $genero,
             "dateOfBirth" => $dob,
+            "gender" => $genero,
             "email" => $email,
             "password" => $password,
             "confirmPassword" => $password_confirmation,
-            "phoneNumber" => $telephone,
-            "phoneNumber2" => $telephone2,
+            "phoneNumber" => $telephone2,
+            "phoneNumber2" => $telephone,
             "address" => [
                 "addressType" => 1,
                 "location" => $location,

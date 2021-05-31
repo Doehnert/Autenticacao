@@ -162,7 +162,7 @@
         margin-top: 20px;
         height: 100px;
         display: flex;
-        width: 60vw;
+        width: 800px;
     }
 
     #left {
@@ -194,7 +194,7 @@
     }
 
     .tooltip .top {
-        min-width: 280px;
+        min-width: 300px;
         max-width: 400px;
         top: -20px;
         left: 50%;
@@ -243,63 +243,64 @@
         margin: 12px 0;
     }
 
-    .tooltip .right {
-        min-width: 400px;
-        max-width: 400px;
-        top: 50%;
-        left: 100%;
-        margin-left: 20px;
-        transform: translate(0, -50%);
-        padding: 0;
-        color: #EEEEEE;
-        background-color: #444444;
-        font-weight: normal;
-        font-size: 13px;
-        border-radius: 8px;
-        position: absolute;
-        z-index: 99999999;
-        box-sizing: border-box;
-        box-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
-        visibility: hidden;
-        opacity: 0;
-        transition: opacity 0.8s;
-    }
-
-    .tooltip:hover .right {
-        visibility: visible;
-        opacity: 1;
-    }
-
-    .tooltip .right img {
-        width: 400px;
-        border-radius: 8px 8px 0 0;
-    }
 
     .tooltip .text-content {
         padding: 10px 20px;
     }
 
-    .tooltip .right i {
-        position: absolute;
-        top: 50%;
-        right: 100%;
-        margin-top: -12px;
-        width: 12px;
-        height: 24px;
-        overflow: hidden;
-    }
+    .tooltip .right {
+    min-width:350px;
+    max-width:400px;
+    top:50%;
+    left:100%;
+    margin-left:20px;
+    transform:translate(0, -50%);
+    padding:0;
+    color:#EEEEEE;
+    background-color:#444444;
+    font-weight:normal;
+    font-size:13px;
+    border-radius:8px;
+    position:absolute;
+    z-index:99999999;
+    box-sizing:border-box;
+    box-shadow:0 1px 8px rgba(0,0,0,0.5);
+    visibility:hidden; opacity:0; transition:opacity 0.8s;
+}
 
-    .tooltip .right i::after {
-        content: '';
-        position: absolute;
-        width: 12px;
-        height: 12px;
-        left: 0;
-        top: 50%;
-        transform: translate(50%, -50%) rotate(-45deg);
-        background-color: #444444;
-        box-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
-    }
+.tooltip:hover .right {
+    visibility:visible; opacity:1;
+}
+
+.tooltip .right img {
+    width:400px;
+    border-radius:8px 8px 0 0;
+}
+.tooltip .text-content {
+    padding:10px 20px;
+}
+
+.tooltip .right i {
+    position:absolute;
+    top:50%;
+    right:100%;
+    margin-top:-12px;
+    width:12px;
+    height:24px;
+    overflow:hidden;
+}
+.tooltip .right i::after {
+    content:'';
+    position:absolute;
+    width:12px;
+    height:12px;
+    left:0;
+    top:50%;
+    transform:translate(50%,-50%) rotate(-45deg);
+    background-color:#444444;
+    box-shadow:0 1px 8px rgba(0,0,0,0.5);
+}
+
 
 </style>
 
@@ -321,7 +322,7 @@
                     <label for="cpf" class="label">CPF</label>
                     <div>
                         <input type="text" id="cpf" name="cpf" value="" title="CPF" class="input-text"
-                            data-validate='{"required":true}' autocomplete="off" aria-required="true">
+                            data-validate='{"required":true}' autocomplete="off" aria-required="true" style="min-width: 270px;">
                     </div>
                 </div>
 
@@ -371,7 +372,7 @@
                         <option value=""><?php /* @escapeNotVerified */ echo __('') ?></option>
                         <option value="m">Masculino</option>
                         <option value="f">Feminino</option>
-                        <option value="0">Não informar</option>
+                        <!-- <option value="n">Não informar</option> -->
                     </select>
                 </div>
             </div>
@@ -508,10 +509,9 @@
                         <span style="color: #7E7E7E;" >Políticas de senha</span>
                         <div class="tooltip">
                             <i class="fas fa-info-circle" style="font-size: large; color: #5D5D5D"></i>
-                            <div class="right">
-                                <div style="position: relative;top: 5px;left: -15px;">
-                                    <span style="font-weight: bold; margin-left: 30px; font-size: 12px;">Regras:</span>
-                                    <ul>
+                            <div class="right" style="padding-top: 5px;">
+                                    <span style="font-weight: bold; margin-left: 15px; margin-top: 15px; font-size: 12px;">Regras:</span>
+                                    <ul style="margin-left: -15px;">
                                         <li>No mínimo 6 números</li>
                                         <li>Não pode ter mais de 3 números sequenciais</li>
                                         <li>Não pode ter números repetidos em ordem</li>
@@ -756,17 +756,20 @@
         };
 
         var options2 = {
+            innerScroll: true,
             type: 'popup',
             responsive: true,
             title: 'O QUE É O C.VALE FIDELIDADE?',
             buttons: []
         };
         var options3 = {
+            innerScroll: true,
             type: 'popup',
             responsive: true,
             title: 'Termos de Uso',
         };
         var options4 = {
+            innerScroll: true,
             type: 'popup',
             responsive: true,
             title: 'Regulamento do programa de fidelidade',
@@ -824,23 +827,27 @@
             $("#region_id").val(address.state);
 
             console.log(address);
-            cities = await $.ajax({
-                url: "/autentica/germini/cities",
-                type: "POST",
-                data: {
-                    region_id: $("#region_id").val(),
-                }
-            });
-            console.log(cities);
-            document.getElementById("city").options.length = 0;
-            cities.forEach((city) => {
-                $('#city').append(`<option value="${city.name}">${city.name}</option>`);
-            })
-            $(`#city option[value=${address.city}]`).attr('selected','selected');
+            if(address.city != null){
+                cities = await $.ajax({
+                    url: "/autentica/germini/cities",
+                    type: "POST",
+                    data: {
+                        region_id: $("#region_id").val(),
+                        country: $("#country").val()
+                    }
+                });
+                console.log(cities);
+                document.getElementById("city").options.length = 0;
+                cities.forEach((city) => {
+                    $('#city').append(`<option value="${city.name}">${city.name}</option>`);
+                });
 
-            $("#street_1").val(address.location);
-            $("#street_2").val(address.number);
-            $("#street_3").val(address.district);
+                $(`#city option[value="${address.city}"]`).attr('selected','selected');
+
+                $("#street_1").val(address.location);
+                $("#street_2").val(address.number);
+                $("#street_3").val(address.district);
+            }
             body.loader('hide');
         })
 
@@ -878,6 +885,7 @@
                 type: "POST",
                 data: {
                     region_id: $("#region_id").val(),
+                    country: $("#country").val()
                 }
             });
             console.log(result);
