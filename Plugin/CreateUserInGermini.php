@@ -157,35 +157,35 @@ class CreateUserInGermini
 
 
         // Get countryId from Germini
-        $response = "";
-        $url = $url_base . '/api/Country';
+        // $response = "";
+        // $url = $url_base . '/api/Country';
 
-        $curl = curl_init();
+        // $curl = curl_init();
 
-        curl_setopt_array($curl, array(
-        CURLOPT_URL => $url,
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => '',
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 0,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => 'GET',
-        CURLOPT_HTTPHEADER => array(
-            'Accept: text/plain'
-        ),
-        ));
+        // curl_setopt_array($curl, array(
+        // CURLOPT_URL => $url,
+        // CURLOPT_RETURNTRANSFER => true,
+        // CURLOPT_ENCODING => '',
+        // CURLOPT_MAXREDIRS => 10,
+        // CURLOPT_TIMEOUT => 0,
+        // CURLOPT_FOLLOWLOCATION => true,
+        // CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        // CURLOPT_CUSTOMREQUEST => 'GET',
+        // CURLOPT_HTTPHEADER => array(
+        //     'Accept: text/plain'
+        // ),
+        // ));
 
-        $response = curl_exec($curl);
-        $resultado = json_decode($response);
+        // $response = curl_exec($curl);
+        // $resultado = json_decode($response);
 
-        foreach ($resultado as $res){
-            if ($res->code == $countryCode){
-                $countryId = $res->id;
-            }
-        }
+        // foreach ($resultado as $res){
+        //     if ($res->code == $countryCode){
+        //         $countryId = $res->id;
+        //     }
+        // }
 
-        //$countryId = "20b32dbd-8bda-4563-bcd5-0a7e827fc5e4";
+        $countryId = "20b32dbd-8bda-4563-bcd5-0a7e827fc5e4";
 
         // curl_close($curl);
         ///////////////////////////////
@@ -313,6 +313,17 @@ class CreateUserInGermini
                 'customer/account/create'
             );
         }
-        return $proceed();
+
+
+        $this->messageManager->addComplexSuccessMessage(
+            'customerNeedValidateGermini',
+            [
+                'url' => 'https://cvale-fidelidade-consumer-hom.azurewebsites.net/auth/login',
+            ]
+        );
+
+        // return $proceed();
+        $params = array('cpf' => $cpf);
+        return $this->resultRedirectFactory->create()->setPath('customer/account/login', $params);
     }
 }
