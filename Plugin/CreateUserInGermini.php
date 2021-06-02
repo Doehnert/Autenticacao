@@ -315,7 +315,7 @@ class CreateUserInGermini
         }
 
 
-        $this->messageManager->addComplexSuccessMessage(
+        $this->messageManager->addComplexNoticeMessage(
             'customerNeedValidateGermini',
             [
                 'url' => 'https://cvale-fidelidade-consumer-hom.azurewebsites.net/auth/login',

@@ -259,7 +259,15 @@ class UserPlugin
                 //response will contain the output in form of JSON string
                 $response = $this->_curl->getBody();
             } catch (\Exception $e) {
-                $this->_messageManager->addError('Não foi possível conectar com germini');
+
+
+                // $this->_messageManager->addError('Não foi possível conectar com germini');
+                $this->_messageManager->addComplexNoticeMessage(
+                    'customerNeedValidateGermini',
+                    [
+                        'url' => 'https://cvale-fidelidade-consumer-hom.azurewebsites.net/auth/login',
+                    ]
+                );
 
                 $result->setPath('customer/account/');
                 return $result;
@@ -269,7 +277,14 @@ class UserPlugin
 
             if ($response != "" or !isset($resultado->error)) {
                 if (isset($resultado->error)) {
-                    $this->_messageManager->addError("Não foi possível conectar com germini");
+
+                    $this->_messageManager->addComplexNoticeMessage(
+                        'customerNeedValidateGermini',
+                        [
+                            'url' => 'https://cvale-fidelidade-consumer-hom.azurewebsites.net/auth/login',
+                        ]
+                    );
+                    // $this->_messageManager->addError("Não foi possível conectar com germini");
                     $result->setPath('customer/account/');
                     return $result;
                 }
@@ -364,7 +379,14 @@ class UserPlugin
                 $sessionManager->setCustomerAsLoggedIn($new_customer);
                 $sessionManager->setConsumerPoints($pontos);
             } else {
-                $this->_messageManager->addError("Erro ao conectar com Germini");
+
+                $this->_messageManager->addComplexNoticeMessage(
+                    'customerNeedValidateGermini',
+                    [
+                        'url' => 'https://cvale-fidelidade-consumer-hom.azurewebsites.net/auth/login',
+                    ]
+                );
+                // $this->_messageManager->addError("Erro ao conectar com Germini");
             }
         }
         $this->cleanCache();
