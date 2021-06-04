@@ -263,6 +263,9 @@ class CreateUserInGermini
         // cria o usuário no SAP
         if ($is_fidelidade == 0)
         {
+
+            $zipCodeNumbers = preg_replace("/[^0-9]/", "", $zipCode);
+
             $xmlstr =
             "<?xml version='1.0' standalone='yes'?>
             <soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:urn=\"urn:cvale:i17:014\">
@@ -285,7 +288,7 @@ class CreateUserInGermini
                                 <district>{$district}</district>
                                 <location>{$location}</location>
                                 <number>{$number}</number>
-                                <zipcode>{$zipCode}</zipcode>
+                                <zipcode>{$zipCodeNumbers}</zipcode>
                                 <regio>{$regionName}</regio>
                                 <city>{$cityName}</city>
                             </address>
