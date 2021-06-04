@@ -326,7 +326,7 @@ class CreateUserInGermini
             //convert the XML result into array
             $array_data = json_decode(json_encode(simplexml_load_string($data)), true);
 
-            $logger->info("Resposta SAP: " .$array_data);
+            $logger->info("Resposta SAP: " .$data);
             print_r('<pre>');
             print_r($array_data);
             print_r('</pre>');
