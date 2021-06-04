@@ -73,19 +73,53 @@ class CreateUserInGermini
         \Closure $proceed
     )
     {
-        $is_fidelidade = $subject->getRequest()->getParam('is_fidelidade');
-
-        if ($is_fidelidade == null)
-            return $proceed();
-
-
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $logger = $objectManager->create('\Psr\Log\LoggerInterface');
 
+
+        $is_fidelidade = $subject->getRequest()->getParam('is_fidelidade');
+        $firstname = $subject->getRequest()->getParam('firstname');
+        $lastname = $subject->getRequest()->getParam('lastname');
+
+        $fullName = "{$firstname} {$lastname}";
+
+        $nasc = $subject->getRequest()->getParam('nasc');
+
+        $dob = date("Y-m-d H:i:s", strtotime($nasc));
+        $dob2 = date("Y-m-d", strtotime($nasc));
+
+        $genero = $subject->getRequest()->getParam('genero');
+        $email = $subject->getRequest()->getParam('email');
+        $telephone = $subject->getRequest()->getParam('telephone');
+        $telephone = preg_replace("/[^0-9]/", "",$telephone);
+        $telephone2 = $subject->getRequest()->getParam('telephone2');
+        $telephone2 = preg_replace("/[^0-9]/", "",$telephone2);
+
+        $password = $subject->getRequest()->getParam('password');
+        $password_confirmation = $subject->getRequest()->getParam('password_confirmation');
+
+        $zipCode = $subject->getRequest()->getParam('postcode');
+
+        $location = $subject->getRequest()->getParam('street')[0];
+        $number = $subject->getRequest()->getParam('street')[1];
+        $district = $subject->getRequest()->getParam('street')[2];
+        $complemento = $subject->getRequest()->getParam('complemento');
+
+        $regionId = $subject->getRequest()->getParam('region_id'); //499
+        $region = $this->regionFactory->create()->load($regionId);
+        $stateId = $region->getCode();
+        $countryId = $region->getCountryId();
+        $country = $this->_countryFactory->create()->loadByCode($countryId);
+        $countryName = $country->getName();
+        $cityId = $subject->getRequest()->getParam('city');
+        $countryCode = $subject->getRequest()->getParam('country_id');
         $cpf = $subject->getRequest()->getParam('cpf');
 
-        if ($cpf == "")
-            return $proceed();
+        // if ($cpf == "")
+        //     return $proceed();
+
+        $cityName = '';
+        $regionName = '';
 
         // Verifica se o cliente já existe no germini
         // caso exista encerra o plugin
@@ -123,37 +157,6 @@ class CreateUserInGermini
         /** @var \Magento\Framework\App\RequestInterface $request */
 
         $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-
-
-        $firstname = $subject->getRequest()->getParam('firstname');
-        $lastname = $subject->getRequest()->getParam('lastname');
-        $nasc = $subject->getRequest()->getParam('nasc');
-        $genero = $subject->getRequest()->getParam('genero');
-        $email = $subject->getRequest()->getParam('email');
-        $telephone = $subject->getRequest()->getParam('telephone');
-        $telephone = preg_replace("/[^0-9]/", "",$telephone);
-        $telephone2 = $subject->getRequest()->getParam('telephone2');
-        $telephone2 = preg_replace("/[^0-9]/", "",$telephone2);
-
-        $password = $subject->getRequest()->getParam('password');
-        $password_confirmation = $subject->getRequest()->getParam('password_confirmation');
-
-        $zipCode = $subject->getRequest()->getParam('postcode');
-
-        $location = $subject->getRequest()->getParam('street')[0];
-        $number = $subject->getRequest()->getParam('street')[1];
-        $district = $subject->getRequest()->getParam('street')[2];
-        $complemento = $subject->getRequest()->getParam('complemento');
-
-        $regionId = $subject->getRequest()->getParam('region_id'); //499
-        $region = $this->regionFactory->create()->load($regionId);
-        $stateId = $region->getCode();
-        $countryId = $region->getCountryId();
-        $country = $this->_countryFactory->create()->loadByCode($countryId);
-        $countryName = $country->getName();
-        $cityId = $subject->getRequest()->getParam('city');
-        $countryCode = $subject->getRequest()->getParam('country_id');
-
 
 
         // Get countryId from Germini
@@ -215,6 +218,7 @@ class CreateUserInGermini
 
         foreach ($resultado as $res){
             if ($res->abbreviation == $stateId){
+                $regionName = $res->name;
                 $stateId = $res->id;
             }
         }
@@ -247,16 +251,91 @@ class CreateUserInGermini
 
         foreach ($resultado as $res){
             if ($res->name == $cityId){
+                $cityName = $res->name;
                 $cityId = $res->id;
             }
         }
 
         curl_close($curl);
-        ///////////////////////////////
 
 
-        // $genero = $genero === "2" ? 'f' : 'm';
-        $dob = date("Y-m-d H:i:s", strtotime($nasc));
+        // Caso o usuário não queira participar do programa
+        // cria o usuário no SAP
+        if ($is_fidelidade == 0)
+        {
+            $xmlstr =
+            "<?xml version='1.0' standalone='yes'?>
+            <soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:urn=\"urn:cvale:i17:014\">
+            <soapenv:Body>
+                <urn:MT_SAP_BP_Req>
+                    <Data_BP_req>
+                        <cpf>{$cpf}</cpf>
+                        <dateOfBirth>{$dob2}</dateOfBirth>
+                        <email>{$email}</email>
+                        <gender>{$genero}</gender>
+                        <name>{$fullName}</name>
+                        <nickname>{$firstname}</nickname>
+                        <phoneNumber>{$telephone2}</phoneNumber>
+                        <phoneNumber2>{$telephone}</phoneNumber2>
+                        <Id_Interface>02</Id_Interface>
+                        <DATA_ADRESS>
+                            <address>
+                                <aditionalInfo>{$complemento}</aditionalInfo>
+                                <addressType>1</addressType>
+                                <district>{$district}</district>
+                                <location>{$location}</location>
+                                <number>{$number}</number>
+                                <zipcode>{$zipCode}</zipcode>
+                                <regio>{$regionName}</regio>
+                                <city>{$cityName}</city>
+                            </address>
+                        </DATA_ADRESS>
+                    </Data_BP_req>
+                </urn:MT_SAP_BP_Req>
+            </soapenv:Body>
+            </soapenv:Envelope>";
+
+            $simplexml = new \SimpleXMLElement($xmlstr);
+
+            $input_xml = $simplexml->asXML();
+
+            // $sap_url = "http://10.95.201.216:50000/XISOAPAdapter/MessageServlet?senderParty=&senderService=BC_EVO&receiverParty=&receiverService=BS_300_CQ5&interface=SI_Recebimento_Cliente_Evo_Out_Sync&interfaceNamespace=urn:cvale:i17:014";
+
+            $sap_url = "http://10.95.201.216:50000/XISOAPAdapter/MessageServlet?senderParty=&senderService=BC_EVO&receiverParty=&receiverService=BS_300_CQE&interface=SI_Recebimento_Cliente_Evo_Out_Sync&interfaceNamespace=urn:cvale:i17:014";
+
+            // $client = new \SoapClient($sap_url);
+
+            // $client->__getTypes();
+            // $client->__getFunctions();
+
+            //setting the curl parameters.
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $sap_url);
+            // Following line is compulsary to add as it is:
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $input_xml);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            // curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 300);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                'Authorization: Basic cGlfZ2VybWluaTpjdmFsZTIwMTQ=',
+                'Content-Type: text/xml'
+            ));
+            curl_setopt($ch, CURLOPT_POST, 1);
+            $data = curl_exec($ch);
+            curl_close($ch);
+
+            //convert the XML result into array
+            $array_data = json_decode(json_encode(simplexml_load_string($data)), true);
+
+            $logger->info("Resposta SAP: " .$array_data);
+            print_r('<pre>');
+            print_r($array_data);
+            print_r('</pre>');
+
+
+            // return $proceed();
+        }
+
+
 
         // Cria usuário no Germini
         $response = "";

@@ -574,7 +574,7 @@
     <hr style="margin-bottom: 0px !important;">
 
     <?php echo $block->getChildHtml('form_additional_info'); ?>
-    <input type="hidden" name="is_fidelidade" value="1" />
+    <input type="hidden" name="is_fidelidade" value="0" />
     <input type="hidden" name="create_address" value="1" />
     <input type="hidden" name="default_billing" value="1">
     <input type="hidden" name="default_shipping" value="1">
@@ -692,6 +692,10 @@
         $("#box").hide();
 
         $("#is_fidelidade").click(function () {
+            if ($("#is_fidelidade").val() == 0)
+                $("#is_fidelidade").val(1);
+            else
+                $("#is_fidelidade").val(0);
             $("#box").toggle();
         })
 
@@ -814,42 +818,51 @@
         })
 
         $("#postcode").blur(async function () {
-            var body = $('body').loader();
-            body.loader('show');
-            address = await $.ajax({
-                url: "/autentica/germini/endereco",
-                type: "POST",
-                data: {
-                    postcode: $("#postcode").val(),
-                }
-            });
-
-            $("#region_id").val(address.state);
-
-            console.log(address);
-            if(address.city != null){
-                cities = await $.ajax({
-                    url: "/autentica/germini/cities",
+            try
+            {
+                var body = $('body').loader();
+                body.loader('show');
+                address = await $.ajax({
+                    url: "/autentica/germini/endereco",
                     type: "POST",
                     data: {
-                        region_id: $("#region_id").val(),
-                        country: $("#country").val()
+                        postcode: $("#postcode").val(),
                     }
                 });
-                console.log(cities);
-                document.getElementById("city").options.length = 0;
-                cities.forEach((city) => {
-                    $('#city').append(`<option value="${city.name}">${city.name}</option>`);
-                });
 
-                $(`#city option[value="${address.city}"]`).attr('selected','selected');
+                $("#region_id").val(address.state);
 
-                $("#street_1").val(address.location);
-                $("#street_2").val(address.number);
-                $("#street_3").val(address.district);
+                if(address.city != null)
+                {
+                    cities = await $.ajax({
+                        url: "/autentica/germini/cities",
+                        type: "POST",
+                        data: {
+                            region_id: $("#region_id").val(),
+                            country: $("#country").val()
+                        }
+                    });
+                    document.getElementById("city").options.length = 0;
+                    cities.forEach((city) => {
+                        $('#city').append(`<option value="${city.name}">${city.name}</option>`);
+                    });
+
+                    $(`#city option[value="${address.city}"]`).attr('selected','selected');
+
+                    $("#street_1").val(address.location);
+                    $("#street_2").val(address.number);
+                    $("#street_3").val(address.district);
+                }
             }
-            body.loader('hide');
-        })
+            catch(err)
+            {
+                console.error(err.message);
+            }
+            finally
+            {
+                body.loader('hide');
+            }
+        });
 
         $("#cpf").blur(function () {
 
