@@ -305,9 +305,9 @@ class CreateUserInGermini
 
             $logger->info("Enviado ao SAP: " .$input_xml);
 
-            // $sap_url = "http://10.95.201.216:50000/XISOAPAdapter/MessageServlet?senderParty=&senderService=BC_EVO&receiverParty=&receiverService=BS_300_CQ5&interface=SI_Recebimento_Cliente_Evo_Out_Sync&interfaceNamespace=urn:cvale:i17:014";
+            $sap_url = $this->scopeConfig->getValue('acessos/general/sap_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 
-            $sap_url = "http://10.95.201.216:50000/XISOAPAdapter/MessageServlet?senderParty=&senderService=BC_EVO&receiverParty=&receiverService=BS_300_CQE&interface=SI_Recebimento_Cliente_Evo_Out_Sync&interfaceNamespace=urn:cvale:i17:014";
+            // $sap_url = "http://10.95.201.216:50000/XISOAPAdapter/MessageServlet?senderParty=&senderService=BC_EVO&receiverParty=&receiverService=BS_300_CQE&interface=SI_Recebimento_Cliente_Evo_Out_Sync&interfaceNamespace=urn:cvale:i17:014";
 
             // $client = new \SoapClient($sap_url);
 
