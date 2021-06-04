@@ -376,11 +376,6 @@ class CreateUserInGermini
         curl_close($ch);
         $resultado = json_decode($response);
 
-
-        $logger->info("Resposta Germini: " .$response);
-
-
-
         if (!empty($resultado->errors) || $response == '' || $resultado->success != True){
             foreach ($resultado->errors as $error){
                 $this->messageManager->addErrorMessage(
