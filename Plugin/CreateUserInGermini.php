@@ -337,7 +337,7 @@ class CreateUserInGermini
             print_r('</pre>');
 
 
-            // return $proceed();
+            return $proceed();
         }
 
 
