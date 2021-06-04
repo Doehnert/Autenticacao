@@ -265,6 +265,7 @@ class CreateUserInGermini
         {
 
             $zipCodeNumbers = preg_replace("/[^0-9]/", "", $zipCode);
+            $generoMaiusculo = $genero == 'm' ? 'M' : 'F';
 
             $xmlstr =
             "<?xml version='1.0' standalone='yes'?>
@@ -275,7 +276,7 @@ class CreateUserInGermini
                         <cpf>{$cpf}</cpf>
                         <dateOfBirth>{$dob2}</dateOfBirth>
                         <email>{$email}</email>
-                        <gender>{$genero}</gender>
+                        <gender>{$generoMaiusculo}</gender>
                         <name>{$fullName}</name>
                         <nickname>{$firstname}</nickname>
                         <phoneNumber>{$telephone2}</phoneNumber>
