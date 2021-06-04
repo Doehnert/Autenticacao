@@ -299,6 +299,8 @@ class CreateUserInGermini
 
             $input_xml = $simplexml->asXML();
 
+            $logger->info("Enviado ao SAP: " .$input_xml);
+
             // $sap_url = "http://10.95.201.216:50000/XISOAPAdapter/MessageServlet?senderParty=&senderService=BC_EVO&receiverParty=&receiverService=BS_300_CQ5&interface=SI_Recebimento_Cliente_Evo_Out_Sync&interfaceNamespace=urn:cvale:i17:014";
 
             $sap_url = "http://10.95.201.216:50000/XISOAPAdapter/MessageServlet?senderParty=&senderService=BC_EVO&receiverParty=&receiverService=BS_300_CQE&interface=SI_Recebimento_Cliente_Evo_Out_Sync&interfaceNamespace=urn:cvale:i17:014";
