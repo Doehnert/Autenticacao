@@ -218,7 +218,7 @@ class CreateUserInGermini
 
         foreach ($resultado as $res){
             if ($res->abbreviation == $stateId){
-                $regionName = $res->name;
+                $regionName = $res->abbreviation;
                 $stateId = $res->id;
             }
         }
