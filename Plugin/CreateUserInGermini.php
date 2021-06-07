@@ -77,7 +77,7 @@ class CreateUserInGermini
         $logger = $objectManager->create('\Psr\Log\LoggerInterface');
 
 
-        $is_fidelidade = $subject->getRequest()->getParam('is_fidelidade');
+        $user_fidelidade = $subject->getRequest()->getParam('user_fidelidade');
         $firstname = $subject->getRequest()->getParam('firstname');
         $lastname = $subject->getRequest()->getParam('lastname');
 
@@ -261,7 +261,8 @@ class CreateUserInGermini
 
         // Caso o usuário não queira participar do programa
         // cria o usuário no SAP
-        if ($is_fidelidade == 0)
+
+        if ($user_fidelidade == 0)
         {
 
             $zipCodeNumbers = preg_replace("/[^0-9]/", "", $zipCode);
@@ -307,13 +308,6 @@ class CreateUserInGermini
 
             $sap_url = $this->scopeConfig->getValue('acessos/general/sap_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 
-            // $sap_url = "http://10.95.201.216:50000/XISOAPAdapter/MessageServlet?senderParty=&senderService=BC_EVO&receiverParty=&receiverService=BS_300_CQE&interface=SI_Recebimento_Cliente_Evo_Out_Sync&interfaceNamespace=urn:cvale:i17:014";
-
-            // $client = new \SoapClient($sap_url);
-
-            // $client->__getTypes();
-            // $client->__getFunctions();
-
             //setting the curl parameters.
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $sap_url);
@@ -337,11 +331,8 @@ class CreateUserInGermini
             print_r($array_data);
             print_r('</pre>');
 
-
             return $proceed();
         }
-
-
 
         // Cria usuário no Germini
         $response = "";

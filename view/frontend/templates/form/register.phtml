@@ -574,7 +574,7 @@
     <hr style="margin-bottom: 0px !important;">
 
     <?php echo $block->getChildHtml('form_additional_info'); ?>
-    <input type="hidden" name="is_fidelidade" value="0" />
+    <input type="hidden" name="user_fidelidade" id="user_fidelidade" value="0" />
     <input type="hidden" name="create_address" value="1" />
     <input type="hidden" name="default_billing" value="1">
     <input type="hidden" name="default_shipping" value="1">
@@ -675,9 +675,9 @@
         function checkTerms() {
             if ($("#aceito_termos_uso").prop("checked") == true && $("#aceito_regulamento").prop("checked") ==
                 true) {
-                $("#button_create").prop("disabled", false);
+                $("#user_fidelidade").val("1");
             } else {
-                $("#button_create").prop("disabled", true);
+                $("#user_fidelidade").val("0");
             }
         }
 
@@ -691,11 +691,7 @@
 
         $("#box").hide();
 
-        $("#is_fidelidade").click(function () {
-            if ($("#is_fidelidade").val() == 0)
-                $("#is_fidelidade").val(1);
-            else
-                $("#is_fidelidade").val(0);
+        $("#is_fidelidade").change(function () {
             $("#box").toggle();
         })
 
