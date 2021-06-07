@@ -264,6 +264,8 @@ class UserPlugin
 
 
                 // $this->_messageManager->addError('Não foi possível conectar com germini');
+                $this->_messageManager->getMessages(true);
+
                 $this->_messageManager->addComplexNoticeMessage(
                     'customerNeedValidateGermini',
                     [
@@ -280,6 +282,7 @@ class UserPlugin
             if ($response != "" or !isset($resultado->error)) {
                 if (isset($resultado->error)) {
 
+                    $this->_messageManager->getMessages(true);
                     $this->_messageManager->addComplexNoticeMessage(
                         'customerNeedValidateGermini',
                         [
@@ -382,6 +385,7 @@ class UserPlugin
                 $sessionManager->setConsumerPoints($pontos);
             } else {
 
+                $this->_messageManager->getMessages(true);
                 $this->_messageManager->addComplexNoticeMessage(
                     'customerNeedValidateGermini',
                     [
