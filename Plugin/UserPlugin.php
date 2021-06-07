@@ -198,41 +198,43 @@ class UserPlugin
             //     return $result;
             // }
 
-            if (!isset($dados->access_token))
-                return $result;
+            if (isset($dados->access_token))
+            {
+                $token = $dados->access_token;
 
-            $token = $dados->access_token;
+                $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 
-            $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+                $url = $url_base . '/api/Consumer/GetCurrentConsumer';
 
-            $url = $url_base . '/api/Consumer/GetCurrentConsumer';
-
-            $this->_curl->addHeader("Accept", "text/plain");
-            $this->_curl->addHeader("Authorization", 'bearer ' . $token);
-            $this->_curl->get($url);
-            $response = $this->_curl->getBody();
-            $dados = json_decode($response);
-
+                $this->_curl->addHeader("Accept", "text/plain");
+                $this->_curl->addHeader("Authorization", 'bearer ' . $token);
+                $this->_curl->get($url);
+                $response = $this->_curl->getBody();
+                $dados = json_decode($response);
 
 
-            if ($dados == "") {
-                // $this->_messageManager->addError('Não foi possível conectar com germini');
-                // $result->setPath('customer/account/');
-                // return $result;
-                $pontos = 0;
-            } else {
-                $pontos = $dados->points;
-                if ($pontos == "") {
+
+                if ($dados == "") {
+                    // $this->_messageManager->addError('Não foi possível conectar com germini');
+                    // $result->setPath('customer/account/');
+                    // return $result;
                     $pontos = 0;
+                } else {
+                    $pontos = $dados->points;
+                    if ($pontos == "") {
+                        $pontos = 0;
+                    }
                 }
+
+                $customer->setCustomAttribute('pontos_cliente', $pontos);
+
+                $customerSession = $objectManager->get('\Magento\Customer\Model\Session');
+                $customerSession->setCustomerToken($token);
+
+                $this->customerRepository->save($customer);
+
+
             }
-
-            $customer->setCustomAttribute('pontos_cliente', $pontos);
-
-            $customerSession = $objectManager->get('\Magento\Customer\Model\Session');
-            $customerSession->setCustomerToken($token);
-
-            $this->customerRepository->save($customer);
 
             $this->customerSession->setCustomerDataAsLoggedIn($customer);
 
