@@ -159,6 +159,7 @@ class UserPlugin
 
             // Autentica no Magento
             if ($res == false) {
+                $this->_messageManager->getMessages(true);
                 $this->_messageManager->addError("Erro ao autenticar no Magento");
                 $result->setPath('customer/account/');
                 return $result;
