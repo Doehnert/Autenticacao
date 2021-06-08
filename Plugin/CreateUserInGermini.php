@@ -394,8 +394,8 @@ class CreateUserInGermini
             ]
         );
 
-        // return $proceed();
-        $params = array('cpf' => $cpf);
-        return $this->resultRedirectFactory->create()->setPath('customer/account/login', $params);
+        return $proceed();
+        // $params = array('cpf' => $cpf);
+        // return $this->resultRedirectFactory->create()->setPath('customer/account/login', $params);
     }
 }
