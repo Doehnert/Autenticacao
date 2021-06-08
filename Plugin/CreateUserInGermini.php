@@ -7,6 +7,7 @@ use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Directory\Model\RegionFactory;
 use Magento\Framework\UrlInterface;
+use Magento\Customer\Api\Data\CustomerInterface;
 
 class CreateUserInGermini
 {

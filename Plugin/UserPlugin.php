@@ -160,7 +160,7 @@ class UserPlugin
             // Autentica no Magento
             if ($res == false) {
                 $this->_messageManager->getMessages(true);
-                $this->_messageManager->addError("Erro ao autenticar no Magento");
+                $this->_messageManager->addError("Erro ao autenticar na Loja");
                 $result->setPath('customer/account/');
                 return $result;
             }
@@ -193,11 +193,18 @@ class UserPlugin
 
             $dados = json_decode($response);
 
-            // if (isset($dados->error)){
-            //     $this->_messageManager->addError("Erro conectando com Germini");
-            //     $result->setPath('customer/account/');
-            //     return $result;
-            // }
+            if (isset($dados->error)){
+                if($dados->error_description == "invalid_username")
+                {
+                    $this->_messageManager->getMessages(true);
+                    $this->_messageManager->addSuccessMessage("Caso queira, se inscreva no programa de fidelidade C.Vale");
+                    $this->customerSession->setCustomerDataAsLoggedIn($customer);
+                    return $result;
+                }
+                $this->_messageManager->addError("Erro conectando com Germini");
+                $result->setPath('customer/account/');
+                return $result;
+            }
 
             if (isset($dados->access_token))
             {
@@ -234,11 +241,18 @@ class UserPlugin
 
                 $this->customerRepository->save($customer);
 
+            } else {
+                $this->_messageManager->getMessages(true);
+                $this->_messageManager->addComplexNoticeMessage(
+                    'customerNeedValidateGermini',
+                    [
+                        'url' => 'https://cvale-fidelidade-consumer-hom.azurewebsites.net/auth/login',
+                    ]
+                );
+                return $result;
 
             }
-
             $this->customerSession->setCustomerDataAsLoggedIn($customer);
-
             $result->setPath('customer/account/');
             $this->_messageManager->getMessages(true);
             $this->cleanCache();

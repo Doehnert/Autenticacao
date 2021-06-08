@@ -6,12 +6,6 @@ use Magento\Customer\Model\AccountManagement;
 
 class PontosZero
 {
-    public function __construct()
-    {
-        
-    }
-
-
     public function beforeCreateAccountWithPasswordHash(AccountManagement $subject,CustomerInterface $customer, $hash, $redirectUrl)
     {
         $customer->setCustomAttribute('pontos_cliente', 0);
