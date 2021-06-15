@@ -102,25 +102,25 @@
     <div class="container">
         <ul class="progressbar">
             <li <?php
-        if ($estado >=0)
+        if ($estado ==0)
         {
             echo "class='active'";
         }
         ?>>Pagamento Pendente</li>
             <li <?php
-        if ($estado >=1)
+        if ($estado ==1)
         {
             echo "class='active'";
         }
         ?>>Processando</li>
             <li <?php
-        if ($estado >=2)
+        if ($estado ==2)
         {
             echo "class='active'";
         }
         ?>>Preparando para envio</li>
             <li <?php
-        if ($estado >=3)
+        if ($estado ==3)
         {
             echo "class='active'";
         }
