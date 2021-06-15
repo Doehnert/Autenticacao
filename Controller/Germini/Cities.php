@@ -46,9 +46,6 @@ class Cities extends Action
             $region = $this->regionFactory->create()->load($region_id);
             $region_code = $region->getCode();
 
-            $country = $this->countryFactory->create()->load($country_id);
-            $country_code = $country->getCode();
-
 
             // Obtem o id do germini referente ao country_code
 
