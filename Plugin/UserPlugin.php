@@ -233,7 +233,8 @@ class UserPlugin
                         $pontos = 0;
                     }
                 }
-
+            }else{
+                $pontos = 0;
                 $customer->setCustomAttribute('pontos_cliente', $pontos);
 
                 $customerSession = $objectManager->get('\Magento\Customer\Model\Session');
@@ -241,17 +242,20 @@ class UserPlugin
 
                 $this->customerRepository->save($customer);
 
-            } else {
-                $this->_messageManager->getMessages(true);
-                $this->_messageManager->addComplexNoticeMessage(
-                    'customerNeedValidateGermini',
-                    [
-                        'url' => 'https://cvale-fidelidade-consumer-hom.azurewebsites.net/auth/login',
-                    ]
-                );
-                return $result;
-
             }
+
+
+            // } else {
+            //     $this->_messageManager->getMessages(true);
+            //     $this->_messageManager->addComplexNoticeMessage(
+            //         'customerNeedValidateGermini',
+            //         [
+            //             'url' => 'https://cvale-fidelidade-consumer-hom.azurewebsites.net/auth/login',
+            //         ]
+            //     );
+            //     return $result;
+
+            // }
             $this->customerSession->setCustomerDataAsLoggedIn($customer);
             $result->setPath('customer/account/');
             $this->_messageManager->getMessages(true);
