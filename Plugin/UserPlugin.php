@@ -193,18 +193,18 @@ class UserPlugin
 
             $dados = json_decode($response);
 
-            if (isset($dados->error)){
-                if($dados->error_description == "invalid_username")
-                {
-                    $this->_messageManager->getMessages(true);
-                    $this->_messageManager->addSuccessMessage("Caso queira, se inscreva no programa de fidelidade C.Vale");
-                    $this->customerSession->setCustomerDataAsLoggedIn($customer);
-                    return $result;
-                }
-                $this->_messageManager->addError("Erro conectando com Germini");
-                $result->setPath('customer/account/');
-                return $result;
-            }
+            // if (isset($dados->error)){
+            //     if($dados->error_description == "invalid_username")
+            //     {
+            //         $this->_messageManager->getMessages(true);
+            //         $this->_messageManager->addSuccessMessage("Caso queira, se inscreva no programa de fidelidade C.Vale");
+            //         $this->customerSession->setCustomerDataAsLoggedIn($customer);
+            //         return $result;
+            //     }
+            //     $this->_messageManager->addError("Erro conectando com Germini");
+            //     $result->setPath('customer/account/');
+            //     return $result;
+            // }
 
             if (isset($dados->access_token))
             {
