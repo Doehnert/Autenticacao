@@ -5,4 +5,53 @@
  */
 /** @var \Magento\Framework\View\Element\Template $block */
 ?>
-<?= $block->escapeHtml(__('Finalize seu cadastro no programa de Fidelidade e acumule pontos: <a href="%1">Clique aqui</a>.', $block->getData('url')), ['a']);
+<?= $block->escapeHtml(__('Você ainda não possui cadastro no programa CVale fidelidade. <a id="conheca">Quero conhecer</a>.'), ['a']);
+?>
+
+
+    <!--MODAL CONHECA-->
+    <div id="modal-conheca">
+        <div class="modal-inner-content">
+            <p>O Programa C.Vale Fidelidade, nasceu para valorizar você que é nosso cliente. Com nossa "moeda" Seed
+                (SD$) você estará em casa para comprar produtos de excelente qualidade e ainda acumular pontos.</p>
+
+            <p>C.Vale Fidelidade está disponível em nossa rede de Supermercados, Hipermercados e Posto de combustível.
+                Você acumula pontos e tem a oportunidade de trocar por produtos em promoções especiais.</p>
+
+
+            <p>Para participar basta realizar o cadastro no programa C.Vale Fidelidade e identificar suas compras em
+                nossas lojas indicando seu CPF no momento da emissão do cupom fiscal. Caso você não tenha se
+                identificado nos cupons de compra, abra nosso aplicativo ou site e vincule seus pontos através da
+                leitura do QR Code do seu cupom.</p>
+
+
+            <p>Você acumula nos produtos identificados e em nossas campanhas exclusivas.</p>
+
+            <p>Venha acumular Seeds, aproveite!</p>
+        </div>
+    </div>
+
+<script>
+    require([
+        'jquery',
+        'Magento_Ui/js/modal/modal',
+        'redirectUrl',
+        'mage/mage',
+        'mage/calendar',
+        'jquery.mask',
+        'loader'
+    ], function ($, modal) {
+        var options = {
+            innerScroll: true,
+            type: 'popup',
+            responsive: true,
+            title: 'O QUE É O C.VALE FIDELIDADE?',
+            buttons: []
+        };
+
+        modal(options, $('#modal-conheca'));
+
+        $("#conheca").click(function () {
+            $("#modal-conheca").modal("openModal");
+        })
+</script>
