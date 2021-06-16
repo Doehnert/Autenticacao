@@ -7,6 +7,7 @@ class Display extends \Magento\Framework\View\Element\Template
 {
     protected $_curl;
     protected $scopeConfig;
+    protected $_messageManager;
     /**
      * @param \Magento\Framework\View\Element\Template\Context $context
      * @param array $data
@@ -15,11 +16,13 @@ class Display extends \Magento\Framework\View\Element\Template
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Framework\HTTP\Client\Curl $curl,
         \Magento\Framework\View\Element\Template\Context $context,
+        \Magento\Framework\Message\ManagerInterface $messageManager,
         array $data = []
     ) {
         parent::__construct($context, $data);
         $this->_curl = $curl;
         $this->scopeConfig = $scopeConfig;
+        $this->_messageManager = $messageManager;
     }
 
     public function sayPoints()
@@ -30,6 +33,14 @@ class Display extends \Magento\Framework\View\Element\Template
         $customer = $customerSession->getCustomer();
         $customerId = $customer->getId();
         $pontosCliente = $customer->getPontosCliente();
+
+        $this->_messageManager->getMessages(true);
+        $this->_messageManager->addComplexNoticeMessage(
+            'customerNeedValidateGermini',
+            [
+                'url' => 'https://cvale-fidelidade-consumer-hom.azurewebsites.net/auth/login',
+            ]
+        );
 
         // Consulta a API do Germini para pegar a pontuação
         // $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
