@@ -205,7 +205,7 @@ class UserPlugin
             //     $result->setPath('customer/account/');
             //     return $result;
             // }
-
+            $customerSession = $objectManager->get('\Magento\Customer\Model\Session');
             if (isset($dados->access_token))
             {
                 $token = $dados->access_token;
@@ -233,16 +233,13 @@ class UserPlugin
                         $pontos = 0;
                     }
                 }
+                $customerSession->setCustomerToken($token);
             }else{
                 $pontos = 0;
-                $customer->setCustomAttribute('pontos_cliente', $pontos);
-
-                $customerSession = $objectManager->get('\Magento\Customer\Model\Session');
-                $customerSession->setCustomerToken($token);
-
-                $this->customerRepository->save($customer);
 
             }
+            $customer->setCustomAttribute('pontos_cliente', $pontos);
+                $this->customerRepository->save($customer);
 
 
             // } else {
