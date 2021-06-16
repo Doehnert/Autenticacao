@@ -236,6 +236,13 @@ class UserPlugin
                 $customerSession->setCustomerToken($token);
             }else{
                 $pontos = 0;
+                // $this->_messageManager->getMessages(true);
+                // $this->_messageManager->addComplexNoticeMessage(
+                //     'customerNeedValidateGermini',
+                //     [
+                //         'url' => 'https://cvale-fidelidade-consumer-hom.azurewebsites.net/auth/login',
+                //     ]
+                // );
 
             }
             $customer->setCustomAttribute('pontos_cliente', $pontos);
