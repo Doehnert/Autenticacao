@@ -193,7 +193,7 @@ class UserPlugin
 
             $dados = json_decode($response);
 
-            // if (isset($dados->error)){
+            if (isset($dados->error)){
             //     if($dados->error_description == "invalid_username")
             //     {
             //         $this->_messageManager->getMessages(true);
@@ -204,7 +204,8 @@ class UserPlugin
             //     $this->_messageManager->addError("Erro conectando com Germini");
             //     $result->setPath('customer/account/');
             //     return $result;
-            // }
+                $fidelity = 0;
+            }
             $customerSession = $objectManager->get('\Magento\Customer\Model\Session');
             if (isset($dados->access_token))
             {
@@ -220,7 +221,7 @@ class UserPlugin
                 $response = $this->_curl->getBody();
                 $dados = json_decode($response);
 
-
+                $fidelity = $dados->fidelity->key;
 
                 if ($dados == "") {
                     // $this->_messageManager->addError('Não foi possível conectar com germini');
@@ -234,6 +235,7 @@ class UserPlugin
                     }
                 }
                 $customerSession->setCustomerToken($token);
+
             }else{
                 $pontos = 0;
                             //     $this->_messageManager->getMessages(true);
@@ -245,6 +247,7 @@ class UserPlugin
             //     );
 
             }
+            $customerSession->setFidelity($fidelity);
             $customer->setCustomAttribute('pontos_cliente', $pontos);
                 $this->customerRepository->save($customer);
 
@@ -332,6 +335,8 @@ class UserPlugin
                 $this->_curl->get($url);
                 $response = $this->_curl->getBody();
                 $dados = json_decode($response);
+
+                $fidelity = $dados->fidelity->key;
 
                 $new_customer = $objectManager->get('\Magento\Customer\Api\Data\CustomerInterfaceFactory')->create();
                 $new_customer->setWebsiteId($websiteId);

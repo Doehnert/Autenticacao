@@ -2,11 +2,13 @@
 namespace Vexpro\Autenticacao\Block;
 
 use Magento\Framework\App\Config\ScopeConfigInterface as ScopeConfig;
+use Magento\Customer\Api\CustomerRepositoryInterface;
 
 class Display extends \Magento\Framework\View\Element\Template
 {
     protected $_curl;
     protected $scopeConfig;
+    protected $_messageManager;
     /**
      * @param \Magento\Framework\View\Element\Template\Context $context
      * @param array $data
@@ -15,11 +17,15 @@ class Display extends \Magento\Framework\View\Element\Template
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Framework\HTTP\Client\Curl $curl,
         \Magento\Framework\View\Element\Template\Context $context,
+        \Magento\Framework\Message\ManagerInterface $messageManager,
+        CustomerRepositoryInterface $customerRepository,
         array $data = []
     ) {
         parent::__construct($context, $data);
         $this->_curl = $curl;
         $this->scopeConfig = $scopeConfig;
+        $this->_messageManager = $messageManager;
+        $this->customerRepository = $customerRepository;
     }
 
     public function sayPoints()
@@ -31,10 +37,17 @@ class Display extends \Magento\Framework\View\Element\Template
         $customerId = $customer->getId();
         $pontosCliente = $customer->getPontosCliente();
 
-        // Consulta a API do Germini para pegar a pontuação
+        $fidelity = $customerSession->getFidelity();
+        $germiniToken = $customerSession->getCustomerToken();
+
+        // $customer = $this->customerRepository->getById($customerId);
+        // $cpfCliente = $customer->getCustomAttribute('cpf')->getValue();
+        // $cpf_apenas_numeros = preg_replace("/[^0-9]/", "", $cpfCliente);
+
+
+        // // Consulta a API do Germini para verificar se é fidelidade ou não
         // $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-        // $url = $url_base . '/api/ConsumerWallet/GetConsumerPoints';
-        // $url = $url . '?cpfCnpj=' . $cpf_apenas_numeros . '&password=' . $senha;
+        // $url = $url_base . '/api/Consumer?cpf=' . $cpf_apenas_numeros ;
 
         // // get method
         // $this->_curl->get($url);
@@ -43,17 +56,18 @@ class Display extends \Magento\Framework\View\Element\Template
         // $response = $this->_curl->getBody();
 
         // $dados = json_decode($response);
+        // $fidelidade = $dados->fidelity->key;
 
-        // if ($dados == "") {
-        //     $pontos = 0;
-        // } else {
-        //     $pontos = $dados->data;
-        //     if ($pontos == "") {
-        //         $pontos = 0;
-        //     }
-        // }
-
-        // $customer->setCustomAttribute('pontos_cliente', $pontos);
+        if ($fidelity == 0)
+        {
+            $this->_messageManager->getMessages(true);
+            $this->_messageManager->addComplexNoticeMessage(
+                'customerNeedValidateGermini',
+                [
+                    'url' => 'https://cvale-fidelidade-consumer-hom.azurewebsites.net/auth/login',
+                ]
+            );
+        }
 
 		return $pontosCliente;
 	}
