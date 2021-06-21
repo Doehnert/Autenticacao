@@ -358,8 +358,8 @@
         <div id="nasc_field">
             <div class="field fieldset individual">
                 <div class="field required">
-                    <label for="nasc" class="label">Data de nasc.</label>
-                    <input name="nasc" id="nasc" type="text" class="input-text required-entry"
+                    <label for="dob" class="label">Data de nasc.</label>
+                    <input name="dob" id="dob" type="text" class="input-text required-entry"
                         data-validate="{required:true}" aria-required="true" />
                 </div>
             </div>
@@ -367,11 +367,11 @@
         <div id="gender_field">
             <div class="field fieldset individual">
                 <div class="field required">
-                    <label for="genero" class="label">Gênero</label>
-                    <select id="genero" name="genero" aria-required="true" validate-select="true">
+                    <label for="gender" class="label">Gênero</label>
+                    <select id="gender" name="gender" aria-required="true" validate-select="true">
                         <option value=""><?php /* @escapeNotVerified */ echo __('') ?></option>
-                        <option value="m">Masculino</option>
-                        <option value="f">Feminino</option>
+                        <option value=1>Masculino</option>
+                        <option value=2>Feminino</option>
                         <!-- <option value="n">Não informar</option> -->
                     </select>
                 </div>
@@ -720,9 +720,9 @@
 
         $("#telephone").mask("(00) 00000-0000");
         $("#telephone2").mask("(00) 0000-0000");
-        $("#nasc").mask("00/00/0000");
+        $("#customer_dob").mask("0000-00-00");
 
-        $('#nasc').calendar({
+        $('#customer_dob').calendar({
             changeMonth: true,
             changeYear: true,
             showButtonPanel: true,

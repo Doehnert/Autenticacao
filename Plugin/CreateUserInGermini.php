@@ -84,12 +84,12 @@ class CreateUserInGermini
 
         $fullName = "{$firstname} {$lastname}";
 
-        $nasc = $subject->getRequest()->getParam('nasc');
+        $nasc = $subject->getRequest()->getParam('dob');
 
         $dob = date("Y-m-d H:i:s", strtotime($nasc));
         $dob2 = date("Y-m-d", strtotime($nasc));
 
-        $genero = $subject->getRequest()->getParam('genero');
+        $genero = $subject->getRequest()->getParam('gender');
         $email = $subject->getRequest()->getParam('email');
         $telephone = $subject->getRequest()->getParam('telephone');
         $telephone = preg_replace("/[^0-9]/", "",$telephone);
@@ -267,7 +267,7 @@ class CreateUserInGermini
         {
 
             $zipCodeNumbers = preg_replace("/[^0-9]/", "", $zipCode);
-            $generoMaiusculo = $genero == 'm' ? 'M' : 'F';
+            $generoMaiusculo = $genero == 1 ? 'M' : 'F';
 
             $xmlstr =
             "<?xml version='1.0' standalone='yes'?>
@@ -335,6 +335,7 @@ class CreateUserInGermini
             return $proceed();
         }
 
+        $germiniGenero = $genero == 1 ? 'm' : 'f';
         // Cria usuário no Germini
         $response = "";
         $url = $url_base . '/api/Consumer/Register';
@@ -342,7 +343,7 @@ class CreateUserInGermini
             "name" => $firstname,
             "cpf" => $cpf,
             "dateOfBirth" => $dob,
-            "gender" => $genero,
+            "gender" => $germiniGenero,
             "email" => $email,
             "password" => $password,
             "confirmPassword" => $password_confirmation,
