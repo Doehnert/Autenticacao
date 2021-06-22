@@ -295,7 +295,7 @@ class UserPlugin
                 $this->_messageManager->addComplexNoticeMessage(
                     'customerNeedValidateGermini',
                     [
-                        'url' => 'https://cvale-fidelidade-consumer-hom.azurewebsites.net/auth/login',
+                        'url' => 'https://cvale-fidelidade-consumer.azurewebsites.net/auth/login',
                     ]
                 );
 
@@ -312,7 +312,7 @@ class UserPlugin
                     $this->_messageManager->addComplexNoticeMessage(
                         'customerNeedValidateGermini',
                         [
-                            'url' => 'https://cvale-fidelidade-consumer-hom.azurewebsites.net/auth/login',
+                            'url' => 'https://cvale-fidelidade-consumer.azurewebsites.net/auth/login',
                         ]
                     );
                     // $this->_messageManager->addError("Não foi possível conectar com germini");
@@ -417,7 +417,7 @@ class UserPlugin
                 $this->_messageManager->addComplexNoticeMessage(
                     'customerNeedValidateGermini',
                     [
-                        'url' => 'https://cvale-fidelidade-consumer-hom.azurewebsites.net/auth/login',
+                        'url' => 'https://cvale-fidelidade-consumer.azurewebsites.net/auth/login',
                     ]
                 );
                 // $this->_messageManager->addError("Erro ao conectar com Germini");
