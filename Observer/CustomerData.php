@@ -50,15 +50,13 @@ class CustomerData implements \Magento\Framework\Event\ObserverInterface
 
             if ($customerId != null)
             {
-
-
                 $fidelity = $customerSession->getFidelity();
 
                 $customer = $this->customerRepository->getById($customerId);
                 $cpfCliente = $customer->getCustomAttribute('cpf')->getValue();
                 $cpf_apenas_numeros = preg_replace("/[^0-9]/", "", $cpfCliente);
 
-                if ($fidelity == 2)
+                if ($fidelity == null || $fidelity == 0)
                 {
 
                     $zipCodeNumbers = preg_replace("/[^0-9]/", "", $zipCode);
