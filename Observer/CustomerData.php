@@ -126,7 +126,6 @@ class CustomerData implements \Magento\Framework\Event\ObserverInterface
                     print_r($array_data);
                     print_r('</pre>');
 
-                    return $proceed();
                 }
             }
 
