@@ -6,14 +6,20 @@ use Magento\Directory\Model\RegionFactory;
 
 class CustomerData implements \Magento\Framework\Event\ObserverInterface
 {
+    protected $scopeConfig;
     protected $regionFactory;
+    protected $_curl;
 
     public function __construct(
         CustomerRepositoryInterface $customerRepository,
-        RegionFactory $regionFactory
+        RegionFactory $regionFactory,
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        \Magento\Framework\HTTP\Client\Curl $curl
     ) {
         $this->customerRepository = $customerRepository;
         $this->regionFactory = $regionFactory;
+        $this->_curl = $curl;
+        $this->scopeConfig = $scopeConfig;
     }
 
 		public function execute(\Magento\Framework\Event\Observer $observer)
@@ -92,6 +98,7 @@ class CustomerData implements \Magento\Framework\Event\ObserverInterface
 
                     $input_xml = $simplexml->asXML();
 
+                    $logger = $objectManager->create('\Psr\Log\LoggerInterface');
                     $logger->info("Enviado ao SAP: " .$input_xml);
 
                     $sap_url = $this->scopeConfig->getValue('acessos/general/sap_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
