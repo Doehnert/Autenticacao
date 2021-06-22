@@ -5,7 +5,7 @@
     $customerSession = $objectManager->create('Magento\Customer\Model\Session');
     $fidelity = $customerSession->getFidelity();
     // echo $fidelity;
-    if ($fidelity == 2){
+    if ($fidelity == 0){
         echo "<a style='color: #fff' href='/autentica/germini/registrargermini'>Vincule-se aqui</a>";
     } else {
     ?>
