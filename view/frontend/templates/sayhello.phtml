@@ -1,7 +1,17 @@
 <div style="background-color: #21409A; color: white; font-size: 15px; padding: 10px; margin-bottom: 20px;">
+<img src="<?php echo $this->getViewFileUrl('Vexpro_Autenticacao::img/ico_seed.png'); ?>" />
+<?php
+    $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+    $customerSession = $objectManager->create('Magento\Customer\Model\Session');
+    $fidelity = $customerSession->getFidelity();
+    // echo $fidelity;
+    if ($fidelity == 2){
+        echo "<a style='color: #fff' href='/autentica/germini/registrargermini'>Vincule-se aqui</a>";
+    } else {
+    ?>
     Você possui
     <br />
-    <img src="<?php echo $this->getViewFileUrl('Vexpro_Autenticacao::img/ico_seed.png'); ?>" />
+
     <?php
     $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
     $scopeConfig = $objectManager->get('Magento\Framework\App\Config\ScopeConfigInterface');
@@ -9,5 +19,6 @@
     $programCurrencySymbol = $scopeConfig->getValue('acessos/general/programCurrencySymbol', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
     $programCurrencyName = $scopeConfig->getValue('acessos/general/programCurrencyName', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
     echo $programCurrencySymbol . "<b>" . $block->sayPoints() . "</b>";
+    }
     ?>
 </div>

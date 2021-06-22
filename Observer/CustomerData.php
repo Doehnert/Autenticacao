@@ -2,13 +2,18 @@
 namespace Vexpro\Autenticacao\Observer;
 
 use Magento\Customer\Api\CustomerRepositoryInterface;
+use Magento\Directory\Model\RegionFactory;
 
 class CustomerData implements \Magento\Framework\Event\ObserverInterface
 {
+    protected $regionFactory;
+
     public function __construct(
-        CustomerRepositoryInterface $customerRepository
+        CustomerRepositoryInterface $customerRepository,
+        RegionFactory $regionFactory
     ) {
         $this->customerRepository = $customerRepository;
+        $this->regionFactory = $regionFactory;
     }
 
 		public function execute(\Magento\Framework\Event\Observer $observer)
@@ -32,7 +37,10 @@ class CustomerData implements \Magento\Framework\Event\ObserverInterface
             $district = $locations[2];
 
             $zipCodeNumbers = $customer_address['postcode'];
-            $regionName = $customer_address['region_code'];
+            $region_id = $customer_address['region_id'];
+            $region = $this->regionFactory->create()->load($region_id);
+
+            $regionName = $region->getCode();
             $cityName = $customer_address['city'];
 
             $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
