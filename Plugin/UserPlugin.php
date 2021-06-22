@@ -204,7 +204,7 @@ class UserPlugin
             //     $this->_messageManager->addError("Erro conectando com Germini");
             //     $result->setPath('customer/account/');
             //     return $result;
-                $fidelity = 0;
+                $fidelity = 1;
             }
             $customerSession = $objectManager->get('\Magento\Customer\Model\Session');
             if (isset($dados->access_token))

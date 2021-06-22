@@ -121,13 +121,14 @@ class Registrargermini extends \Magento\Framework\App\Action\Action
         $resultado = json_decode($response);
 
 
-        if (!isset($resultado->errors)){
+        if ($resultado->errors == ""){
+            $customerSession->setFidelity(1);
             $this->messageManager->addSuccessMessage(
                 "Usuário vinculado ao germini com sucesso"
             );
             return $this->resultRedirectFactory->create()
             ->setPath(
-                'customer/account/create'
+                'customer/account'
             );
         }
     }
