@@ -247,6 +247,7 @@ class UserPlugin
             //     );
 
             }
+
             $customerSession->setFidelity($fidelity);
             $customer->setCustomAttribute('pontos_cliente', $pontos);
             $this->customerRepository->save($customer);
@@ -338,6 +339,9 @@ class UserPlugin
 
                 $fidelity = $dados->fidelity->key;
 
+                $customerSession = $objectManager->get('\Magento\Customer\Model\Session');
+                $customerSession->setFidelity($fidelity);
+
                 $new_customer = $objectManager->get('\Magento\Customer\Api\Data\CustomerInterfaceFactory')->create();
                 $new_customer->setWebsiteId($websiteId);
 
@@ -356,6 +360,11 @@ class UserPlugin
                 $new_customer->setLastname($last_name);
                 $new_customer->setTaxVat($cpf);
                 $new_customer->setCustomAttribute('cpf', $cpf);
+                $magentoGender = $dados->gender == 'M' ? 2 : 1;
+                $new_customer->setGender($magentoGender);
+
+                $dateOfBirth=date_create($dados->dateOfBirth);
+                $new_customer->setDob(date_format($dateOfBirth, 'Y-m-d'));
 
                 $pontos = $dados->points;
                 if ($pontos == "") {
