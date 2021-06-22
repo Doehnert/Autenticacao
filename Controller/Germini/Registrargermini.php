@@ -121,7 +121,7 @@ class Registrargermini extends \Magento\Framework\App\Action\Action
         $resultado = json_decode($response);
 
 
-        if ($resultado->errors == ""){
+        // if ($resultado->errors == ""){
             $customerSession->setFidelity(1);
             $this->messageManager->addSuccessMessage(
                 "Usuário vinculado ao germini com sucesso"
@@ -130,6 +130,6 @@ class Registrargermini extends \Magento\Framework\App\Action\Action
             ->setPath(
                 'customer/account'
             );
-        }
+        // }
     }
 }
