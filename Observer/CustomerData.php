@@ -66,7 +66,6 @@ class CustomerData implements \Magento\Framework\Event\ObserverInterface
                 {
 
                     $zipCodeNumbers = preg_replace("/[^0-9]/", "", $zipCode);
-                    $generoMaiusculo = $genero == '1' ? 'M' : 'F';
 
                     $xmlstr =
                     "<?xml version='1.0' standalone='yes'?>
