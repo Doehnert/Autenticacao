@@ -269,7 +269,7 @@ class UserPlugin
             $this->_messageManager->getMessages(true);
             $this->cleanCache();
             return $result;
-        } else {
+        } else { // USUARIO NAO EXISTE AINDA NO MAGENTO
             // Tenta realizar a autenticação com JWT
             try {
                 $url_base = $this->scopeConfig->getValue('acessos/general/identity_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
