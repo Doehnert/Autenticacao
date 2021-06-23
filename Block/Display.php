@@ -58,20 +58,20 @@ class Display extends \Magento\Framework\View\Element\Template
         // $dados = json_decode($response);
         // $fidelidade = $dados->fidelity->key;
 
-        if ($fidelity == 1)
-        {
-            $this->_messageManager->getMessages(true);
-            $this->_messageManager->addComplexNoticeMessage(
-                'customerNeedValidateGermini',
-                [
-                    'url' => 'https://cvale-fidelidade-consumer.azurewebsites.net/auth/login',
-                ]
-            );
-        }else if($fidelity == 0)
-        {
-            $this->_messageManager->getMessages(true);
-            $this->_messageManager->addNotice('Vincule-se ao CVale Fidelidade');
-        }
+        // if ($fidelity == 1)
+        // {
+        //     $this->_messageManager->getMessages(true);
+        //     $this->_messageManager->addComplexNoticeMessage(
+        //         'customerNeedValidateGermini',
+        //         [
+        //             'url' => 'https://cvale-fidelidade-consumer.azurewebsites.net/auth/login',
+        //         ]
+        //     );
+        // }else if($fidelity == 0)
+        // {
+        //     $this->_messageManager->getMessages(true);
+        //     $this->_messageManager->addNotice('Vincule-se ao CVale Fidelidade');
+        // }
 
 		return $pontosCliente;
 	}

@@ -1,0 +1,146 @@
+<?php
+/** @var \Vexpro\Autenticacao\Block\Template $block */
+?>
+
+<style>
+.modal-inner-wrap {
+    max-width: 850px;
+}
+.MyButton {
+    background: #3DBAC7;
+    color: white;
+    padding: 15px;
+    border-radius: 6px;
+}
+.modal-footer {
+    display: flex;
+    justify-content: center;
+}
+.template {
+    display: flex;
+    justify-content: center;
+}
+.modal-popup.modal-slide .modal-footer {
+    border-top: none;
+}
+</style>
+
+<div class="template">
+
+<?php if ($block->fidelity() == 1){ ?>
+<div data-bind="attr: {
+    class: 'message-' + message.type + ' ' + message.type + ' message',
+    'data-ui-id': 'message-' + message.type
+}" class="message-notice notice message" data-ui-id="message-notice">
+    <div data-bind="html: $parent.prepareMessageForHtml(message.text)">Você ainda não concluiu seu cadastro no Programa de fidelidade. Acesse o programa e informe seu login / senha utilizados na loja para validar seu cadastro. <a href="#" id="conheca">SAIBA MAIS</a>.</div>
+</div>
+<?php }else if ($block->fidelity() == 0){ ?>
+    <div data-bind="attr: {
+    class: 'message-' + message.type + ' ' + message.type + ' message',
+    'data-ui-id': 'message-' + message.type
+}" class="message-notice notice message" data-ui-id="message-notice">
+    <div data-bind="html: $parent.prepareMessageForHtml(message.text)"> Você ainda não possui cadastro no programa de fidelidade. <a href="#" id="conheca2">Conheça o programa.</a>.</div>
+</div>
+
+<?php } ?>
+
+<!--MODAL CONHECA-->
+<div id="modal-conheca" style="display:none">
+    <div class="modal-inner-content">
+        <p>O Programa C.Vale Fidelidade, nasceu para valorizar você que é nosso cliente. Com nossa "moeda" Seed
+            (SD$) você estará em casa para comprar produtos de excelente qualidade e ainda acumular pontos.</p>
+
+        <p>C.Vale Fidelidade está disponível em nossa rede de Supermercados, Hipermercados e Posto de combustível.
+            Você acumula pontos e tem a oportunidade de trocar por produtos em promoções especiais.</p>
+
+
+        <p>Para participar basta realizar o cadastro no programa C.Vale Fidelidade e identificar suas compras em
+            nossas lojas indicando seu CPF no momento da emissão do cupom fiscal. Caso você não tenha se
+            identificado nos cupons de compra, abra nosso aplicativo ou site e vincule seus pontos através da
+            leitura do QR Code do seu cupom.</p>
+
+
+        <p>Você acumula nos produtos identificados e em nossas campanhas exclusivas.</p>
+
+        <p>Venha acumular Seeds, aproveite!</p>
+    </div>
+</div>
+<div id="modal-conheca2" style="display:none">
+    <div class="modal-inner-content">
+        <p>O Programa C.Vale Fidelidade, nasceu para valorizar você que é nosso cliente. Com nossa "moeda" Seed
+            (SD$) você estará em casa para comprar produtos de excelente qualidade e ainda acumular pontos.</p>
+
+        <p>C.Vale Fidelidade está disponível em nossa rede de Supermercados, Hipermercados e Posto de combustível.
+            Você acumula pontos e tem a oportunidade de trocar por produtos em promoções especiais.</p>
+
+
+        <p>Para participar basta realizar o cadastro no programa C.Vale Fidelidade e identificar suas compras em
+            nossas lojas indicando seu CPF no momento da emissão do cupom fiscal. Caso você não tenha se
+            identificado nos cupons de compra, abra nosso aplicativo ou site e vincule seus pontos através da
+            leitura do QR Code do seu cupom.</p>
+
+
+        <p>Você acumula nos produtos identificados e em nossas campanhas exclusivas.</p>
+
+        <p>Venha acumular Seeds, aproveite!</p>
+    </div>
+</div>
+</div>
+
+
+
+<script>
+    require([
+        'jquery',
+        'Magento_Ui/js/modal/modal',
+        'redirectUrl',
+        'mage/mage',
+        'mage/calendar',
+        'jquery.mask',
+        'loader'
+    ], function ($, modal) {
+
+        $(document).ready(function(){
+            var options = {
+            innerScroll: true,
+            type: 'popup',
+            responsive: true,
+            title: 'O QUE É O C.VALE FIDELIDADE?',
+            buttons: [{
+                text: $.mage.__('ACESSAR O PROGRAMA DE FIDELIDADE'),
+                class: 'MyButton',
+                click: function () {
+                    window.open(`https://cvale-fidelidade-consumer-hom.azurewebsites.net/`);
+                }
+                }]
+            };
+            var options2 = {
+            innerScroll: true,
+            type: 'popup',
+            responsive: true,
+            title: 'O QUE É O C.VALE FIDELIDADE?',
+            buttons: [{
+                text: $.mage.__('ACESSAR O PROGRAMA DE FIDELIDADE'),
+                class: 'MyButton',
+                click: function () {
+                    window.open(`https://cvale-fidelidade-consumer-hom.azurewebsites.net/`);
+                }
+                }]
+            };
+
+        modal(options, $('#modal-conheca'));
+        modal(options2, $('#modal-conheca2'));
+
+        $("#conheca").click(function () {
+            $("#modal-conheca").modal("openModal");
+        })
+        $("#conheca2").click(function () {
+            $("#modal-conheca2").modal("openModal");
+        })
+
+        })
+
+
+    })
+</script>
+

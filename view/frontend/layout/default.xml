@@ -27,5 +27,12 @@
                 </argument>
             </arguments>
         </referenceBlock>
+
+
+        <referenceContainer name="page.top">
+            <block class="Vexpro\Autenticacao\Block\Fidelitymessage" name="startphoto" template="Vexpro_Autenticacao::teste.phtml">
+            </block>
+        </referenceContainer>
+
     </body>
 </page>
