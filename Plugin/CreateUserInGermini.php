@@ -75,6 +75,7 @@ class CreateUserInGermini
     )
     {
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $customerSession = $objectManager->get('\Magento\Customer\Model\Session');
         $logger = $objectManager->create('\Psr\Log\LoggerInterface');
 
 
@@ -333,6 +334,9 @@ class CreateUserInGermini
             print_r($array_data);
             print_r('</pre>');
 
+
+            $customerSession->setFidelity(0);
+
             return $proceed();
         }
 
@@ -396,6 +400,8 @@ class CreateUserInGermini
                 'url' => 'https://cvale-fidelidade-consumer.azurewebsites.net/auth/login',
             ]
         );
+
+        $customerSession->setFidelity(1);
 
         return $proceed();
         // $params = array('cpf' => $cpf);
