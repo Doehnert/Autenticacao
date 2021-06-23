@@ -194,8 +194,11 @@ class UserPlugin
             $dados = json_decode($response);
 
             if (isset($dados->error)){
-            //     if($dados->error_description == "invalid_username")
-            //     {
+                $fidelity = 1;
+                 if($dados->error_description == "invalid_username")
+                 {
+                     $fidelity = 0;
+                 }
             //         $this->_messageManager->getMessages(true);
             //         $this->_messageManager->addSuccessMessage("Caso queira, se inscreva no programa de fidelidade C.Vale");
             //         $this->customerSession->setCustomerDataAsLoggedIn($customer);
@@ -204,7 +207,7 @@ class UserPlugin
             //     $this->_messageManager->addError("Erro conectando com Germini");
             //     $result->setPath('customer/account/');
             //     return $result;
-                $fidelity = 1;
+
             }
             $customerSession = $objectManager->get('\Magento\Customer\Model\Session');
             if (isset($dados->access_token))
