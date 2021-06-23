@@ -12,6 +12,12 @@
     <body>
 
         <attribute name="class" value="account"/>
+
+        <referenceContainer name="page.top">
+            <block class="Vexpro\Autenticacao\Block\Fidelitymessage" name="startphoto" template="Vexpro_Autenticacao::teste.phtml">
+            </block>
+        </referenceContainer>
+
         <referenceContainer name="sidebar.main">
 
             <block class="Vexpro\Autenticacao\Block\Display" name="helloworld_display" template="Vexpro_Autenticacao::sayhello.phtml" before="-">

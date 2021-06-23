@@ -39,7 +39,7 @@
     class: 'message-' + message.type + ' ' + message.type + ' message',
     'data-ui-id': 'message-' + message.type
 }" class="message-notice notice message" data-ui-id="message-notice">
-    <div data-bind="html: $parent.prepareMessageForHtml(message.text)"> Você ainda não possui cadastro no programa de fidelidade. <a href="#" id="conheca2">Conheça o programa.</a>.</div>
+    <div data-bind="html: $parent.prepareMessageForHtml(message.text)"> Você ainda não possui cadastro no programa de fidelidade. <a href="#" id="conheca2">Conheça o programa</a>.</div>
 </div>
 
 <?php } ?>
@@ -110,7 +110,7 @@
                 text: $.mage.__('ACESSAR O PROGRAMA DE FIDELIDADE'),
                 class: 'MyButton',
                 click: function () {
-                    window.open(`https://cvale-fidelidade-consumer-hom.azurewebsites.net/`);
+                    window.open(`https://www.cvalefidelidade.com.br/auth/login`);
                 }
                 }]
             };
@@ -123,7 +123,7 @@
                 text: $.mage.__('ACESSAR O PROGRAMA DE FIDELIDADE'),
                 class: 'MyButton',
                 click: function () {
-                    window.open(`https://cvale-fidelidade-consumer-hom.azurewebsites.net/`);
+                    window.open(`https://www.cvalefidelidade.com.br/register`);
                 }
                 }]
             };
