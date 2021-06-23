@@ -38,9 +38,9 @@ class CustomerData implements \Magento\Framework\Event\ObserverInterface
             $location = $customer_address['street'];
             $locations = explode("\n", $location);
 
-            $location = $locations[0];
-            $number = $locations[1];
-            $district = $locations[2];
+            $location = (isset($locations[0]) ) ? $locations[0] : "";
+            $number = (isset($locations[1]) ) ? $locations[1] : "";
+            $district = (isset($locations[2]) ) ? $locations[2]: "";
 
             $zipCodeNumbers = $customer_address['postcode'];
             $region_id = $customer_address['region_id'];
