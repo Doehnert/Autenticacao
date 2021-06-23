@@ -350,20 +350,21 @@ class UserPlugin
 
                 // Preparing data for new customer
                 $new_customer->setEmail($dados->email);
-                $name = str_ireplace (' ', '', $dados->name);
-                $names = explode(" ", $name, 2);
-                $first_name = $names[0];
-                if (sizeof($names) > 1) {
-                    $last_name = end($names);
-                } else {
-                    $last_name = $first_name;
-                }
+                // $name = str_ireplace (' ', '', $dados->name);
+                $names = explode(" ", $dados->name);
+                $first_name = isset($names[0]) ? $names[0] : '';
+                $last_name = isset($names[1]) ? $names[1] : 'Cvale';
+                // if (sizeof($names) > 1) {
+                //     $last_name = end($names);
+                // } else {
+                //     $last_name = $first_name;
+                // }
 
                 $new_customer->setFirstname($first_name);
                 $new_customer->setLastname($last_name);
                 $new_customer->setTaxVat($cpf);
                 $new_customer->setCustomAttribute('cpf', $cpf);
-                $magentoGender = $dados->gender == 'M' ? 2 : 1;
+                $magentoGender = $dados->gender == 'M' ? 1 : 2;
                 $new_customer->setGender($magentoGender);
 
                 $dateOfBirth=date_create($dados->dateOfBirth);

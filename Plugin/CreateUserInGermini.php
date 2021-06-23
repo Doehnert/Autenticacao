@@ -401,6 +401,8 @@ class CreateUserInGermini
             ]
         );
 
+
+
         $customerSession->setFidelity(1);
 
         return $proceed();
