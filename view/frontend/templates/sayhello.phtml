@@ -5,9 +5,9 @@
     $customerSession = $objectManager->create('Magento\Customer\Model\Session');
     $fidelity = $customerSession->getFidelity();
     // echo $fidelity;
-    if ($fidelity === null || $fidelity == 0){
-        echo "<a style='color: #fff' href='/autentica/germini/registrargermini'>Vincule-se aqui</a>";
-    } else {
+    // if ($fidelity === null || $fidelity == 0){
+    //     echo "<a style='color: #fff' href='/autentica/germini/registrargermini'>Vincule-se aqui</a>";
+    // } else {
     ?>
     Você possui
     <br />
@@ -19,6 +19,6 @@
     $programCurrencySymbol = $scopeConfig->getValue('acessos/general/programCurrencySymbol', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
     $programCurrencyName = $scopeConfig->getValue('acessos/general/programCurrencyName', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
     echo $programCurrencySymbol . "<b>" . $block->sayPoints() . "</b>";
-    }
+    // }
     ?>
 </div>
