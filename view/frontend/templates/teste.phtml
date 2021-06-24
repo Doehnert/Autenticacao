@@ -122,6 +122,7 @@
     ], function ($, modal) {
 
         $(document).ready(function(){
+
             var options = {
             innerScroll: true,
             type: 'popup',
@@ -160,7 +161,8 @@
         })
 
         $("#fechar").click(function () {
-            $(".MyAlert").hide()
+            // $(".MyAlert").hide()
+            $(".MyAlert").fadeOut(500);
         })
 
         })
