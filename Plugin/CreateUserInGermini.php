@@ -403,7 +403,7 @@ class CreateUserInGermini
 
 
 
-        $customerSession->setFidelity(1);
+        $customerSession->setFidelity(2);
 
         return $proceed();
         // $params = array('cpf' => $cpf);
