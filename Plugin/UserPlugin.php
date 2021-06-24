@@ -379,7 +379,7 @@ class UserPlugin
                 array_shift($last_name);
                 $last_name = join(" ", $last_name);
                 $first_name = isset($names[0]) ? $names[0] : '';
-                $last_name = isset($names[1]) ? $names[1] : 'Cvale';
+                // $last_name = isset($names[1]) ? $names[1] : 'Cvale';
                 if($last_name == "")
                     $last_name = "Cvale";
                 // if (sizeof($names) > 1) {
