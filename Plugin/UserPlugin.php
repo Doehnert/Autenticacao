@@ -196,7 +196,7 @@ class UserPlugin
             $customerSession = $objectManager->get('\Magento\Customer\Model\Session');
 
             if (isset($dados->error)){
-                $fidelity = 1;
+                $fidelity = 2;
                  if($dados->error_description == "invalid_username")
                  {
                      $fidelity = 0;
