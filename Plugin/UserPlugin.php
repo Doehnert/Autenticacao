@@ -109,6 +109,24 @@ class UserPlugin
         \Magento\Customer\Controller\Account\LoginPost $subject,
         $result
     ) {
+        function mask($val, $mask)
+        {
+            $maskared = '';
+            $k = 0;
+            for ($i = 0; $i <= strlen($mask) - 1; ++$i) {
+                if ($mask[$i] == '#') {
+                    if (isset($val[$k])) {
+                        $maskared .= $val[$k++];
+                    }
+                } else {
+                    if (isset($mask[$i])) {
+                        $maskared .= $mask[$i];
+                    }
+                }
+            }
+
+            return $maskared;
+        }
         $errorMessage = "Cpf ou senha inválidos";
         // $websiteId  = $this->storeManager->getWebsite()->getWebsiteId();
         $websiteId = 1;
@@ -117,6 +135,7 @@ class UserPlugin
         // $cpf = preg_replace("/[^0-9]/", "", $username);
         $cpf = $username;
         $cpf_apenas_numeros = preg_replace("/[^0-9]/", "", $username);
+        $cpf_mask = mask($cpf_apenas_numeros, '###.###.###-##');
 
         $senha = $subject->getRequest()->getPost('login')['password'];
 
@@ -140,7 +159,7 @@ class UserPlugin
         /** Applying Filters */
         $customerCollection
             //->addAttributeToSelect(array('email'))
-            ->addAttributeToFilter('cpf', array('eq' => $cpf));
+            ->addAttributeToFilter('cpf', array('eq' => $cpf_mask));
         $customers = $customerCollection->load();
 
         $conta = 0;
