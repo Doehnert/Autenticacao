@@ -3,9 +3,6 @@
 ?>
 
 <style>
-.modal-inner-wrap {
-    max-width: 850px;
-}
 .MyButton {
     background: #3DBAC7;
     color: white;
@@ -23,25 +20,49 @@
 .modal-popup.modal-slide .modal-footer {
     border-top: none;
 }
+.MyAlert {
+    padding: 15px;
+    background: #ecad00;
+    color: white;
+    margin-bottom: 15px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.conteudo {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
 </style>
 
 <div class="template">
 
 <?php if ($block->fidelity() == 2){ ?>
-<div data-bind="attr: {
-    class: 'message-' + message.type + ' ' + message.type + ' message',
-    'data-ui-id': 'message-' + message.type
-}" class="message-notice notice message" data-ui-id="message-notice">
-    <div data-bind="html: $parent.prepareMessageForHtml(message.text)">Você ainda não concluiu seu cadastro no Programa de fidelidade. Acesse o programa e informe seu login / senha utilizados na loja para validar seu cadastro. <a href="#" id="conheca">SAIBA MAIS</a>.</div>
-</div>
-<?php }else if ($block->fidelity() == 0){ ?>
-    <div data-bind="attr: {
-    class: 'message-' + message.type + ' ' + message.type + ' message',
-    'data-ui-id': 'message-' + message.type
-}" class="message-notice notice message" data-ui-id="message-notice">
-    <div data-bind="html: $parent.prepareMessageForHtml(message.text)"> Você ainda não possui cadastro no programa de fidelidade. <a href="#" id="conheca2">Conheça o programa</a>.</div>
+<div class='MyAlert'>
+    <div class='conteudo'>
+        <img style="margin-right: 20px" src="<?php echo $this->getViewFileUrl('Vexpro_Autenticacao::img/ico_atencao.png'); ?>" />
+        <div style="display: flex; flex-direction: column">
+            <spam>Você ainda não concluiu seu cadastro no Programa de fidelidade. Acesse o programa e informe seu login / senha utilizados na loja para validar seu cadastro.</spam>
+            <div><a href="#" id="conheca" style="color: white;">SAIBA MAIS</a></div>
+        </div>
+    </div>
+    <img id='fechar' style="height: 20px; cursor: pointer;" src="<?php echo $this->getViewFileUrl('Vexpro_Autenticacao::img/fechar_aviso.png'); ?>" />
 </div>
 
+<?php }else if ($block->fidelity() == 0){ ?>
+
+<div class='MyAlert'>
+    <div class='conteudo'>
+        <img style="margin-right: 20px" src="<?php echo $this->getViewFileUrl('Vexpro_Autenticacao::img/ico_atencao.png'); ?>" />
+        <div style="display: flex; flex-direction: column">
+            <spam>Você ainda não possui cadastro no programa de fidelidade.</spam>
+            <div><a href="#" id="conheca2" style="color: white;">Conheça o programa</a></div>
+        </div>
+    </div>
+    <img id='fechar' style="height: 20px; cursor: pointer;" src="<?php echo $this->getViewFileUrl('Vexpro_Autenticacao::img/fechar_aviso.png'); ?>" />
+</div>
 <?php } ?>
 
 <!--MODAL CONHECA-->
@@ -136,6 +157,10 @@
         })
         $("#conheca2").click(function () {
             $("#modal-conheca2").modal("openModal");
+        })
+
+        $("#fechar").click(function () {
+            $(".MyAlert").hide()
         })
 
         })

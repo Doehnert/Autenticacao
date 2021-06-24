@@ -13,7 +13,7 @@
 
         <attribute name="class" value="account"/>
 
-        <referenceContainer name="page.top">
+        <referenceContainer name="page.messages">
             <block class="Vexpro\Autenticacao\Block\Fidelitymessage" name="startphoto" template="Vexpro_Autenticacao::teste.phtml">
             </block>
         </referenceContainer>
