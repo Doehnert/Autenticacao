@@ -140,7 +140,10 @@ class UserPlugin
         /** Applying Filters */
         $customerCollection
             //->addAttributeToSelect(array('email'))
-            ->addAttributeToFilter('cpf', array('eq' => $cpf));
+            ->addAttributeToFilter('cpf', array(
+                array('eq' => $cpf),
+                array('eq' => $cpf_apenas_numeros)
+            ));
         $customers = $customerCollection->load();
 
         $conta = 0;
@@ -193,12 +196,15 @@ class UserPlugin
 
             $dados = json_decode($response);
 
+            $customerSession = $objectManager->get('\Magento\Customer\Model\Session');
+
             if (isset($dados->error)){
                 $fidelity = 1;
                  if($dados->error_description == "invalid_username")
                  {
                      $fidelity = 0;
                  }
+
             //         $this->_messageManager->getMessages(true);
             //         $this->_messageManager->addSuccessMessage("Caso queira, se inscreva no programa de fidelidade C.Vale");
             //         $this->customerSession->setCustomerDataAsLoggedIn($customer);
@@ -209,7 +215,7 @@ class UserPlugin
             //     return $result;
 
             }
-            $customerSession = $objectManager->get('\Magento\Customer\Model\Session');
+
             if (isset($dados->access_token))
             {
                 $token = $dados->access_token;
@@ -313,12 +319,13 @@ class UserPlugin
                 if (isset($resultado->error)) {
 
                     $this->_messageManager->getMessages(true);
-                    $this->_messageManager->addComplexNoticeMessage(
-                        'customerNeedValidateGermini',
-                        [
-                            'url' => 'https://cvale-fidelidade-consumer.azurewebsites.net/auth/login',
-                        ]
-                    );
+                    $this->_messageManager->addError("Usuário não encontrado no CVale Fidelidade");
+                    // $this->_messageManager->addComplexNoticeMessage(
+                    //     'customerNeedValidateGermini',
+                    //     [
+                    //         'url' => 'https://cvale-fidelidade-consumer.azurewebsites.net/auth/login',
+                    //     ]
+                    // );
                     // $this->_messageManager->addError("Não foi possível conectar com germini");
                     $result->setPath('customer/account/');
                     return $result;
@@ -351,9 +358,11 @@ class UserPlugin
                 // Preparing data for new customer
                 $new_customer->setEmail($dados->email);
                 // $name = str_ireplace (' ', '', $dados->name);
-                $names = explode(" ", $dados->name);
+                $names = explode(" ", ltrim($dados->name));
                 $first_name = isset($names[0]) ? $names[0] : '';
                 $last_name = isset($names[1]) ? $names[1] : 'Cvale';
+                if($last_name == "")
+                    $last_name = "Cvale";
                 // if (sizeof($names) > 1) {
                 //     $last_name = end($names);
                 // } else {
