@@ -140,10 +140,7 @@ class UserPlugin
         /** Applying Filters */
         $customerCollection
             //->addAttributeToSelect(array('email'))
-            ->addAttributeToFilter('cpf', array(
-                array('attribute' => 'cpf', 'like' => $cpf),
-                array('attribute' => 'cpf', 'like' => $cpf_apenas_numeros)
-            ));
+            ->addAttributeToFilter('cpf', array('eq' => $cpf));
         $customers = $customerCollection->load();
 
         $conta = 0;
