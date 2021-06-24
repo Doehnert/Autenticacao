@@ -375,6 +375,9 @@ class UserPlugin
                 $new_customer->setEmail($dados->email);
                 // $name = str_ireplace (' ', '', $dados->name);
                 $names = explode(" ", ltrim($dados->name));
+                $last_name = $names;
+                array_shift($last_name);
+                $last_name = join(" ", $last_name);
                 $first_name = isset($names[0]) ? $names[0] : '';
                 $last_name = isset($names[1]) ? $names[1] : 'Cvale';
                 if($last_name == "")
