@@ -246,7 +246,14 @@ class UserPlugin
                 $response = $this->_curl->getBody();
                 $dados = json_decode($response);
 
-                $fidelity = $dados->fidelity->key;
+                if ($dados->fidelity->key == 0)
+                {
+                    $fidelity = 2;
+                }
+                else
+                {
+                    $fidelity = $dados->status->key;
+                }
 
                 if ($dados == "") {
                     // $this->_messageManager->addError('Não foi possível conectar com germini');
