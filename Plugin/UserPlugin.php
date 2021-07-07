@@ -170,6 +170,22 @@ class UserPlugin
             $customer_id = $customer->getId();
         }
 
+        if ($customer_id == 0)
+        {
+            $customerCollection = $objectManager->create('Magento\Customer\Model\ResourceModel\Customer\Collection');
+            $customerCollection
+                ->addAttributeToFilter('cpf', array('eq' => $cpf));
+            $customers = $customerCollection->load();
+
+            $conta = 0;
+            $customer_id = 0;
+            foreach ($customers as $customer) {
+                $conta++;
+                $email = $customer->getEmail();
+                $customer_id = $customer->getId();
+            }
+        }
+
         // Se o usuário existe
         if ($customer_id > 0) {
             $customer = $this->customerRepository->getById($customer_id);
