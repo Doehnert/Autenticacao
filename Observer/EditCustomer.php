@@ -4,7 +4,7 @@ namespace Vexpro\Autenticacao\Observer;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Directory\Model\RegionFactory;
 
-class CustomerData implements \Magento\Framework\Event\ObserverInterface
+class EditCustomer implements \Magento\Framework\Event\ObserverInterface
 {
     protected $scopeConfig;
     protected $regionFactory;
@@ -24,7 +24,8 @@ class CustomerData implements \Magento\Framework\Event\ObserverInterface
 
 		public function execute(\Magento\Framework\Event\Observer $observer)
 		{
-            $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+            // $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+            // $customerSession = $objectManager->create('Magento\Customer\Model\Session');
             $customer = $observer->getCustomer();
             $customerId = $customer->getId();
 
@@ -34,13 +35,18 @@ class CustomerData implements \Magento\Framework\Event\ObserverInterface
                 {
                 $customer = $this->customerRepository->getById($customerId);
                 $addresses = $customer->getAddresses();
+                // $customer_address = $observer->getData('customer_address')->getData();
+
                 $fullName = $customer->getFirstName() . ' ' . $customer->getLastName();
 
                 $telephone2 = $addresses[0]->getTelephone();
                 $city = $addresses[0]->getCity();
                 $country_id = $addresses[0]->getCountryId();;;
                 $zipCode = $addresses[0]->getPostCode();
+                // $complemento = $customer_address[]
+                // $district = $customer_address['']
                 $locations = $addresses[0]->getStreet();
+                // $locations = explode("\n", $location);
 
                 $location = (isset($locations[0]) ) ? $locations[0] : "";
                 $number = (isset($locations[1]) ) ? $locations[1] : "";
@@ -50,6 +56,13 @@ class CustomerData implements \Magento\Framework\Event\ObserverInterface
                 $region = $this->regionFactory->create()->load($region_id);
 
                 $regionName = $region->getCode();
+                // $cityName = $customer_address['city'];
+
+
+
+                // $fidelity = $customerSession->getFidelity();
+
+                // $customer = $this->customerRepository->getById($customerId);
                 if ($customer->getCustomAttribute('cpf') !== null)
                 {
                     $cpfCliente = $customer->getCustomAttribute('cpf')->getValue();

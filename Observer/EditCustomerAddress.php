@@ -4,7 +4,7 @@ namespace Vexpro\Autenticacao\Observer;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Directory\Model\RegionFactory;
 
-class CustomerData implements \Magento\Framework\Event\ObserverInterface
+class EditCustomerAddress implements \Magento\Framework\Event\ObserverInterface
 {
     protected $scopeConfig;
     protected $regionFactory;
@@ -24,10 +24,13 @@ class CustomerData implements \Magento\Framework\Event\ObserverInterface
 
 		public function execute(\Magento\Framework\Event\Observer $observer)
 		{
-            $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-            $customerSession = $objectManager->create('Magento\Customer\Model\Session');
-            $customer = $observer->getCustomer();
+            // $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+            // $customerSession = $objectManager->create('Magento\Customer\Model\Session');
+            $address = $observer->getCustomerAddress();
+            $customer = $address->getCustomer();
             $customerId = $customer->getId();
+
+
 
             if (isset($customerId))
             {
@@ -35,39 +38,43 @@ class CustomerData implements \Magento\Framework\Event\ObserverInterface
                 {
                 $customer = $this->customerRepository->getById($customerId);
                 $addresses = $customer->getAddresses();
-                $customer_address = $observer->getData('customer_address')->getData();
+                // $customer_address = $observer->getData('customer_address')->getData();
 
-                $fullName = $customer_address['firstname'] . ' ' . $customer_address['lastname'];
+                $fullName = $customer->getFirstName() . ' ' . $customer->getLastName();
 
-                $telephone2 = $customer_address['telephone'];
-                $city = $customer_address['city'];
-                $country_id = $customer_address['country_id'];
-                $zipCode = $customer_address['postcode'];
+                $telephone2 = $addresses[0]->getTelephone();
+                $city = $addresses[0]->getCity();
+                $country_id = $addresses[0]->getCountryId();;;
+                $zipCode = $addresses[0]->getPostCode();
                 // $complemento = $customer_address[]
                 // $district = $customer_address['']
-                $location = $customer_address['street'];
-                $locations = explode("\n", $location);
+                $locations = $addresses[0]->getStreet();
+                // $locations = explode("\n", $location);
 
                 $location = (isset($locations[0]) ) ? $locations[0] : "";
                 $number = (isset($locations[1]) ) ? $locations[1] : "";
                 $district = (isset($locations[2]) ) ? $locations[2]: "";
 
-                $zipCodeNumbers = $customer_address['postcode'];
-                $region_id = $customer_address['region_id'];
+                $region_id = $addresses[0]->getRegionId();
                 $region = $this->regionFactory->create()->load($region_id);
 
                 $regionName = $region->getCode();
-                $cityName = $customer_address['city'];
+                // $cityName = $customer_address['city'];
 
 
 
-                $fidelity = $customerSession->getFidelity();
+                // $fidelity = $customerSession->getFidelity();
 
-                $customer = $this->customerRepository->getById($customerId);
-                $cpfCliente = $customer->getCustomAttribute('cpf')->getValue();
+                // $customer = $this->customerRepository->getById($customerId);
+                if ($customer->getCustomAttribute('cpf') !== null)
+                {
+                    $cpfCliente = $customer->getCustomAttribute('cpf')->getValue();
+                } else {
+                    $cpfCliente = $customer->getTaxVat();
+                }
                 $cpf_apenas_numeros = preg_replace("/[^0-9]/", "", $cpfCliente);
 
-                if ($fidelity == null || $fidelity == 0)
+                if (1==1)
                 {
 
                     $zipCodeNumbers = preg_replace("/[^0-9]/", "", $zipCode);
@@ -90,7 +97,7 @@ class CustomerData implements \Magento\Framework\Event\ObserverInterface
                                         <district>{$district}</district>
                                         <zipcode>{$zipCodeNumbers}</zipcode>
                                         <regio>{$regionName}</regio>
-                                        <city>{$cityName}</city>
+                                        <city>{$city}</city>
                                     </address>
                                 </DATA_ADRESS>
                             </Data_BP_req>
