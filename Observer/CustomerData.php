@@ -25,7 +25,7 @@ class CustomerData implements \Magento\Framework\Event\ObserverInterface
 		public function execute(\Magento\Framework\Event\Observer $observer)
 		{
             $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-            $customerSession = $objectManager->create('Magento\Customer\Model\Session');
+            // $customerSession = $objectManager->create('Magento\Customer\Model\Session');
             $customer = $observer->getCustomer();
             $customerId = $customer->getId();
 
@@ -60,7 +60,7 @@ class CustomerData implements \Magento\Framework\Event\ObserverInterface
 
 
 
-                $fidelity = $customerSession->getFidelity();
+                // $fidelity = $customerSession->getFidelity();
 
                 // $customer = $this->customerRepository->getById($customerId);
                 $cpfCliente = $customer->getCustomAttribute('cpf')->getValue();
