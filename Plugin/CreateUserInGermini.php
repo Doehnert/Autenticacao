@@ -190,8 +190,8 @@ class CreateUserInGermini
         //     }
         // }
 
-        // $countryId = "20b32dbd-8bda-4563-bcd5-0a7e827fc5e4";
-        $countryId = "f24483f2-066c-4fb1-afe3-7aba3df29c00";
+        $countryId = "20b32dbd-8bda-4563-bcd5-0a7e827fc5e4";
+        // $countryId = "f24483f2-066c-4fb1-afe3-7aba3df29c00";
 
         curl_close($curl);
         ///////////////////////////////
@@ -265,7 +265,7 @@ class CreateUserInGermini
         // Caso o usuário não queira participar do programa
         // cria o usuário no SAP
 
-        if ($user_fidelidade == 0)
+        if (1==1)
         {
 
             $zipCodeNumbers = preg_replace("/[^0-9]/", "", $zipCode);
@@ -334,9 +334,12 @@ class CreateUserInGermini
             print_r($array_data);
             print_r('</pre>');
 
-
             $customerSession->setFidelity(0);
 
+        }
+
+        if ($user_fidelidade == 0)
+        {
             return $proceed();
         }
 

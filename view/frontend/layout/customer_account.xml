@@ -11,6 +11,10 @@
     </head>
     <body>
 
+   <!-- Account link -->
+    <referenceBlock name="catalog.compare.link" remove="true" />
+        <referenceBlock name="sidebar.main.account_nav" remove="true"/>
+
         <attribute name="class" value="account"/>
 
         <referenceContainer name="page.messages">
@@ -37,7 +41,7 @@
 
                     <block class="Magento\Customer\Block\Account\SortLinkInterface" name="customer-account-navigation-account-link">
                         <arguments>
-                            <argument name="label" xsi:type="string" translate="true">Minha conta</argument>
+                            <argument name="label" xsi:type="string" translate="true">My Account</argument>
                             <argument name="path" xsi:type="string">customer/account</argument>
                             <argument name="sortOrder" xsi:type="number">250</argument>
                         </arguments>
@@ -47,8 +51,6 @@
                             <argument name="sortOrder" xsi:type="number">200</argument>
                         </arguments>
                     </block>
-
-
 
                     <block class="Magento\Customer\Block\Account\SortLinkInterface" name="customer-account-navigation-address-link">
                         <arguments>
