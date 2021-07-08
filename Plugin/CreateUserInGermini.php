@@ -285,7 +285,7 @@ class CreateUserInGermini
                         <nickname>{$firstname}</nickname>
                         <phoneNumber>{$telephone2}</phoneNumber>
                         <phoneNumber2>{$telephone}</phoneNumber2>
-                        <Id_Interface>02</Id_Interface>
+                        <Id_Interface>03</Id_Interface>
                         <DATA_ADRESS>
                             <address>
                                 <aditionalInfo>{$complemento}</aditionalInfo>
