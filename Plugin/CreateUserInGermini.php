@@ -312,7 +312,7 @@ class CreateUserInGermini
             $sap_url = $this->scopeConfig->getValue('acessos/general/sap_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 
             // Inicializa um multi-curl handle
-            $mch = curl_multi_init();
+            // $mch = curl_multi_init();
 
             //setting the curl parameters.
             $ch = curl_init();
