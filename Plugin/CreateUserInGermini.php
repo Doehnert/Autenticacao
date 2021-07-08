@@ -190,8 +190,8 @@ class CreateUserInGermini
         //     }
         // }
 
-        // $countryId = "20b32dbd-8bda-4563-bcd5-0a7e827fc5e4";
-        $countryId = "f24483f2-066c-4fb1-afe3-7aba3df29c00";
+        $countryId = "20b32dbd-8bda-4563-bcd5-0a7e827fc5e4";
+        // $countryId = "f24483f2-066c-4fb1-afe3-7aba3df29c00";
 
         curl_close($curl);
         ///////////////////////////////
@@ -311,6 +311,9 @@ class CreateUserInGermini
 
             $sap_url = $this->scopeConfig->getValue('acessos/general/sap_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 
+            // Inicializa um multi-curl handle
+            $mch = curl_multi_init();
+
             //setting the curl parameters.
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $sap_url);
@@ -323,8 +326,18 @@ class CreateUserInGermini
                 'Content-Type: text/xml'
             ));
             curl_setopt($ch, CURLOPT_POST, 1);
-            $data = curl_exec($ch);
-            curl_close($ch);
+
+            // $data = curl_exec($ch);
+            // curl_close($ch);
+
+            // Adiciona a requisição $ch ao multi-curl handle $mch.
+            curl_multi_add_handle($mch, $ch);
+
+            // Executa requisição multi-curl e retorna imediatamente.
+            curl_multi_exec($mch, $active);
+
+            // Acessa as respostas das requisições
+            $data = curl_multi_getcontent($ch);
 
             //convert the XML result into array
             $array_data = json_decode(json_encode(simplexml_load_string($data)), true);
