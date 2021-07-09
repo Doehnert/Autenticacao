@@ -85,6 +85,7 @@ class CreateUserInGermini
         $fullName = "{$firstname} {$lastname}";
 
         $nasc = $subject->getRequest()->getParam("dob");
+        $nasc = str_replace("/","-",$nasc);
 
         $dob = date("Y-m-d H:i:s", strtotime($nasc));
         $dob2 = date("Y-m-d", strtotime($nasc));

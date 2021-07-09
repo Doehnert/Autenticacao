@@ -397,7 +397,7 @@
                 <div class="field required">
                     <label for="email_address" class="label">Email</label>
                     <input type="email" name="email" autocomplete="email" id="email_address"
-                        value="<?php echo $block->escapeHtml($block->getFormData()->getEmail()) ?>"
+
                         title="<?php /* @escapeNotVerified */ echo __('Email') ?>" class="input-text"
                         data-validate="{required:true, 'validate-email':true}">
                 </div>
@@ -749,14 +749,14 @@
 
         $("#telephone").mask("(00) 00000-0000");
         $("#telephone2").mask("(00) 0000-0000");
-        $("#dob").mask("00-00-0000");
+        $("#dob").mask("00/00/0000");
 
         $('#dob').calendar({
             changeMonth: true,
             changeYear: true,
             showButtonPanel: true,
-            currentText: 'Go Today',
-            closeText: 'Close',
+            currentText: 'Ir para hoje',
+            closeText: 'Fechar',
             showWeek: true,
             yearRange: "-100:+0", // last hundred years
         });
