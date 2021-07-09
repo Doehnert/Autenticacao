@@ -42,6 +42,8 @@ class EditCustomer implements \Magento\Framework\Event\ObserverInterface
                 $addresses = $customer->getAddresses();
                 // $customer_address = $observer->getData('customer_address')->getData();
 
+                $customer = $observer->getCustomer();
+
                 $fullName =
                     $customer->getFirstName() . " " . $customer->getLastName();
 
