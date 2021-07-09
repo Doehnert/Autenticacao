@@ -45,6 +45,16 @@ class EditCustomer implements \Magento\Framework\Event\ObserverInterface
                 $fullName =
                     $customer->getFirstName() . " " . $customer->getLastName();
 
+                $genero = '';
+                $genero = $customer->getGender();
+                $dob2 = '';
+                $dob2 = $customer->getDob();
+                $email = '';
+                $email = $customer->getEmail();
+                $firstName = $customer->getFirstName();
+
+
+
                 $telephone2 = 0;
                 $city = 0;
                 $country_id = 0;
@@ -89,6 +99,7 @@ class EditCustomer implements \Magento\Framework\Event\ObserverInterface
 
                 if (1 == 1) {
                     $zipCodeNumbers = preg_replace("/[^0-9]/", "", $zipCode);
+                    $generoMaiusculo = $genero == 1 ? "M" : "F";
 
                     $xmlstr = "<?xml version='1.0' standalone='yes'?>
                     <soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:urn=\"urn:cvale:i17:014\">
@@ -96,15 +107,24 @@ class EditCustomer implements \Magento\Framework\Event\ObserverInterface
                         <urn:MT_SAP_BP_Req>
                             <Data_BP_req>
                                 <cpf>{$cpf_apenas_numeros}</cpf>
+
+                                <dateOfBirth>{$dob2}</dateOfBirth>
+                                <email>{$email}</email>
+                                <gender>{$generoMaiusculo}</gender>
+
                                 <name>{$fullName}</name>
+
+                                <nickname>{$firstName}</nickname>
+
+                                <phoneNumber>{$telephone2}</phoneNumber>
                                 <phoneNumber2>{$telephone2}</phoneNumber2>
                                 <Id_Interface>03</Id_Interface>
                                 <DATA_ADRESS>
                                     <address>
                                         <addressType>1</addressType>
+                                        <district>{$district}</district>
                                         <location>{$location}</location>
                                         <number>{$number}</number>
-                                        <district>{$district}</district>
                                         <zipcode>{$zipCodeNumbers}</zipcode>
                                         <regio>{$regionName}</regio>
                                         <city>{$city}</city>
