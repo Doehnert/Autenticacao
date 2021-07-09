@@ -42,10 +42,24 @@ class EditCustomer implements \Magento\Framework\Event\ObserverInterface
                 $addresses = $customer->getAddresses();
                 // $customer_address = $observer->getData('customer_address')->getData();
 
-                $customer = $observer->getCustomer();
+                if ($customer->getCustomAttribute("cpf") !== null) {
+                    $cpfCliente = $customer
+                        ->getCustomAttribute("cpf")
+                        ->getValue();
+                } else {
+                    $cpfCliente = $customer->getTaxVat();
+                }
+                $cpf_apenas_numeros = preg_replace("/[^0-9]/", "", $cpfCliente);
+
+
+
 
                 $fullName =
                     $customer->getFirstName() . " " . $customer->getLastName();
+
+                $firstName = $customer->getFirstName();
+
+                $customer = $observer->getCustomer();
 
                 $genero = '';
                 $genero = $customer->getGender();
@@ -53,7 +67,7 @@ class EditCustomer implements \Magento\Framework\Event\ObserverInterface
                 $dob2 = $customer->getDob();
                 $email = '';
                 $email = $customer->getEmail();
-                $firstName = $customer->getFirstName();
+
 
 
 
@@ -90,14 +104,7 @@ class EditCustomer implements \Magento\Framework\Event\ObserverInterface
                 }
 
 
-                if ($customer->getCustomAttribute("cpf") !== null) {
-                    $cpfCliente = $customer
-                        ->getCustomAttribute("cpf")
-                        ->getValue();
-                } else {
-                    $cpfCliente = $customer->getTaxVat();
-                }
-                $cpf_apenas_numeros = preg_replace("/[^0-9]/", "", $cpfCliente);
+
 
                 if (1 == 1) {
                     $zipCodeNumbers = preg_replace("/[^0-9]/", "", $zipCode);
