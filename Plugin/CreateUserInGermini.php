@@ -316,7 +316,7 @@ class CreateUserInGermini
             );
 
             // Inicializa um multi-curl handle
-            $mch = curl_multi_init();
+            // $mch = curl_multi_init();
 
             //setting the curl parameters.
             $ch = curl_init();
@@ -331,29 +331,29 @@ class CreateUserInGermini
             ]);
             curl_setopt($ch, CURLOPT_POST, 1);
 
-            // $data = curl_exec($ch);
-            // curl_close($ch);
+            $data = curl_exec($ch);
+            curl_close($ch);
 
             // Adiciona a requisição $ch ao multi-curl handle $mch.
-            curl_multi_add_handle($mch, $ch);
+            // curl_multi_add_handle($mch, $ch);
 
-            $active = null;
+            // $active = null;
 
             // Executa requisição multi-curl e retorna imediatamente.
-            do {
-                $res = curl_multi_exec($mch, $active);
-            } while ($res == CURLM_CALL_MULTI_PERFORM);
+            // do {
+            //     $res = curl_multi_exec($mch, $active);
+            // } while ($res == CURLM_CALL_MULTI_PERFORM);
 
-            while ($active && $res == CURLM_OK) {
-                if (curl_multi_select($mch) != -1) {
-                    do {
-                        $res = curl_multi_exec($mch, $active);
-                    } while ($res == CURLM_CALL_MULTI_PERFORM);
-                }
-            }
+            // while ($active && $res == CURLM_OK) {
+            //     if (curl_multi_select($mch) != -1) {
+            //         do {
+            //             $res = curl_multi_exec($mch, $active);
+            //         } while ($res == CURLM_CALL_MULTI_PERFORM);
+            //     }
+            // }
 
             // Acessa as respostas das requisições
-            $data = curl_multi_getcontent($ch);
+            // $data = curl_multi_getcontent($ch);
 
             //convert the XML result into array
             $array_data = json_decode(
