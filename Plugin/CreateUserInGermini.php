@@ -378,15 +378,15 @@ class CreateUserInGermini
                 );
         }
 
-        $sapXML = simplexml_load_string($data);
-        if(!isset($sapXML->Number_bp))
-        {
-            $this->messageManager->addErrorMessage("Ocorreu uma falha no cadastro. Tente novamente!");
-            return $this->resultRedirectFactory->create()
-                ->setPath(
-                   'customer/account/create'
-                );
-        }
+        // $sapXML = simplexml_load_string($data);
+        // if(!isset($sapXML->Number_bp))
+        // {
+        //     $this->messageManager->addErrorMessage("Ocorreu uma falha no cadastro. Tente novamente!");
+        //     return $this->resultRedirectFactory->create()
+        //         ->setPath(
+        //            'customer/account/create'
+        //         );
+        // }
 
         if ($user_fidelidade == 0) {
             return $proceed();
