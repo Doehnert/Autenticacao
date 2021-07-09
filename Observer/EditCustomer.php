@@ -51,9 +51,6 @@ class EditCustomer implements \Magento\Framework\Event\ObserverInterface
                 }
                 $cpf_apenas_numeros = preg_replace("/[^0-9]/", "", $cpfCliente);
 
-
-
-
                 $fullName =
                     $customer->getFirstName() . " " . $customer->getLastName();
 
