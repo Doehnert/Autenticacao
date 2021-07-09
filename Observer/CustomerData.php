@@ -35,6 +35,15 @@ class CustomerData implements \Magento\Framework\Event\ObserverInterface
                 $fullName =
                     $customer->getFirstName() . " " . $customer->getLastName();
 
+                $firstName = $customer->getFirstName();
+
+                $genero = '';
+                $genero = $customer->getGender();
+                $dob2 = '';
+                $dob2 = $customer->getDob();
+                $email = '';
+                $email = $customer->getEmail();
+
                 $telephone2 = $addresses[0]->getTelephone();
                 $city = $addresses[0]->getCity();
                 $country_id = $addresses[0]->getCountryId();
