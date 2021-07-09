@@ -60,6 +60,7 @@ class CustomerData implements \Magento\Framework\Event\ObserverInterface
 
                 if (1 == 1) {
                     $zipCodeNumbers = preg_replace("/[^0-9]/", "", $zipCode);
+                    $generoMaiusculo = $genero == 1 ? "M" : "F";
 
                     $xmlstr = "<?xml version='1.0' standalone='yes'?>
                     <soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:urn=\"urn:cvale:i17:014\">
@@ -67,15 +68,24 @@ class CustomerData implements \Magento\Framework\Event\ObserverInterface
                         <urn:MT_SAP_BP_Req>
                             <Data_BP_req>
                                 <cpf>{$cpf_apenas_numeros}</cpf>
+
+                                <dateOfBirth>{$dob2}</dateOfBirth>
+                                <email>{$email}</email>
+                                <gender>{$generoMaiusculo}</gender>
+
                                 <name>{$fullName}</name>
+
+                                <nickname>{$firstName}</nickname>
+
+                                <phoneNumber>{$telephone2}</phoneNumber>
                                 <phoneNumber2>{$telephone2}</phoneNumber2>
                                 <Id_Interface>03</Id_Interface>
                                 <DATA_ADRESS>
                                     <address>
                                         <addressType>1</addressType>
+                                        <district>{$district}</district>
                                         <location>{$location}</location>
                                         <number>{$number}</number>
-                                        <district>{$district}</district>
                                         <zipcode>{$zipCodeNumbers}</zipcode>
                                         <regio>{$regionName}</regio>
                                         <city>{$city}</city>

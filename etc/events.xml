@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
 
-    <event name="adminhtml_customer_save_after">
+    <!-- <event name="adminhtml_customer_save_after">
         <observer name="edit_customer_admin_vexpro" instance="Vexpro\Autenticacao\Observer\CustomerData" />
-    </event>
+    </event> -->
     <event name="customer_save_after">
         <observer name="edit_customer_vexpro" instance="Vexpro\Autenticacao\Observer\EditCustomer" />
     </event>
