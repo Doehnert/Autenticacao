@@ -45,23 +45,39 @@ class EditCustomer implements \Magento\Framework\Event\ObserverInterface
                 $fullName =
                     $customer->getFirstName() . " " . $customer->getLastName();
 
-                $telephone2 = $addresses[0]->getTelephone();
-                $city = $addresses[0]->getCity();
-                $country_id = $addresses[0]->getCountryId();
-                $zipCode = $addresses[0]->getPostCode();
-                // $complemento = $customer_address[]
-                // $district = $customer_address['']
-                $locations = $addresses[0]->getStreet();
-                // $locations = explode("\n", $location);
+                $telephone2 = 0;
+                $city = 0;
+                $country_id = 0;
+                $zipCode = 0;
+                $locations = 0;
+                $location = 0;
+                $number = 0;
+                $district = 0;
+                $region_id = 0;
+                $regionName = 0;
+                if (count($addresses) > 0)
+                {
+                    $telephone2 = (null !== $addresses[0]->getTelephone()) ? $addresses[0]->getTelephone() : '';
+                    $city = (null !== $addresses[0]->getCity()) ? $addresses[0]->getCity() : '';
+                    $country_id = (null !== $addresses[0]->getCountryId()) ? $addresses[0]->getCountryId() : '';
+                    $zipCode = (null !== $addresses[0]->getPostCode()) ? $addresses[0]->getPostCode() : '';
+                    $locations = $addresses[0]->getStreet();
 
-                $location = isset($locations[0]) ? $locations[0] : "";
-                $number = isset($locations[1]) ? $locations[1] : "";
-                $district = isset($locations[2]) ? $locations[2] : "";
+                    $location = isset($locations[0]) ? $locations[0] : "";
+                    $number = isset($locations[1]) ? $locations[1] : "";
+                    $district = isset($locations[2]) ? $locations[2] : "";
 
-                $region_id = $addresses[0]->getRegionId();
-                $region = $this->regionFactory->create()->load($region_id);
+                    $region_id = (null !== $addresses[0]->getRegionId()) ? $addresses[0]->getRegionId() : '';
+                    $regionName = '';
+                    if($region_id)
+                    {
+                        $region = $this->regionFactory->create()->load($region_id);
+                        $regionName = $region->getCode();
 
-                $regionName = $region->getCode();
+                    }
+                }
+
+
                 if ($customer->getCustomAttribute("cpf") !== null) {
                     $cpfCliente = $customer
                         ->getCustomAttribute("cpf")

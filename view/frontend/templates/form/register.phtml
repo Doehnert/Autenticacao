@@ -705,8 +705,10 @@
             if ($("#aceito_termos_uso").prop("checked") == true && $("#aceito_regulamento").prop("checked") ==
                 true) {
                 $("#user_fidelidade").val("1");
+                $("#button_create").prop('disabled', false);
             } else {
                 $("#user_fidelidade").val("0");
+                $("#button_create").prop('disabled', true);
             }
         }
 
@@ -721,6 +723,7 @@
         $("#box").hide();
 
         $("#is_fidelidade").change(function () {
+            $("#button_create").prop('disabled', function(i, v) { return !v; });
             $("#box").toggle();
         })
 
