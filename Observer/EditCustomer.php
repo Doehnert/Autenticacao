@@ -24,12 +24,19 @@ class EditCustomer implements \Magento\Framework\Event\ObserverInterface
 
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
-        // $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        // $customerSession = $objectManager->create('Magento\Customer\Model\Session');
-        $customer = $observer->getCustomer();
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $customerSession = $objectManager->create('Magento\Customer\Model\Session');
+        $customer = $customerSession->getCustomer();
         $customerId = $customer->getId();
+        if (isset($customerId))
+        {
+            $customer = $this->customerRepository->getById($customerId);
+            $pontosCliente = $customer->getCustomAttribute('pontos_cliente')->getValue();
+        } else{
+            $pontosCliente = null;
+        }
 
-        if (isset($customerId)) {
+        if (isset($customerId) && $pontosCliente != null) {
             if ($customerId) {
                 $customer = $this->customerRepository->getById($customerId);
                 $addresses = $customer->getAddresses();

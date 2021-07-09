@@ -183,6 +183,20 @@
         flex-direction: column;
     }
 
+    .loading-mask-custom2 {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 2;
+        width: 600px;
+        transform: translate(-50%, -50%);
+        height: 200px;
+        color: #fff;
+        font-size: large;
+        border-radius: 20px;
+    }
+
     .tooltip {
         display: inline-block;
         position: relative;
@@ -393,7 +407,7 @@
             <div class="field fieldset individual">
                 <div class="field required">
                     <label for="telephone" class="label">Celular</label>
-                    <input name="telephone" type="text" id="telephone" class="input-text required-entry"
+                    <input name="telephone" type="text" id="telephone" class="input-text required-entry" data-validate="{required:true}"
                         validate-phoneStrict aria-required="true" />
                 </div>
             </div>
@@ -671,7 +685,21 @@
         'loader'
     ], function ($, modal) {
 
-        // $("#button_create").prop("disabled", true);
+        if ($("#button_create").click(function(){
+            var fim = $('body').loader({
+                texts: {
+                    loaderText: 'Falta pouco...\nEstamos processando o seu cadastro'
+                },
+                template:
+                '<div class="loading-mask-custom2" data-role="loader">' +
+                '<div class="loader">' +
+                    '<img alt="<%- data.texts.imgAlt %>" src="new path">' +
+                    '<p><%- data.texts.loaderText %></p>' +
+                '</div>' +
+            '</div>'
+            });
+            fim.loader('show');
+        }))
 
         function checkTerms() {
             if ($("#aceito_termos_uso").prop("checked") == true && $("#aceito_regulamento").prop("checked") ==
