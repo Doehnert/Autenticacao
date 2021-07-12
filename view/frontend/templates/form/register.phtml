@@ -686,7 +686,9 @@
     ], function ($, modal) {
 
         if ($("#button_create").click(function(){
-            var fim = $(".counteudo").loader({
+
+            if ($('#form-validate').valid()) {
+                var fim = $(".counteudo").loader({
                 texts: {
                     loaderText: 'Falta pouco...\nEstamos processando o seu cadastro'
                 },
@@ -699,6 +701,7 @@
             '</div>'
             });
             fim.loader('show');
+            }
         }))
 
         function checkTerms() {
