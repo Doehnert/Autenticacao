@@ -65,9 +65,6 @@ class EditCustomer implements \Magento\Framework\Event\ObserverInterface
                 $email = '';
                 $email = $customer->getEmail();
 
-
-
-
                 $telephone2 = 0;
                 $city = 0;
                 $country_id = 0;
@@ -99,10 +96,6 @@ class EditCustomer implements \Magento\Framework\Event\ObserverInterface
 
                     }
                 }
-
-
-
-
                 if (1 == 1) {
                     $zipCodeNumbers = preg_replace("/[^0-9]/", "", $zipCode);
                     $generoMaiusculo = $genero == 1 ? "M" : "F";
