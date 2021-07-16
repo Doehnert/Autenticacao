@@ -132,7 +132,7 @@
                 text: $.mage.__('ACESSAR O PROGRAMA DE FIDELIDADE'),
                 class: 'MyButton',
                 click: function () {
-                    window.open(`https://www.cvalefidelidade.com.br/auth/login`);
+                    window.open('<?php echo $block->baseUrl() . "/auth/login" ?>');
                 }
                 }]
             };
@@ -145,7 +145,7 @@
                 text: $.mage.__('ACESSAR O PROGRAMA DE FIDELIDADE'),
                 class: 'MyButton',
                 click: function () {
-                    window.open(`https://www.cvalefidelidade.com.br/register`);
+                    window.open('<?php echo $block->baseUrl() . "/register" ?>');
                 }
                 }]
             };

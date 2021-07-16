@@ -19,6 +19,17 @@ class Cities extends Action
         protected $regionFactory;
         protected $countryFactory;
 
+        /**
+         * Cities
+         *
+         * @param Context $context
+         * @param JsonFactory $resultJsonFactory
+         * @param ScopeConfigInterface $scopeConfig
+         * @param RedirectFactory $redirectFactory
+         * @param ManagerInterface $messageManager
+         * @param RegionFactory $regionFactory
+         * @param CountryFactory $countryFactory
+         */
 		public function __construct(
 			 Context $context,
 			 JsonFactory $resultJsonFactory,

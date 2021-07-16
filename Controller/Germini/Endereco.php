@@ -17,7 +17,17 @@ class Endereco extends Action
         protected $messageManager;
         protected $regionFactory;
 
-		public function __construct(
+		/**
+         * Endereco
+         *
+         * @param Context $context
+         * @param JsonFactory $resultJsonFactory
+         * @param ScopeConfigInterface $scopeConfig
+         * @param RedirectFactory $redirectFactory
+         * @param ManagerInterface $messageManager
+         * @param RegionFactory $regionFactory
+         */
+        public function __construct(
 			 Context $context,
 			 JsonFactory $resultJsonFactory,
              ScopeConfigInterface $scopeConfig,

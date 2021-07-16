@@ -17,6 +17,11 @@ class Fidelitymessage extends \Magento\Framework\View\Element\Template
                 $this->_messageManager = $messageManager;
 		}
 
+        /**
+         * Retorna fidelidade do usuário
+         *
+         * @return bool
+         */
         public function fidelity()
         {
             $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
@@ -28,21 +33,15 @@ class Fidelitymessage extends \Magento\Framework\View\Element\Template
             $fidelity = $customerSession->getFidelity();
 
             return $fidelity;
+        }
 
-            // if (1 == 1)
-            // {
-            //     $this->_messageManager->getMessages(true);
-            //     $this->_messageManager->addComplexNoticeMessage(
-            //         'customerNeedValidateGermini',
-            //         [
-            //             'url' => 'https://cvale-fidelidade-consumer.azurewebsites.net/auth/login',
-            //         ]
-            //     );
-            // }
-            // else if($fidelity == 0)
-            // {
-            //     $this->_messageManager->getMessages(true);
-            //     $this->_messageManager->addNotice('Vincule-se ao CVale Fidelidade');
-            // }
+        public function baseUrl()
+        {
+            $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+            $cvale_url = $objectManager
+                ->get('Magento\Framework\App\Config\ScopeConfigInterface')
+                ->getValue("acessos/general/cvale_url");
+
+            return $cvale_url;
         }
 }
