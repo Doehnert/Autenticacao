@@ -491,18 +491,4 @@ class CreateUserInGermini
         // $params = array('cpf' => $cpf);
         // return $this->resultRedirectFactory->create()->setPath('customer/account/login', $params);
     }
-
-    /**
-     * Change redirect after login to home instead of dashboard.
-     *
-     * @param \Magento\Customer\Controller\Account\LoginPost $subject
-     * @param \Magento\Framework\Controller\Result\Redirect $result
-     */
-    public function afterExecute(
-        \Magento\Customer\Controller\Account\LoginPost $subject,
-        $result
-    ) {
-        $result->setPath('/'); // Change this to what you want
-        return $result;
-    }
 }
