@@ -1,4 +1,5 @@
 <?php
+
 namespace Vexpro\Autenticacao\Plugin;
 
 use Magento\Framework\Controller\Result\RedirectFactory;
@@ -85,7 +86,7 @@ class CreateUserInGermini
         $fullName = "{$firstname} {$lastname}";
 
         $nasc = $subject->getRequest()->getParam("dob");
-        $nasc = str_replace("/","-",$nasc);
+        $nasc = str_replace("/", "-", $nasc);
 
         $dob = date("Y-m-d H:i:s", strtotime($nasc));
         $dob2 = date("Y-m-d", strtotime($nasc));
@@ -271,7 +272,21 @@ class CreateUserInGermini
 
         if (1 == 1) {
             $zipCodeNumbers = preg_replace("/[^0-9]/", "", $zipCode);
-            $generoMaiusculo = $genero == 1 ? "M" : "F";
+
+            switch ($genero) {
+                case 1:
+                    $generoMaiusculo = "M";
+                    break;
+                case 2:
+                    $generoMaiusculo = "F";
+                    break;
+                case 3:
+                    $generoMaiusculo = "NDA";
+                    break;
+                default:
+                    $generoMaiusculo = "NDA";
+            }
+            // $generoMaiusculo = $genero == 1 ? "M" : "F";
 
             $xmlstr = "<?xml version='1.0' standalone='yes'?>
             <soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:urn=\"urn:cvale:i17:014\">
@@ -369,12 +384,11 @@ class CreateUserInGermini
             $customerSession->setFidelity(0);
         }
 
-        if($data == '')
-        {
+        if ($data == '') {
             $this->messageManager->addErrorMessage("Ocorreu uma falha no cadastro. Tente novamente!");
             return $this->resultRedirectFactory->create()
                 ->setPath(
-                   'customer/account/create'
+                    'customer/account/create'
                 );
         }
 
@@ -392,7 +406,21 @@ class CreateUserInGermini
             return $proceed();
         }
 
-        $germiniGenero = $genero == 1 ? "m" : "f";
+        switch ($genero) {
+            case 1:
+                $germiniGenero = "m";;
+                break;
+            case 2:
+                $germiniGenero = "f";;
+                break;
+            case 3:
+                $germiniGenero = "nda";;
+                break;
+            default:
+                $germiniGenero = "nda";;
+                break;
+        }
+        // $germiniGenero = $genero == 1 ? "m" : "f";
         // Cria usuário no Germini
         $response = "";
         $url = $url_base . "/api/Consumer/Register";
@@ -462,5 +490,19 @@ class CreateUserInGermini
         return $proceed();
         // $params = array('cpf' => $cpf);
         // return $this->resultRedirectFactory->create()->setPath('customer/account/login', $params);
+    }
+
+    /**
+     * Change redirect after login to home instead of dashboard.
+     *
+     * @param \Magento\Customer\Controller\Account\LoginPost $subject
+     * @param \Magento\Framework\Controller\Result\Redirect $result
+     */
+    public function afterExecute(
+        \Magento\Customer\Controller\Account\LoginPost $subject,
+        $result
+    ) {
+        $result->setPath('/'); // Change this to what you want
+        return $result;
     }
 }

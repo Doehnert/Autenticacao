@@ -20,7 +20,7 @@ class Fidelitymessage extends \Magento\Framework\View\Element\Template
         /**
          * Retorna fidelidade do usuário
          *
-         * @return bool
+         * @return int
          */
         public function fidelity()
         {

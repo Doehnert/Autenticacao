@@ -1,13 +1,17 @@
 <style>
+    .loading-mask .loader>p {
+        display: block;
+        font-size: large;
+    }
 
     .nav-sections {
         margin-bottom: 0px !important;
     }
 
     .vl {
-    border-left: 2px solid #444444;
-    height: 100%;
-    margin-right: 20px;
+        border-left: 2px solid #444444;
+        height: 100%;
+        margin-right: 20px;
     }
 
     a {
@@ -18,7 +22,8 @@
         line-height: 20px;
     }
 
-    ul > li, ol > li {
+    ul>li,
+    ol>li {
         margin-top: 0rem;
         margin-bottom: 0px !important;
     }
@@ -45,32 +50,33 @@
     }
 
     @media screen and (max-width: 768px) {
-    :root {
+        :root {
             --num-of-grid-columns: 1;
         }
+
         .counteudo {
             display: grid;
-        background: #f8f8f8 !important;
-        grid-template-columns: repeat(var(--num-of-grid-columns), 1fr);
-        grid-gap: 30px;
-        grid-template-areas: "cpf_field"
-            "nome1"
-            "nome2"
-            "nasc"
-            "genero"
-            "email"
-            "celular"
-            "telefone"
-            "cep"
-            "endereco"
-            "numero"
-            "complemento"
-            "bairro"
-            "cidade"
-            "uf"
-            "pais"
-            "senha"
-            "conf_senha"
+            background: #f8f8f8 !important;
+            grid-template-columns: repeat(var(--num-of-grid-columns), 1fr);
+            grid-gap: 30px;
+            grid-template-areas: "cpf_field"
+                "nome1"
+                "nome2"
+                "nasc"
+                "genero"
+                "email"
+                "celular"
+                "telefone"
+                "cep"
+                "endereco"
+                "numero"
+                "complemento"
+                "bairro"
+                "cidade"
+                "uf"
+                "pais"
+                "senha"
+                "conf_senha"
         }
     }
 
@@ -263,68 +269,69 @@
     }
 
     .tooltip .right {
-    min-width:350px;
-    max-width:400px;
-    top:50%;
-    left:100%;
-    margin-left:20px;
-    transform:translate(0, -50%);
-    padding:0;
-    color:#EEEEEE;
-    background-color:#444444;
-    font-weight:normal;
-    font-size:13px;
-    border-radius:8px;
-    position:absolute;
-    z-index:99999999;
-    box-sizing:border-box;
-    box-shadow:0 1px 8px rgba(0,0,0,0.5);
-    visibility:hidden; opacity:0; transition:opacity 0.8s;
-}
+        min-width: 350px;
+        max-width: 400px;
+        top: 50%;
+        left: 100%;
+        margin-left: 20px;
+        transform: translate(0, -50%);
+        padding: 0;
+        color: #EEEEEE;
+        background-color: #444444;
+        font-weight: normal;
+        font-size: 13px;
+        border-radius: 8px;
+        position: absolute;
+        z-index: 99999999;
+        box-sizing: border-box;
+        box-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
+        visibility: hidden;
+        opacity: 0;
+        transition: opacity 0.8s;
+    }
 
-.tooltip:hover .right {
-    visibility:visible; opacity:1;
-}
+    .tooltip:hover .right {
+        visibility: visible;
+        opacity: 1;
+    }
 
-.tooltip .right img {
-    width:400px;
-    border-radius:8px 8px 0 0;
-}
-.tooltip .text-content {
-    padding:10px 20px;
-}
+    .tooltip .right img {
+        width: 400px;
+        border-radius: 8px 8px 0 0;
+    }
 
-.tooltip .right i {
-    position:absolute;
-    top:50%;
-    right:100%;
-    margin-top:-12px;
-    width:12px;
-    height:24px;
-    overflow:hidden;
-}
-.tooltip .right i::after {
-    content:'';
-    position:absolute;
-    width:12px;
-    height:12px;
-    left:0;
-    top:50%;
-    transform:translate(50%,-50%) rotate(-45deg);
-    background-color:#444444;
-    box-shadow:0 1px 8px rgba(0,0,0,0.5);
-}
+    .tooltip .text-content {
+        padding: 10px 20px;
+    }
 
+    .tooltip .right i {
+        position: absolute;
+        top: 50%;
+        right: 100%;
+        margin-top: -12px;
+        width: 12px;
+        height: 24px;
+        overflow: hidden;
+    }
 
+    .tooltip .right i::after {
+        content: '';
+        position: absolute;
+        width: 12px;
+        height: 12px;
+        left: 0;
+        top: 50%;
+        transform: translate(50%, -50%) rotate(-45deg);
+        background-color: #444444;
+        box-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
+    }
 </style>
 
-<?php echo $block->getChildHtml('form_fields_before')?>
+<?php echo $block->getChildHtml('form_fields_before') ?>
 <?php /* Extensions placeholder */ ?>
-<?php echo $block->getChildHtml('customer.form.register.extra')?>
+<?php echo $block->getChildHtml('customer.form.register.extra') ?>
 
-<form class="form create account form-create-account"
-    action="<?php /* @escapeNotVerified */ echo $block->getPostActionUrl() ?>" method="post" id="form-validate"
-    enctype="multipart/form-data" autocomplete="off" data-mage-init='{"validation": {}}'>
+<form class="form create account form-create-account" action="<?php /* @escapeNotVerified */ echo $block->getPostActionUrl() ?>" method="post" id="form-validate" enctype="multipart/form-data" autocomplete="off" data-mage-init='{"validation": {}}'>
     <?php echo $block->getBlockHtml('formkey'); ?>
 
     <div class="counteudo">
@@ -335,13 +342,12 @@
                 <div class="field required">
                     <label for="cpf" class="label">CPF</label>
                     <div>
-                        <input type="text" id="cpf" name="cpf" value="" title="CPF" class="input-text"
-                            data-validate='{"required":true}' autocomplete="off" aria-required="true" style="min-width: 270px;">
+                        <input type="text" id="cpf" name="cpf" value="" title="CPF" class="input-text" data-validate='{"required":true}' autocomplete="off" aria-required="true" style="min-width: 270px;">
                     </div>
                 </div>
 
                 <div class="tooltip">
-                <img style="margin-right: 20px" src="<?php echo $this->getViewFileUrl('Vexpro_Autenticacao::img/info-circle-solid.png'); ?>" />
+                    <img style="margin-right: 20px" src="<?php echo $this->getViewFileUrl('Vexpro_Autenticacao::img/info-circle-solid.png'); ?>" />
                     <div class="top">
                         <span style="font-size: 12px">Esse dado será usado no login do sistema.</span>
                         <i></i>
@@ -355,8 +361,7 @@
             <div class="field fieldset individual">
                 <div class="field required">
                     <label for="firstname" class="label">Nome</label>
-                    <input id="firstname" name="firstname" type="text" class="input-text required-entry"
-                        data-validate="{required:true}" aria-required="true" />
+                    <input id="firstname" name="firstname" type="text" class="input-text required-entry" data-validate="{required:true}" aria-required="true" />
                 </div>
             </div>
         </div>
@@ -364,8 +369,7 @@
             <div class="field fieldset individual">
                 <div class="field required">
                     <label for="lastname" class="label">Sobrenome</label>
-                    <input name="lastname" type="text" id="lastname" class="input-text required-entry"
-                        data-validate="{required:true}" aria-required="true" />
+                    <input name="lastname" type="text" id="lastname" class="input-text required-entry" data-validate="{required:true}" aria-required="true" />
                 </div>
             </div>
         </div>
@@ -373,8 +377,7 @@
             <div class="field fieldset individual">
                 <div class="field required">
                     <label for="dob" class="label">Data de nasc.</label>
-                    <input name="dob" id="dob" type="text" class="input-text required-entry"
-                        data-validate="{required:true}" aria-required="true" />
+                    <input name="dob" id="dob" type="text" class="input-text required-entry" data-validate="{required:true}" aria-required="true" />
                 </div>
             </div>
         </div>
@@ -387,6 +390,7 @@
                         <option value=""><?php /* @escapeNotVerified */ echo __('') ?></option>
                         <option value=1>Masculino</option>
                         <option value=2>Feminino</option>
+                        <option value=3>Não informar</option>
                         <!-- <option value="n">Não informar</option> -->
                     </select>
                 </div>
@@ -396,10 +400,7 @@
             <div class="field fieldset individual">
                 <div class="field required">
                     <label for="email_address" class="label">Email</label>
-                    <input type="email" name="email" autocomplete="email" id="email_address"
-
-                        title="<?php /* @escapeNotVerified */ echo __('Email') ?>" class="input-text"
-                        data-validate="{required:true, 'validate-email':true}">
+                    <input type="email" name="email" autocomplete="email" id="email_address" title="<?php /* @escapeNotVerified */ echo __('Email') ?>" class="input-text" data-validate="{required:true, 'validate-email':true}">
                 </div>
             </div>
         </div>
@@ -407,8 +408,7 @@
             <div class="field fieldset individual">
                 <div class="field required">
                     <label for="telephone" class="label">Celular</label>
-                    <input name="telephone" type="text" id="telephone" class="input-text required-entry" data-validate="{required:true}"
-                        validate-phoneStrict aria-required="true" />
+                    <input name="telephone" type="text" id="telephone" class="input-text required-entry" data-validate="{required:true}" validate-phoneStrict aria-required="true" />
                 </div>
             </div>
         </div>
@@ -424,8 +424,7 @@
             <div class="field fieldset individual">
                 <div class="field required">
                     <label for="postcode" class="label">CEP</label>
-                    <input id="postcode" name="postcode" type="text"
-                        class="input-text validate-zip-international required-entry" aria-required="true" />
+                    <input id="postcode" name="postcode" type="text" class="input-text validate-zip-international required-entry" aria-required="true" />
                 </div>
             </div>
         </div>
@@ -433,8 +432,7 @@
             <div class="field fieldset individual">
                 <div class="field required">
                     <label for="street_1" class="label">Endereço</label>
-                    <input name="street[0]" id="street_1" type="text" class="input-text required-entry"
-                        aria-required="true" />
+                    <input name="street[0]" id="street_1" type="text" class="input-text required-entry" aria-required="true" />
                 </div>
             </div>
         </div>
@@ -458,8 +456,7 @@
             <div class="field fieldset individual">
                 <div class="field required">
                     <label for="street_3" class="label">Bairro</label>
-                    <input name="street[2]" id="street_3" type="text" class="input-text required-entry"
-                        aria-required="true" />
+                    <input name="street[2]" id="street_3" type="text" class="input-text required-entry" aria-required="true" />
                 </div>
             </div>
         </div>
@@ -478,18 +475,12 @@
             <div class="field fieldset individual">
                 <div class="field required">
                     <label for="region_id" class="label">UF</label>
-                    <select id="region_id" name="region_id"
-                        title="<?php /* @escapeNotVerified */ echo __('State/Province') ?>" class="validate-select"
-                        style="display:none;">
+                    <select id="region_id" name="region_id" title="<?php /* @escapeNotVerified */ echo __('State/Province') ?>" class="validate-select" style="display:none;">
                         <option value="">
                             <?php /* @escapeNotVerified */ echo __('') ?>
                         </option>
                     </select>
-                    <input type="text" id="region" name="region"
-                        value="<?php echo $block->escapeHtml($block->getRegion()) ?>"
-                        title="<?php /* @escapeNotVerified */ echo __('State/Province') ?>"
-                        class="input-text <?php /* @escapeNotVerified */ echo $this->helper('Magento\Customer\Helper\Address')->getAttributeValidationClass('region') ?>"
-                        style="display:none;">
+                    <input type="text" id="region" name="region" value="<?php echo $block->escapeHtml($block->getRegion()) ?>" title="<?php /* @escapeNotVerified */ echo __('State/Province') ?>" class="input-text <?php /* @escapeNotVerified */ echo $this->helper('Magento\Customer\Helper\Address')->getAttributeValidationClass('region') ?>" style="display:none;">
                 </div>
             </div>
         </div>
@@ -505,11 +496,7 @@
             <div class="field fieldset individual">
                 <div class="field required">
                     <label for="password" class="label">Senha</label>
-                    <input maxlength="6" pattern="\d{6}"
-                        data-validate="{required:true, germiniPassword:true, germiniPassword2:true,germiniPassword3:true,germiniPassword4:true}"
-                        type="password" name="password" validate-password id="password"
-                        title="<?php /* @escapeNotVerified */ echo __('Password') ?>" class="input-text"
-                        autocomplete="off">
+                    <input maxlength="6" pattern="\d{6}" data-validate="{required:true, germiniPassword:true, germiniPassword2:true,germiniPassword3:true,germiniPassword4:true}" type="password" name="password" validate-password id="password" title="<?php /* @escapeNotVerified */ echo __('Password') ?>" class="input-text" autocomplete="off">
                 </div>
             </div>
         </div>
@@ -517,23 +504,20 @@
             <div class="field fieldset individual">
                 <div class="field required">
                     <label for="password-confirmation" class="label">Confirmar senha</label>
-                    <input type="password" name="password_confirmation"
-                        title="<?php /* @escapeNotVerified */ echo __('Confirm Password') ?>" id="password-confirmation"
-                        class="input-text" data-validate="{required:true, equalTo:'#password'}" autocomplete="off">
+                    <input type="password" name="password_confirmation" title="<?php /* @escapeNotVerified */ echo __('Confirm Password') ?>" id="password-confirmation" class="input-text" data-validate="{required:true, equalTo:'#password'}" autocomplete="off">
                     <div style="float: right; margin-top: 5px">
-                        <span style="color: #7E7E7E;" >Políticas de senha</span>
+                        <span style="color: #7E7E7E;">Políticas de senha</span>
                         <div class="tooltip">
-                        <img style="margin-right: 20px" src="<?php echo $this->getViewFileUrl('Vexpro_Autenticacao::img/info-circle-solid.png'); ?>" />
+                            <img style="margin-right: 20px" src="<?php echo $this->getViewFileUrl('Vexpro_Autenticacao::img/info-circle-solid.png'); ?>" />
                             <div class="right" style="padding-top: 5px;">
-                                    <span style="font-weight: bold; margin-left: 15px; margin-top: 15px; font-size: 12px;">Regras:</span>
-                                    <ul style="margin-left: -15px;">
-                                        <li>No mínimo 6 números</li>
-                                        <li>Não pode ter mais de 3 números sequenciais</li>
-                                        <li>Não pode ter números repetidos em ordem</li>
-                                        <li>Não ser igual ao CPF, CNPJ, data de nascimento, telefone ou celular.</li>
-                                    </ul>
-                                    <i></i>
-                                </div>
+                                <span style="font-weight: bold; margin-left: 15px; margin-top: 15px; font-size: 12px;">Regras:</span>
+                                <ul style="margin-left: -15px;">
+                                    <li>No mínimo 6 números</li>
+                                    <li>Não pode ter mais de 3 números sequenciais</li>
+                                    <li>Não pode ter números repetidos em ordem</li>
+                                    <li>Não ser igual ao CPF, CNPJ, data de nascimento, telefone ou celular.</li>
+                                </ul>
+                                <i></i>
                             </div>
                         </div>
                     </div>
@@ -541,16 +525,14 @@
             </div>
         </div>
     </div>
+    </div>
 
     <hr>
     <div id="fidelidade_field">
         <div class="field choice" style="display: flex; align-items: center;">
             <div style="display: flex; align-items: baseline;">
-                <input type="checkbox" name="is_fidelidade" id="is_fidelidade"
-                title="<?php /* @escapeNotVerified */ echo __('Quero Participar do PROGRAMA DE FIDELIDADE') ?>"
-                value="1" id="is_fidelidade" class="checkbox" />
-                <label for="is_fidelidade" style="font-weight: bold"
-                    class="label"><span><?php /* @escapeNotVerified */ echo __('Quero Participar do PROGRAMA DE FIDELIDADE') ?></span></label>
+                <input type="checkbox" name="is_fidelidade" id="is_fidelidade" title="<?php /* @escapeNotVerified */ echo __('Quero Participar do PROGRAMA DE FIDELIDADE') ?>" value="1" id="is_fidelidade" class="checkbox" />
+                <label for="is_fidelidade" style="font-weight: bold" class="label"><span><?php /* @escapeNotVerified */ echo __('Quero Participar do PROGRAMA DE FIDELIDADE') ?></span></label>
             </div>
 
             <span style="margin-left: 1em; border-radius: 6px;background:#21409A;" id="conheca" class="action submit primary"><span>Conheça o C.VALE
@@ -596,8 +578,7 @@
 
     <div>
         <div class="primary">
-            <button type="submit" style="border-radius: 6px !important; margin-top: 20px;margin-bottom: 20px" class="action submit primary" id="button_create"
-                title="<?php /* @escapeNotVerified */ echo __('Create an Account') ?>"><span><?php /* @escapeNotVerified */ echo __('Create an Account') ?></span></button>
+            <button type="submit" style="border-radius: 6px !important; margin-top: 20px;margin-bottom: 20px" class="action submit primary" id="button_create" title="<?php /* @escapeNotVerified */ echo __('Create an Account') ?>"><span><?php /* @escapeNotVerified */ echo __('Create an Account') ?></span></button>
         </div>
     </div>
 
@@ -683,26 +664,26 @@
         'mage/calendar',
         'jquery.mask',
         'loader'
-    ], function ($, modal) {
+    ], function($, modal) {
 
-        if ($("#button_create").click(function(){
+        if ($("#button_create").click(function() {
 
-            if ($('#form-validate').valid()) {
-                var fim = $(".counteudo").loader({
-                texts: {
-                    loaderText: 'Falta pouco...\nEstamos processando o seu cadastro'
-                },
-                template:
-                '<div class="loading-mask-custom2" data-role="loader">' +
-                '<div class="loader">' +
-                    '<img alt="<%- data.texts.imgAlt %>" src="new path">' +
-                    '<p><%- data.texts.loaderText %></p>' +
-                '</div>' +
-            '</div>'
-            });
-            fim.loader('show');
-            }
-        }))
+                if ($('#form-validate').valid()) {
+                    var fim = $(".counteudo").loader({
+                        texts: {
+                            loaderText: 'Falta pouco...\nEstamos processando o seu cadastro',
+                            imgAlt: 'Falta pouco...\nEstamos processando o seu cadastro'
+                        },
+                        template: `<div class="loading-mask" data-role="loader">
+												<div class="loader">
+														<img alt="<%- data.texts.imgAlt %>" src="<%- data.icon %>">
+														<p><%- data.texts.loaderText %></p>
+												</div>
+										</div>`
+                    });
+                    fim.loader('show');
+                }
+            }))
 
         function checkTerms() {
             if ($("#aceito_termos_uso").prop("checked") == true && $("#aceito_regulamento").prop("checked") ==
@@ -715,22 +696,24 @@
             }
         }
 
-        $("#aceito_termos_uso").click(function () {
+        $("#aceito_termos_uso").click(function() {
             checkTerms()
         });
-        $("#aceito_regulamento").click(function () {
+        $("#aceito_regulamento").click(function() {
             checkTerms()
         });
 
 
         $("#box").hide();
 
-        $("#is_fidelidade").change(function () {
-            $("#button_create").prop('disabled', function(i, v) { return !v; });
+        $("#is_fidelidade").change(function() {
+            $("#button_create").prop('disabled', function(i, v) {
+                return !v;
+            });
             $("#box").toggle();
         })
 
-        $("#selecionar_todos").click(function () {
+        $("#selecionar_todos").click(function() {
             if ($("#selecionar_todos").prop("checked") == true) {
                 $("#aceito_termos_uso").prop("checked", true);
                 $("#aceito_regulamento").prop("checked", true);
@@ -745,7 +728,7 @@
         })
 
         var options = {
-            onKeyPress: function (cpf, ev, el, op) {
+            onKeyPress: function(cpf, ev, el, op) {
                 var masks = ["000.000.000-00", "00.000.000/0000-00"];
                 $("#cpf").mask(masks[0], op);
             },
@@ -764,7 +747,9 @@
             currentText: 'Ir para hoje',
             closeText: 'Fechar',
             showWeek: true,
+            weekHeader: "Sem",
             yearRange: "-100:+0", // last hundred years
+            dayNamesMin: ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sab"]
         });
 
         var options = {
@@ -775,7 +760,7 @@
             buttons: [{
                     text: $.mage.__('ACESSAR A LOJA'),
                     class: 'modal-close',
-                    click: function () {
+                    click: function() {
                         var cpf = $("#cpf").val();
                         window.location.href = `/customer/account/login?cpf=${cpf}`;
                     }
@@ -783,7 +768,7 @@
                 {
                     text: $.mage.__('CRIAR NOVA CONTA'),
                     class: 'modal-login',
-                    click: function () {
+                    click: function() {
                         window.location.href = `/customer/account/create`;
                     }
                 }
@@ -816,10 +801,10 @@
         modal(options3, $('#modal-termos'));
         modal(options4, $('#modal-regulamentos'));
 
-        $("#conheca").click(function () {
+        $("#conheca").click(function() {
             $("#modal-conheca").modal("openModal");
         })
-        $("#tu").click(async function () {
+        $("#tu").click(async function() {
             var body = $('body').loader();
             body.loader('show');
             regras = await $.ajax({
@@ -831,7 +816,7 @@
             $("#modal-termos").modal("openModal");
             body.loader('hide');
         })
-        $("#reg").click(async function () {
+        $("#reg").click(async function() {
             var body = $('body').loader();
             body.loader('show');
             regulamentos = await $.ajax({
@@ -844,9 +829,8 @@
             body.loader('hide');
         })
 
-        $("#postcode").blur(async function () {
-            try
-            {
+        $("#postcode").blur(async function() {
+            try {
                 var body = $('body').loader();
                 body.loader('show');
                 address = await $.ajax({
@@ -859,8 +843,7 @@
 
                 $("#region_id").val(address.state);
 
-                if(address.city != null)
-                {
+                if (address.city != null) {
                     cities = await $.ajax({
                         url: "/autentica/germini/cities",
                         type: "POST",
@@ -874,27 +857,22 @@
                         $('#city').append(`<option value="${city.name}">${city.name}</option>`);
                     });
 
-                    $(`#city option[value="${address.city}"]`).attr('selected','selected');
+                    $(`#city option[value="${address.city}"]`).attr('selected', 'selected');
 
                     $("#street_1").val(address.location);
                     $("#street_2").val(address.number);
                     $("#street_3").val(address.district);
                 }
-            }
-            catch(err)
-            {
+            } catch (err) {
                 console.error(err.message);
-            }
-            finally
-            {
+            } finally {
                 body.loader('hide');
             }
         });
 
-        $("#cpf").blur(function () {
+        $("#cpf").blur(function() {
 
-            if ($("#cpf").val().length >= 14)
-            {
+            if ($("#cpf").val().length >= 14) {
                 var body = $('body').loader();
                 body.loader('show');
                 $("#cpf_modal").text($("#cpf").val());
@@ -905,11 +883,15 @@
                     data: {
                         cpf: $("#cpf").val(),
                     },
-                    success: function (result) {
-                        if (result == true)
+                    success: function(result) {
+                        if (result == true) {
                             $("#modal-content").modal("openModal");
+                            $("#button_create").prop('disabled', true);
+                        } else {
+                            $("#button_create").prop('disabled', false);
+                        }
                     },
-                    error: function (err) {
+                    error: function(err) {
                         console.log("Error : " + JSON.stringify(err));
                     }
                 });
@@ -939,16 +921,15 @@
         var dataForm = $('#form-validate');
 
     });
-
 </script>
 
-<?php if (true): ?>
+<?php if (true) : ?>
 
-<script type="text/x-magento-init">
-    {
+    <script type="text/x-magento-init">
+        {
         "#country": {
             "regionUpdater": {
-                "optionalRegionAllowed": <?php /* @escapeNotVerified */ echo($block->getConfig('general/region/display_all') ? 'true' : 'false'); ?>,
+                "optionalRegionAllowed": <?php /* @escapeNotVerified */ echo ($block->getConfig('general/region/display_all') ? 'true' : 'false'); ?>,
                 "regionListId": "#region_id",
                 "regionInputId": "#region",
                 "postcodeId": "#postcode",
