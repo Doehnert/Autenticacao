@@ -1,43 +1,42 @@
 define([
-  "jquery",
-  "moment",
-  "jquery/ui",
-  "jquery/validate",
-  "mage/translate",
+  'jquery',
+  'moment',
+  'jquery/ui',
+  'jquery/validate',
+  'mage/translate',
 ], function ($, moment) {
-  "use strict";
+  'use strict'
 
   return function (param) {
     $.validator.addMethod(
-      "germiniPassword",
+      'germiniPassword',
       function (value, element) {
-        debugger;
-        let cpf = $("#cpf").val();
-        let dateOfBirth = $("#nasc").val();
-        let phoneNumber = $("#telephone").val();
-        let phoneNumber2 = $("#telephone2").val();
-        let item = value;
+        let cpf = $('#cpf').val()
+        let dateOfBirth = $('#nasc').val()
+        let phoneNumber = $('#telephone').val()
+        let phoneNumber2 = $('#telephone2').val()
+        let item = value
 
         if (
           item.length === 6 &&
           ((dateOfBirth &&
-            moment(dateOfBirth, "DD/MM/YYYY")
-              .format("DDMMYY")
+            moment(dateOfBirth, 'DD/MM/YYYY')
+              .format('DDMMYY')
               .includes(item)) ||
-            (cpf && cpf.replace(/\.|-|\/|\(|\)|\/| /g, "").includes(item)) ||
+            (cpf && cpf.replace(/\.|-|\/|\(|\)|\/| /g, '').includes(item)) ||
             (phoneNumber &&
-              phoneNumber.replace(/\.|-|\/|\(|\)|\/| /g, "").includes(item)) ||
+              phoneNumber.replace(/\.|-|\/|\(|\)|\/| /g, '').includes(item)) ||
             (phoneNumber2 &&
-              phoneNumber2.replace(/\.|-|\/|\(|\)|\/| /g, "").includes(item)))
+              phoneNumber2.replace(/\.|-|\/|\(|\)|\/| /g, '').includes(item)))
         ) {
-          return false;
+          return false
         }
 
-        return true;
+        return true
       },
       $.mage.__(
-        "Senha não pode estar contida em CPF/CNPJ, DATA DE NASCIMENTO, CEL OU TEL",
+        'Senha não pode estar contida em CPF/CNPJ, DATA DE NASCIMENTO, CEL OU TEL',
       ),
-    );
-  };
-});
+    )
+  }
+})

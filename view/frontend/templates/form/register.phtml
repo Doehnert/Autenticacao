@@ -497,14 +497,23 @@
                 <div class="field required">
                     <label for="password" class="label">Senha</label>
                     <input maxlength="6" pattern="\d{6}" data-validate="{required:true, germiniPassword:true, germiniPassword2:true,germiniPassword3:true,germiniPassword4:true}" type="password" name="password" validate-password id="password" title="<?php /* @escapeNotVerified */ echo __('Password') ?>" class="input-text" autocomplete="off">
+                    <img class="tooltip" id="toggle" style="margin-left: 10px; height: 30px;" src="<?php echo $this->getViewFileUrl('Vexpro_Autenticacao::img/eye-solid.png'); ?>" />
                 </div>
             </div>
         </div>
+
+
         <div id="password_field2">
             <div class="field fieldset individual">
                 <div class="field required">
                     <label for="password-confirmation" class="label">Confirmar senha</label>
-                    <input type="password" name="password_confirmation" title="<?php /* @escapeNotVerified */ echo __('Confirm Password') ?>" id="password-confirmation" class="input-text" data-validate="{required:true, equalTo:'#password'}" autocomplete="off">
+
+                    <div>
+                        <input type="password" name="password_confirmation" title="<?php /* @escapeNotVerified */ echo __('Confirm Password') ?>" id="password-confirmation" class="input-text" data-validate="{required:true, equalTo:'#password'}" autocomplete="off">
+                        <img id="toggle2" style="margin-left: 10px; height: 30px;" src="<?php echo $this->getViewFileUrl('Vexpro_Autenticacao::img/eye-solid.png'); ?>" />
+                    </div>
+
+
                     <div style="float: right; margin-top: 5px">
                         <span style="color: #7E7E7E;">Políticas de senha</span>
                         <div class="tooltip">
@@ -665,6 +674,28 @@
         'jquery.mask',
         'loader'
     ], function($, modal) {
+
+        $("#toggle").click(function() {
+
+            if ($("#password").attr("type") == "password") {
+                //Change type attribute
+                $("#password").attr("type", "text");
+            } else {
+                //Change type attribute
+                $("#password").attr("type", "password");
+            }
+        });
+
+        $("#toggle2").click(function() {
+
+            if ($("#password-confirmation").attr("type") == "password") {
+                //Change type attribute
+                $("#password-confirmation").attr("type", "text");
+            } else {
+                //Change type attribute
+                $("#password-confirmation").attr("type", "password");
+            }
+        });
 
         if ($("#button_create").click(function() {
 
