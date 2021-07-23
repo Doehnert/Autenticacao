@@ -1,7 +1,27 @@
 <style>
-    .input-icons img {
-        position: absolute;
+    .search {
+        position: relative;
+        color: #aaa;
+        font-size: 16px;
     }
+
+    .search {}
+
+    .search input {}
+
+    .search input {}
+
+    .search .fa-search {
+        position: absolute;
+        left: 10px;
+        top: 5px;
+    }
+
+    .search .fa-search {
+        left: auto;
+        right: 10px;
+    }
+
 
     .input-icons {
         width: 100%;
@@ -16,7 +36,7 @@
     .input-field {
         width: 100%;
         padding: 10px;
-        padding-left: 50px;
+        padding-right: 50px;
         text-align: left;
     }
 
@@ -518,9 +538,9 @@
                 <div class="field required">
                     <label for="password" class="label">Senha</label>
 
-                    <div class="input-icons">
-                        <img class="tooltip icon" id="toggle" style="position: absolute; height: 40px" src="<?php echo $this->getViewFileUrl('Vexpro_Autenticacao::img/eye-solid.png'); ?>" />
-                        <input style="padding-left: 50px" class="input-field" maxlength="6" pattern="\d{6}" data-validate="{required:true, germiniPassword:true, germiniPassword2:true,germiniPassword3:true,germiniPassword4:true}" type="password" name="password" validate-password id="password" title="<?php /* @escapeNotVerified */ echo __('Password') ?>" class="input-text" autocomplete="off">
+                    <div class="search">
+                        <img style="height: 30px;" class="fa fa-search" id="toggle" src="<?php echo $this->getViewFileUrl('Vexpro_Autenticacao::img/eye-solid.png'); ?>" />
+                        <input maxlength="6" pattern="\d{6}" data-validate="{required:true, germiniPassword:true, germiniPassword2:true,germiniPassword3:true,germiniPassword4:true}" type="password" name="password" validate-password id="password" title="<?php /* @escapeNotVerified */ echo __('Password') ?>" class="input-text" autocomplete="off">
                     </div>
 
                 </div>
@@ -533,9 +553,9 @@
                 <div class="field required">
                     <label for="password-confirmation" class="label">Confirmar senha</label>
 
-                    <div class="input-icons">
-                        <img class="tooltip icon" id="toggle2" style="position: absolute; height: 40px" src="<?php echo $this->getViewFileUrl('Vexpro_Autenticacao::img/eye-solid.png'); ?>" />
-                        <input class="input-field" style="padding-left: 50px" type="password" name="password_confirmation" title="<?php /* @escapeNotVerified */ echo __('Confirm Password') ?>" id="password-confirmation" class="input-text" data-validate="{required:true, equalTo:'#password'}" autocomplete="off">
+                    <div class="search">
+                        <img style="height: 30px;" class="fa fa-search" id="toggle2" src="<?php echo $this->getViewFileUrl('Vexpro_Autenticacao::img/eye-solid.png'); ?>" />
+                        <input type="password" name="password_confirmation" title="<?php /* @escapeNotVerified */ echo __('Confirm Password') ?>" id="password-confirmation" class="input-text" data-validate="{required:true, equalTo:'#password'}" autocomplete="off">
                     </div>
 
 
