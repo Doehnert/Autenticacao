@@ -79,19 +79,9 @@ class CreateUserInGermini
         );
         $logger = $objectManager->create("\Psr\Log\LoggerInterface");
 
+        $associated = $subject->getRequest()->getParam("associated");
         $user_fidelidade = $subject->getRequest()->getParam("user_fidelidade");
-        $firstname = $subject->getRequest()->getParam("firstname");
-        $lastname = $subject->getRequest()->getParam("lastname");
 
-        $fullName = "{$firstname} {$lastname}";
-
-        $nasc = $subject->getRequest()->getParam("dob");
-        $nasc = str_replace("/", "-", $nasc);
-
-        $dob = date("Y-m-d H:i:s", strtotime($nasc));
-        $dob2 = date("Y-m-d", strtotime($nasc));
-
-        $genero = $subject->getRequest()->getParam("gender");
         $email = $subject->getRequest()->getParam("email");
         $telephone = $subject->getRequest()->getParam("telephone");
         $telephone = preg_replace("/[^0-9]/", "", $telephone);
@@ -103,174 +93,187 @@ class CreateUserInGermini
             ->getRequest()
             ->getParam("password_confirmation");
 
-        $zipCode = $subject->getRequest()->getParam("postcode");
-
-        $location = $subject->getRequest()->getParam("street")[0];
-        $number = $subject->getRequest()->getParam("street")[1];
-        $district = $subject->getRequest()->getParam("street")[2];
-        $complemento = $subject->getRequest()->getParam("complemento");
-
-        $regionId = $subject->getRequest()->getParam("region_id"); //499
-        $region = $this->regionFactory->create()->load($regionId);
-        $stateId = $region->getCode();
-        $countryId = $region->getCountryId();
-        $country = $this->_countryFactory->create()->loadByCode($countryId);
-        $countryName = $country->getName();
-        $cityId = $subject->getRequest()->getParam("city");
-        $countryCode = $subject->getRequest()->getParam("country_id");
         $cpf = $subject->getRequest()->getParam("cpf");
-
-        // if ($cpf == "")
-        //     return $proceed();
 
         $cityName = "";
         $regionName = "";
 
-        // Verifica se o cliente já existe no germini
-        // caso exista encerra o plugin
-        $url_base = $this->scopeConfig->getValue(
-            "acessos/general/identity_url",
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
-        );
-        $url =
-            $url_base .
-            "/api/Account/ListUsersByLogin/" .
-            preg_replace("/[^0-9]/", "", $cpf);
+        $genero = $subject->getRequest()->getParam("gender");
 
-        $curl = curl_init();
+        $stateId = '';
+        if ($associated == 0) {
 
-        curl_setopt_array($curl, [
-            CURLOPT_URL => $url,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => "GET",
-            CURLOPT_HTTPHEADER => ["Accept: text/plain"],
-        ]);
+            $firstname = $subject->getRequest()->getParam("firstname");
+            $lastname = $subject->getRequest()->getParam("lastname");
 
-        $response = curl_exec($curl);
-        $resultado = json_decode($response);
+            $fullName = "{$firstname} {$lastname}";
 
-        if (count($resultado) > 0) {
-            $this->messageManager->addErrorMessage(
-                "Usuário com esse CPF já existe no CVale Fidelidade. Efetue o Login"
+            $nasc = $subject->getRequest()->getParam("dob");
+            $nasc = str_replace("/", "-", $nasc);
+
+            $dob = date("Y-m-d H:i:s", strtotime($nasc));
+            $dob2 = date("Y-m-d", strtotime($nasc));
+
+            $zipCode = $subject->getRequest()->getParam("postcode");
+
+            $location = $subject->getRequest()->getParam("street")[0];
+            $number = $subject->getRequest()->getParam("street")[1];
+            $district = $subject->getRequest()->getParam("street")[2];
+            $complemento = $subject->getRequest()->getParam("complemento");
+
+            $regionId = $subject->getRequest()->getParam("region_id"); //499
+            $region = $this->regionFactory->create()->load($regionId);
+            $stateId = $region->getCode();
+            $countryId = $region->getCountryId();
+            $country = $this->_countryFactory->create()->loadByCode($countryId);
+            $countryName = $country->getName();
+            $cityId = $subject->getRequest()->getParam("city");
+            $countryCode = $subject->getRequest()->getParam("country_id");
+
+            // Verifica se o cliente já existe no germini
+            // caso exista encerra o plugin
+            $url_base = $this->scopeConfig->getValue(
+                "acessos/general/identity_url",
+                \Magento\Store\Model\ScopeInterface::SCOPE_STORE
             );
-            $params = ["cpf" => $cpf];
-            return $this->resultRedirectFactory
-                ->create()
-                ->setPath("customer/account/login", $params);
-        }
+            $url =
+                $url_base .
+                "/api/Account/ListUsersByLogin/" .
+                preg_replace("/[^0-9]/", "", $cpf);
 
-        /** @var \Magento\Framework\App\RequestInterface $request */
+            $curl = curl_init();
 
-        $url_base = $this->scopeConfig->getValue(
-            "acessos/general/kernel_url",
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
-        );
+            curl_setopt_array($curl, [
+                CURLOPT_URL => $url,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => "",
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => "GET",
+                CURLOPT_HTTPHEADER => ["Accept: text/plain"],
+            ]);
 
-        // Get countryId from Germini
-        // $response = "";
-        // $url = $url_base . '/api/Country';
+            $response = curl_exec($curl);
+            $resultado = json_decode($response);
 
-        // $curl = curl_init();
-
-        // curl_setopt_array($curl, array(
-        // CURLOPT_URL => $url,
-        // CURLOPT_RETURNTRANSFER => true,
-        // CURLOPT_ENCODING => '',
-        // CURLOPT_MAXREDIRS => 10,
-        // CURLOPT_TIMEOUT => 0,
-        // CURLOPT_FOLLOWLOCATION => true,
-        // CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        // CURLOPT_CUSTOMREQUEST => 'GET',
-        // CURLOPT_HTTPHEADER => array(
-        //     'Accept: text/plain'
-        // ),
-        // ));
-
-        // $response = curl_exec($curl);
-        // $resultado = json_decode($response);
-
-        // foreach ($resultado as $res){
-        //     if ($res->code == $countryCode){
-        //         $countryId = $res->id;
-        //     }
-        // }
-
-        $countryId = "20b32dbd-8bda-4563-bcd5-0a7e827fc5e4";
-        // $countryId = "f24483f2-066c-4fb1-afe3-7aba3df29c00";
-
-        curl_close($curl);
-        ///////////////////////////////
-
-        // Get stateId from Germini
-        $response = "";
-        $url = $url_base . "/api/State?countryId=" . $countryId;
-
-        $curl = curl_init();
-
-        curl_setopt_array($curl, [
-            CURLOPT_URL => $url,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => "GET",
-            CURLOPT_HTTPHEADER => ["Accept: text/plain"],
-        ]);
-
-        $response = curl_exec($curl);
-        $resultado = json_decode($response);
-
-        foreach ($resultado as $res) {
-            if ($res->abbreviation == $stateId) {
-                $regionName = $res->abbreviation;
-                $stateId = $res->id;
+            if (count($resultado) > 0) {
+                $this->messageManager->addErrorMessage(
+                    "Usuário com esse CPF já existe no CVale Fidelidade. Efetue o Login"
+                );
+                $params = ["cpf" => $cpf];
+                return $this->resultRedirectFactory
+                    ->create()
+                    ->setPath("customer/account/login", $params);
             }
-        }
 
-        curl_close($curl);
-        ///////////////////////////////
+            /** @var \Magento\Framework\App\RequestInterface $request */
 
-        // Get cityId from Germini
-        $response = "";
-        $url = $url_base . "/api/City?stateId=" . $stateId;
+            $url_base = $this->scopeConfig->getValue(
+                "acessos/general/kernel_url",
+                \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+            );
 
-        $curl = curl_init();
+            // Get countryId from Germini
+            // $response = "";
+            // $url = $url_base . '/api/Country';
 
-        curl_setopt_array($curl, [
-            CURLOPT_URL => $url,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => "GET",
-            CURLOPT_HTTPHEADER => ["Accept: text/plain"],
-        ]);
+            // $curl = curl_init();
 
-        $response = curl_exec($curl);
-        $resultado = json_decode($response);
+            // curl_setopt_array($curl, array(
+            // CURLOPT_URL => $url,
+            // CURLOPT_RETURNTRANSFER => true,
+            // CURLOPT_ENCODING => '',
+            // CURLOPT_MAXREDIRS => 10,
+            // CURLOPT_TIMEOUT => 0,
+            // CURLOPT_FOLLOWLOCATION => true,
+            // CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            // CURLOPT_CUSTOMREQUEST => 'GET',
+            // CURLOPT_HTTPHEADER => array(
+            //     'Accept: text/plain'
+            // ),
+            // ));
 
-        foreach ($resultado as $res) {
-            if ($res->name == $cityId) {
-                $cityName = $res->name;
-                $cityId = $res->id;
+            // $response = curl_exec($curl);
+            // $resultado = json_decode($response);
+
+            // foreach ($resultado as $res){
+            //     if ($res->code == $countryCode){
+            //         $countryId = $res->id;
+            //     }
+            // }
+
+            $countryId = "20b32dbd-8bda-4563-bcd5-0a7e827fc5e4";
+            // $countryId = "f24483f2-066c-4fb1-afe3-7aba3df29c00";
+
+            curl_close($curl);
+            ///////////////////////////////
+
+            // Get stateId from Germini
+            $response = "";
+            $url = $url_base . "/api/State?countryId=" . $countryId;
+
+            $curl = curl_init();
+
+            curl_setopt_array($curl, [
+                CURLOPT_URL => $url,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => "",
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => "GET",
+                CURLOPT_HTTPHEADER => ["Accept: text/plain"],
+            ]);
+
+            $response = curl_exec($curl);
+            $resultado = json_decode($response);
+
+            foreach ($resultado as $res) {
+                if ($res->abbreviation == $stateId) {
+                    $regionName = $res->abbreviation;
+                    $stateId = $res->id;
+                }
             }
-        }
 
-        curl_close($curl);
+            curl_close($curl);
+            ///////////////////////////////
 
-        // Caso o usuário não queira participar do programa
-        // cria o usuário no SAP
+            // Get cityId from Germini
+            $response = "";
+            $url = $url_base . "/api/City?stateId=" . $stateId;
 
-        if (1 == 1) {
+            $curl = curl_init();
+
+            curl_setopt_array($curl, [
+                CURLOPT_URL => $url,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => "",
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => "GET",
+                CURLOPT_HTTPHEADER => ["Accept: text/plain"],
+            ]);
+
+            $response = curl_exec($curl);
+            $resultado = json_decode($response);
+
+            foreach ($resultado as $res) {
+                if ($res->name == $cityId) {
+                    $cityName = $res->name;
+                    $cityId = $res->id;
+                }
+            }
+
+            curl_close($curl);
+
+            // Caso o usuário não queira participar do programa
+            // cria o usuário no SAP caso ainda nao seja associado
+
             $zipCodeNumbers = preg_replace("/[^0-9]/", "", $zipCode);
 
             switch ($genero) {
@@ -330,9 +333,6 @@ class CreateUserInGermini
                 \Magento\Store\Model\ScopeInterface::SCOPE_STORE
             );
 
-            // Inicializa um multi-curl handle
-            // $mch = curl_multi_init();
-
             //setting the curl parameters.
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $sap_url);
@@ -349,27 +349,6 @@ class CreateUserInGermini
             $data = curl_exec($ch);
             curl_close($ch);
 
-            // Adiciona a requisição $ch ao multi-curl handle $mch.
-            // curl_multi_add_handle($mch, $ch);
-
-            // $active = null;
-
-            // Executa requisição multi-curl e retorna imediatamente.
-            // do {
-            //     $res = curl_multi_exec($mch, $active);
-            // } while ($res == CURLM_CALL_MULTI_PERFORM);
-
-            // while ($active && $res == CURLM_OK) {
-            //     if (curl_multi_select($mch) != -1) {
-            //         do {
-            //             $res = curl_multi_exec($mch, $active);
-            //         } while ($res == CURLM_CALL_MULTI_PERFORM);
-            //     }
-            // }
-
-            // Acessa as respostas das requisições
-            // $data = curl_multi_getcontent($ch);
-
             //convert the XML result into array
             $array_data = json_decode(
                 json_encode(simplexml_load_string($data)),
@@ -377,33 +356,16 @@ class CreateUserInGermini
             );
 
             $logger->info("Resposta SAP: " . $data);
-            print_r("<pre>");
-            print_r($array_data);
-            print_r("</pre>");
 
             $customerSession->setFidelity(0);
-        }
 
-        if ($data == '') {
-            $this->messageManager->addErrorMessage("Ocorreu uma falha no cadastro. Tente novamente!");
-            return $this->resultRedirectFactory->create()
-                ->setPath(
-                    'customer/account/create'
-                );
-        }
-
-        // $sapXML = simplexml_load_string($data);
-        // if(!isset($sapXML->Number_bp))
-        // {
-        //     $this->messageManager->addErrorMessage("Ocorreu uma falha no cadastro. Tente novamente!");
-        //     return $this->resultRedirectFactory->create()
-        //         ->setPath(
-        //            'customer/account/create'
-        //         );
-        // }
-
-        if ($user_fidelidade == 0) {
-            return $proceed();
+            if ($data == '') {
+                $this->messageManager->addErrorMessage("Ocorreu uma falha no cadastro. Tente novamente!");
+                return $this->resultRedirectFactory->create()
+                    ->setPath(
+                        'customer/account/create'
+                    );
+            }
         }
 
         switch ($genero) {
@@ -420,32 +382,60 @@ class CreateUserInGermini
                 $germiniGenero = "nda";;
                 break;
         }
+
+        //************ */
+
+        if ($user_fidelidade == 0) {
+            return $proceed();
+        }
+
+
         // $germiniGenero = $genero == 1 ? "m" : "f";
         // Cria usuário no Germini
         $response = "";
+        $url_base = $this->scopeConfig->getValue(
+            "acessos/general/kernel_url",
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+        );
         $url = $url_base . "/api/Consumer/Register";
-        $params = [
-            "name" => $firstname,
-            "cpf" => $cpf,
-            "dateOfBirth" => $dob,
-            "gender" => $germiniGenero,
-            "email" => $email,
-            "password" => $password,
-            "confirmPassword" => $password_confirmation,
-            "phoneNumber" => $telephone2,
-            "phoneNumber2" => $telephone,
-            "address" => [
-                "addressType" => 1,
-                "location" => $location,
-                "district" => $district,
-                "number" => $number,
-                "aditionalInfo" => $complemento,
-                "zipCode" => $zipCode,
-                "stateId" => $stateId,
-                "cityId" => $cityId,
-                "countryId" => $countryId,
-            ],
-        ];
+
+        if ($associated == 0) {
+            $params = [
+                "name" => $firstname,
+                "cpf" => $cpf,
+                "dateOfBirth" => $dob,
+                "gender" => $germiniGenero,
+                "email" => $email,
+                "password" => $password,
+                "confirmPassword" => $password_confirmation,
+                "phoneNumber" => $telephone2,
+                "phoneNumber2" => $telephone,
+                "address" => [
+                    "addressType" => 1,
+                    "location" => $location,
+                    "district" => $district,
+                    "number" => $number,
+                    "aditionalInfo" => $complemento,
+                    "zipCode" => $zipCode,
+                    "stateId" => $stateId,
+                    "cityId" => $cityId,
+                    "countryId" => $countryId,
+                ],
+            ];
+        } else {
+            $params = [
+                "cpf" => $cpf,
+                "gender" => $germiniGenero,
+                "email" => $email,
+                "password" => $password,
+                "confirmPassword" => $password_confirmation,
+                "phoneNumber" => $telephone2,
+                "phoneNumber2" => $telephone,
+                "associated" => true,
+                "address" => ''
+            ];
+        }
+
 
         $data_json = json_encode($params);
         $ch = curl_init();
@@ -490,5 +480,13 @@ class CreateUserInGermini
         return $proceed();
         // $params = array('cpf' => $cpf);
         // return $this->resultRedirectFactory->create()->setPath('customer/account/login', $params);
+    }
+
+    public function afterExecute(
+        \Magento\Customer\Controller\Account\CreatePost $subject,
+        $result
+    ) {
+        $result->setPath('/');
+        return $result;
     }
 }

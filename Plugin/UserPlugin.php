@@ -170,8 +170,7 @@ class UserPlugin
             $customer_id = $customer->getId();
         }
 
-        if ($customer_id == 0)
-        {
+        if ($customer_id == 0) {
             $customerCollection = $objectManager->create('Magento\Customer\Model\ResourceModel\Customer\Collection');
             $customerCollection
                 ->addAttributeToFilter('cpf', array('eq' => $cpf));
@@ -230,26 +229,24 @@ class UserPlugin
 
             $customerSession = $objectManager->get('\Magento\Customer\Model\Session');
 
-            if (isset($dados->error)){
+            if (isset($dados->error)) {
                 $fidelity = 2;
-                 if($dados->error_description == "invalid_username")
-                 {
-                     $fidelity = 0;
-                 }
+                if ($dados->error_description == "invalid_username") {
+                    $fidelity = 0;
+                }
 
-            //         $this->_messageManager->getMessages(true);
-            //         $this->_messageManager->addSuccessMessage("Caso queira, se inscreva no programa de fidelidade C.Vale");
-            //         $this->customerSession->setCustomerDataAsLoggedIn($customer);
-            //         return $result;
-            //     }
-            //     $this->_messageManager->addError("Erro conectando com Germini");
-            //     $result->setPath('customer/account/');
-            //     return $result;
+                //         $this->_messageManager->getMessages(true);
+                //         $this->_messageManager->addSuccessMessage("Caso queira, se inscreva no programa de fidelidade C.Vale");
+                //         $this->customerSession->setCustomerDataAsLoggedIn($customer);
+                //         return $result;
+                //     }
+                //     $this->_messageManager->addError("Erro conectando com Germini");
+                //     $result->setPath('customer/account/');
+                //     return $result;
 
             }
 
-            if (isset($dados->access_token))
-            {
+            if (isset($dados->access_token)) {
                 $token = $dados->access_token;
 
                 $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
@@ -262,12 +259,9 @@ class UserPlugin
                 $response = $this->_curl->getBody();
                 $dados = json_decode($response);
 
-                if ($dados->fidelity->key == 0)
-                {
+                if ($dados->fidelity->key == 0) {
                     $fidelity = 2;
-                }
-                else
-                {
+                } else {
                     $fidelity = $dados->status->key;
                 }
 
@@ -283,16 +277,15 @@ class UserPlugin
                     }
                 }
                 $customerSession->setCustomerToken($token);
-
-            }else{
+            } else {
                 $pontos = 0;
-                            //     $this->_messageManager->getMessages(true);
-            //     $this->_messageManager->addComplexNoticeMessage(
-            //         'customerNeedValidateGermini',
-            //         [
-            //             'url' => 'https://cvale-fidelidade-consumer-hom.azurewebsites.net/auth/login',
-            //         ]
-            //     );
+                //     $this->_messageManager->getMessages(true);
+                //     $this->_messageManager->addComplexNoticeMessage(
+                //         'customerNeedValidateGermini',
+                //         [
+                //             'url' => 'https://cvale-fidelidade-consumer-hom.azurewebsites.net/auth/login',
+                //         ]
+                //     );
 
             }
 
@@ -313,7 +306,7 @@ class UserPlugin
 
             // }
             $this->customerSession->setCustomerDataAsLoggedIn($customer);
-            $result->setPath('customer/account/');
+            $result->setPath('/');
             $this->_messageManager->getMessages(true);
             $this->cleanCache();
             return $result;
@@ -403,7 +396,7 @@ class UserPlugin
                 $last_name = join(" ", $last_name);
                 $first_name = isset($names[0]) ? $names[0] : '';
                 // $last_name = isset($names[1]) ? $names[1] : 'Cvale';
-                if($last_name == "")
+                if ($last_name == "")
                     $last_name = "Cvale";
                 // if (sizeof($names) > 1) {
                 //     $last_name = end($names);
@@ -418,7 +411,7 @@ class UserPlugin
                 $magentoGender = $dados->gender == 'M' ? 1 : 2;
                 $new_customer->setGender($magentoGender);
 
-                $dateOfBirth=date_create($dados->dateOfBirth);
+                $dateOfBirth = date_create($dados->dateOfBirth);
                 $new_customer->setDob(date_format($dateOfBirth, 'Y-m-d'));
 
                 $pontos = $dados->points;
@@ -488,7 +481,7 @@ class UserPlugin
             }
         }
         $this->cleanCache();
-        $result->setPath('customer/account/');
+        $result->setPath('/');
         $this->_messageManager->getMessages(true);
         return $result;
     }

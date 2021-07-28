@@ -555,7 +555,7 @@
 
                     <div class="search">
                         <img style="height: 30px;" class="fa fa-search" id="toggle2" src="<?php echo $this->getViewFileUrl('Vexpro_Autenticacao::img/eye-solid.png'); ?>" />
-                        <input type="password" name="password_confirmation" title="<?php /* @escapeNotVerified */ echo __('Confirm Password') ?>" id="password-confirmation" class="input-text" data-validate="{required:true, equalTo:'#password'}" autocomplete="off">
+                        <input maxlength="6" type="password" name="password_confirmation" title="<?php /* @escapeNotVerified */ echo __('Confirm Password') ?>" id="password-confirmation" class="input-text" data-validate="{required:true, equalTo:'#password'}" autocomplete="off">
                     </div>
 
 
@@ -629,6 +629,8 @@
     <input type="hidden" name="create_address" value="1" />
     <input type="hidden" name="default_billing" value="1">
     <input type="hidden" name="default_shipping" value="1">
+
+    <input type="hidden" id="associated" name="associated" value="0">
 
     <div>
         <div class="primary">
@@ -713,12 +715,14 @@
     require([
         'jquery',
         'Magento_Ui/js/modal/modal',
+        'moment',
         'redirectUrl',
         'mage/mage',
         'mage/calendar',
         'jquery.mask',
         'loader'
-    ], function($, modal) {
+
+    ], function($, modal, moment) {
 
         $("#toggle").click(function() {
 
@@ -946,52 +950,197 @@
             }
         });
 
-        $("#cpf").blur(function() {
-
+        $("#cpf").blur(async function() {
             if ($("#cpf").val().length >= 14) {
                 var body = $('body').loader();
                 body.loader('show');
                 $("#cpf_modal").text($("#cpf").val());
-
-                $.ajax({
+                result = await $.ajax({
                     url: "/autentica/germini/recebe",
                     type: "POST",
                     data: {
                         cpf: $("#cpf").val(),
                     },
-                    success: function(result) {
-                        if (result == true) {
-                            $("#modal-content").modal("openModal");
-                            $("#button_create").prop('disabled', true);
-                        } else {
-                            $("#button_create").prop('disabled', false);
-                        }
-                    },
-                    error: function(err) {
-                        console.log("Error : " + JSON.stringify(err));
-                    }
                 });
+
+                console.log(result);
+
                 body.loader('hide');
+
+                // Já existe no Germini
+                if (result == true) {
+                    $("#modal-content").modal("openModal");
+                    $("#button_create").prop('disabled', true);
+                } else if (result?.data != null) {
+                    $("#button_create").prop('disabled', false);
+
+
+
+                    // Usa os dados retornados para preencher campos do formulario
+                    // nesse caso, tenho que setar em CreateUpdateConsumer
+                    // "associated": true
+
+
+                    $("#cpf").attr('readonly', 'readonly')
+                    $("#cpf").css({
+                        backgroundColor: '#c2c2c2'
+                    });
+
+
+                    $("#associated").val("1");
+                    let fullName = result?.data?.name;
+                    $("#firstname").val(fullName);
+                    $("#firstname").attr('readonly', 'readonly')
+                    $("#firstname").attr('type', 'password')
+                    $("#firstname").css({
+                        backgroundColor: '#c2c2c2'
+                    });
+
+                    let lastName = result?.data?.name;
+                    $("#lastname").val(fullName);
+                    $("#lastname").attr('readonly', 'readonly')
+                    $("#lastname").attr('type', 'password')
+                    $("#lastname").css({
+                        backgroundColor: '#c2c2c2'
+                    });
+                    let dob = moment(result?.data?.dateOfBirth).format('L');
+
+                    $("#dob").val(dob);
+                    $("#dob").attr('readonly', 'readonly')
+                    $("#dob").attr('type', 'password')
+                    $("#dob").css({
+                        backgroundColor: '#c2c2c2'
+                    });
+
+
+                    let gender = result?.data?.gender;
+                    let gender_val = 0;
+                    switch (gender) {
+                        case "M":
+                            gender_val = 1;
+                            break;
+                        case "F":
+                            gender_val = 2;
+                            break;
+                        default:
+                            gender_val = 3;
+                            break;
+                    }
+                    $("#gender").val(gender_val);
+                    $("#gender").attr('readonly', 'readonly')
+                    $("#gender").css({
+                        backgroundColor: '#c2c2c2'
+                    });
+                    $('#gender option:not(:selected)').attr('disabled', true);
+
+
+
+                    let email = result?.data?.email;
+                    $("#email_address").val(email);
+                    let telephone = result?.data?.phoneNumber2;
+                    $("#telephone").val(telephone);
+                    let telephone2 = result?.data?.phoneNumber;
+                    $("#telephone2").val(telephone2);
+                    let postcode = result?.data?.address?.zipCode;
+                    console.log(postcode)
+                    $("#postcode").val(postcode);
+                    $("#postcode").attr('readonly', 'readonly')
+                    $("#postcode").css({
+                        backgroundColor: '#c2c2c2'
+                    });
+                    $("#postcode").removeClass();
+                    $("#postcode").removeAttr("aria-required")
+                    $("#postcode").removeAttr("maxlength")
+                    $("#postcode").attr('readonly', 'readonly')
+                    $("#postcode").attr('type', 'password')
+
+
+                    let street_1 = result?.data?.address?.location;
+                    $("#street_1").val(street_1);
+                    $("#street_1").attr('readonly', 'readonly')
+                    $("#street_1").attr('type', 'password')
+                    $("#street_1").css({
+                        backgroundColor: '#c2c2c2'
+                    });
+                    let street_2 = result?.data?.address?.number;
+                    $("#street_2").val(street_2);
+                    $("#street_2").attr('readonly', 'readonly')
+                    $("#street_2").attr('type', 'password')
+                    $("#street_2").css({
+                        backgroundColor: '#c2c2c2'
+                    });
+                    let street_3 = result?.data?.address?.district;
+                    $("#street_3").val(street_3);
+                    $("#street_3").attr('readonly', 'readonly')
+                    $("#street_3").attr('type', 'password')
+                    $("#street_3").css({
+                        backgroundColor: '#c2c2c2'
+                    });
+                    let complemento = result?.data?.address?.aditionalInfo;
+                    $("#complemento").val(complemento);
+                    $("#complemento").attr('readonly', 'readonly')
+                    $("#complemento").attr('type', 'password')
+                    $("#complemento").css({
+                        backgroundColor: '#c2c2c2'
+                    });
+
+                    let estate = result?.data?.address?.state?.name;
+                    $("#region_id").attr('readonly', 'readonly')
+                    $("#region_id").css({
+                        backgroundColor: '#c2c2c2'
+                    });
+                    var x = new Option(estate, estate);
+                    /// jquerify the DOM object 'o' so we can use the html method
+                    $(x).html(estate);
+                    $("#region_id").append(x);
+                    $("#region_id").val(estate).change();
+
+
+
+                    let city = result?.data?.address?.city?.name;
+                    $("#city").attr('readonly', 'readonly')
+                    $("#city").css({
+                        backgroundColor: '#c2c2c2'
+                    });
+                    var o = new Option(city, city);
+                    /// jquerify the DOM object 'o' so we can use the html method
+                    $(o).html(city);
+                    $("#city").append(o);
+                    $("#city").val(city).change();
+
+
+
+                    $("#country").attr('readonly', 'readonly')
+                    $("#country").css({
+                        backgroundColor: '#c2c2c2'
+                    });
+
+
+                }
+
+
             }
         });
 
         $("#region_id").change(async function() {
-            var body = $('body').loader();
-            body.loader('show');
-            result = await $.ajax({
-                url: "/autentica/germini/cities",
-                type: "POST",
-                data: {
-                    region_id: $("#region_id").val(),
-                    country: $("#country").val()
-                }
-            });
-            console.log(result);
-            document.getElementById("city").options.length = 0;
-            result.forEach((city) => {
-                $('#city').append(`<option value="${city.name}">${city.name}</option>`);
-            })
-            body.loader('hide');
+            if ($("#associated").val() == 0) {
+                var body = $('body').loader();
+                body.loader('show');
+                result = await $.ajax({
+                    url: "/autentica/germini/cities",
+                    type: "POST",
+                    data: {
+                        region_id: $("#region_id").val(),
+                        country: $("#country").val()
+                    }
+                });
+                console.log(result);
+                document.getElementById("city").options.length = 0;
+                result.forEach((city) => {
+                    $('#city').append(`<option value="${city.name}">${city.name}</option>`);
+                })
+                body.loader('hide');
+            }
         })
 
         var dataForm = $('#form-validate');
