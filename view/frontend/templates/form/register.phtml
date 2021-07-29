@@ -821,12 +821,13 @@
         $("#dob").mask("00/00/0000");
 
         $('#dob').calendar({
+            dateFormat: "dd/mm/yy",
             changeMonth: true,
             changeYear: true,
             showButtonPanel: true,
             currentText: 'Ir para hoje',
             closeText: 'Fechar',
-            showWeek: true,
+            showWeek: false,
             weekHeader: "Sem",
             yearRange: "-100:+0", // last hundred years
             dayNamesMin: ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sab"],
