@@ -65,52 +65,46 @@ class Recebe extends Action
             return $resultJson;
         }
         // VERIFICA SE EXISTE ESSE CPF NO BP DO SAP
-        // $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-        // $url = $url_base . "/api/Consumer/VerifyDocumentNoMask?cpfCnpj={$cpf}&maskData=true";
+        $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        $url = $url_base . "/api/Consumer/VerifyDocument?cpfCnpj={$cpf}&maskData=true";
 
-        // $curl = curl_init();
+        $curl = curl_init();
 
-        // curl_setopt_array($curl, array(
-        //     CURLOPT_URL => $url,
-        //     CURLOPT_RETURNTRANSFER => true,
-        //     CURLOPT_ENCODING => '',
-        //     CURLOPT_MAXREDIRS => 10,
-        //     CURLOPT_TIMEOUT => 0,
-        //     CURLOPT_FOLLOWLOCATION => true,
-        //     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        //     CURLOPT_CUSTOMREQUEST => 'GET',
-        //     CURLOPT_HTTPHEADER => array(
-        //         'Accept: text/plain'
-        //     ),
-        // ));
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'GET',
+            CURLOPT_HTTPHEADER => array(
+                'Accept: text/plain'
+            ),
+        ));
 
-        // $response = curl_exec($curl);
-        // $cliente = json_decode($response);
+        $response = curl_exec($curl);
+        $cliente = json_decode($response);
 
-        // if ($cliente->success != true) {
-        //     foreach ($cliente->errors as $error) {
-        //         $this->messageManager->addErrorMessage(
-        //             $error->message
-        //         );
-        //     }
-        //     $resultJson = $this->resultJsonFactory->create();
-        //     $resultJson->setData(False);
-        //     return $resultJson;
-        // }
-
-        // CODIGO TEMPORARIO SEM API EM PROD
-        $resultJson = $this->resultJsonFactory->create();
-        $resultJson->setData(False);
-        return $resultJson;
-        // ********************************
+        if ($cliente->success != true) {
+            foreach ($cliente->errors as $error) {
+                $this->messageManager->addErrorMessage(
+                    $error->message
+                );
+            }
+            $resultJson = $this->resultJsonFactory->create();
+            $resultJson->setData(False);
+            return $resultJson;
+        }
 
 
         /** @var \Magento\Framework\Controller\Result\Json $resultJson */
-        // $resultJson = $this->resultJsonFactory->create();
-        // $resultJson->setData($cliente);
+        $resultJson = $this->resultJsonFactory->create();
+        $resultJson->setData($cliente);
 
-        // return $resultJson;
+        return $resultJson;
 
-        // echo false;
+        echo false;
     }
 }

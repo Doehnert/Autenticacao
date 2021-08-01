@@ -975,17 +975,14 @@
                     $("#button_create").prop('disabled', true);
                 } else if (result?.data != null) {
                     $("#button_create").prop('disabled', false);
-
-
-
                     // Usa os dados retornados para preencher campos do formulario
                     // nesse caso, tenho que setar em CreateUpdateConsumer
                     // "associated": true
 
-
                     $("#cpf").attr('readonly', 'readonly')
+
                     $("#cpf").css({
-                        backgroundColor: '#c2c2c2'
+                        backgroundColor: '#dbdbdb'
                     });
 
 
@@ -993,25 +990,26 @@
                     let fullName = result?.data?.name;
                     $("#firstname").val(fullName);
                     $("#firstname").attr('readonly', 'readonly')
-                    $("#firstname").attr('type', 'password')
+
                     $("#firstname").css({
-                        backgroundColor: '#c2c2c2'
+                        backgroundColor: '#dbdbdb'
                     });
 
                     let lastName = result?.data?.name;
                     $("#lastname").val(fullName);
                     $("#lastname").attr('readonly', 'readonly')
-                    $("#lastname").attr('type', 'password')
                     $("#lastname").css({
-                        backgroundColor: '#c2c2c2'
+                        backgroundColor: '#dbdbdb'
                     });
                     let dob = moment(result?.data?.dateOfBirth).format('L');
 
-                    $("#dob").val(dob);
+
+                    // $("#dob").remove();
+
+                    // $("#dob").val(dob);
                     $("#dob").attr('readonly', 'readonly')
-                    $("#dob").attr('type', 'password')
                     $("#dob").css({
-                        backgroundColor: '#c2c2c2'
+                        backgroundColor: '#dbdbdb'
                     });
 
 
@@ -1031,7 +1029,7 @@
                     $("#gender").val(gender_val);
                     $("#gender").attr('readonly', 'readonly')
                     $("#gender").css({
-                        backgroundColor: '#c2c2c2'
+                        backgroundColor: '#dbdbdb'
                     });
                     $('#gender option:not(:selected)').attr('disabled', true);
 
@@ -1048,48 +1046,44 @@
                     $("#postcode").val(postcode);
                     $("#postcode").attr('readonly', 'readonly')
                     $("#postcode").css({
-                        backgroundColor: '#c2c2c2'
+                        backgroundColor: '#dbdbdb'
                     });
                     $("#postcode").removeClass();
                     $("#postcode").removeAttr("aria-required")
                     $("#postcode").removeAttr("maxlength")
                     $("#postcode").attr('readonly', 'readonly')
-                    $("#postcode").attr('type', 'password')
 
 
                     let street_1 = result?.data?.address?.location;
                     $("#street_1").val(street_1);
                     $("#street_1").attr('readonly', 'readonly')
-                    $("#street_1").attr('type', 'password')
                     $("#street_1").css({
-                        backgroundColor: '#c2c2c2'
+                        backgroundColor: '#dbdbdb'
                     });
                     let street_2 = result?.data?.address?.number;
                     $("#street_2").val(street_2);
                     $("#street_2").attr('readonly', 'readonly')
-                    $("#street_2").attr('type', 'password')
                     $("#street_2").css({
-                        backgroundColor: '#c2c2c2'
+                        backgroundColor: '#dbdbdb'
                     });
                     let street_3 = result?.data?.address?.district;
                     $("#street_3").val(street_3);
                     $("#street_3").attr('readonly', 'readonly')
                     $("#street_3").attr('type', 'password')
                     $("#street_3").css({
-                        backgroundColor: '#c2c2c2'
+                        backgroundColor: '#dbdbdb'
                     });
                     let complemento = result?.data?.address?.aditionalInfo;
                     $("#complemento").val(complemento);
                     $("#complemento").attr('readonly', 'readonly')
-                    $("#complemento").attr('type', 'password')
                     $("#complemento").css({
-                        backgroundColor: '#c2c2c2'
+                        backgroundColor: '#dbdbdb'
                     });
 
                     let estate = result?.data?.address?.state?.name;
                     $("#region_id").attr('readonly', 'readonly')
                     $("#region_id").css({
-                        backgroundColor: '#c2c2c2'
+                        backgroundColor: '#dbdbdb'
                     });
                     var x = new Option(estate, estate);
                     /// jquerify the DOM object 'o' so we can use the html method
@@ -1102,7 +1096,7 @@
                     let city = result?.data?.address?.city?.name;
                     $("#city").attr('readonly', 'readonly')
                     $("#city").css({
-                        backgroundColor: '#c2c2c2'
+                        backgroundColor: '#dbdbdb'
                     });
                     var o = new Option(city, city);
                     /// jquerify the DOM object 'o' so we can use the html method
@@ -1114,7 +1108,7 @@
 
                     $("#country").attr('readonly', 'readonly')
                     $("#country").css({
-                        backgroundColor: '#c2c2c2'
+                        backgroundColor: '#dbdbdb'
                     });
 
 

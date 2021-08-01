@@ -80,6 +80,7 @@ class CreateUserInGermini
         $logger = $objectManager->create("\Psr\Log\LoggerInterface");
 
         $associated = $subject->getRequest()->getParam("associated");
+
         $user_fidelidade = $subject->getRequest()->getParam("user_fidelidade");
 
         $email = $subject->getRequest()->getParam("email");
@@ -204,8 +205,8 @@ class CreateUserInGermini
             //     }
             // }
 
-            // $countryId = "20b32dbd-8bda-4563-bcd5-0a7e827fc5e4";
-            $countryId = "f24483f2-066c-4fb1-afe3-7aba3df29c00";
+            $countryId = "20b32dbd-8bda-4563-bcd5-0a7e827fc5e4";
+            // $countryId = "f24483f2-066c-4fb1-afe3-7aba3df29c00";
 
             curl_close($curl);
             ///////////////////////////////
@@ -429,8 +430,8 @@ class CreateUserInGermini
                 "email" => $email,
                 "password" => $password,
                 "confirmPassword" => $password_confirmation,
-                "phoneNumber" => $telephone2,
-                "phoneNumber2" => $telephone,
+                "phoneNumber" => $telephone,
+                "phoneNumber2" => $telephone2,
                 "associated" => true,
                 "address" => ''
             ];
@@ -488,5 +489,59 @@ class CreateUserInGermini
     ) {
         $result->setPath('/');
         return $result;
+    }
+
+    public function beforeExecute(
+        \Magento\Customer\Controller\Account\CreatePost $subject
+    ) {
+
+        $associated = $subject->getRequest()->getParam("associated");
+
+        if ($associated == 1) {
+            // Pegos os dados na API VerifyDocumentNoMask
+            $cpf = $subject->getRequest()->getParam("cpf");
+            // VERIFICA SE EXISTE ESSE CPF NO BP DO SAP
+            $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+            $url = $url_base . "/api/Consumer/VerifyDocumentNoMask?cpfCnpj={$cpf}&maskData=true";
+
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => $url,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'GET',
+                CURLOPT_HTTPHEADER => array(
+                    'Accept: text/plain'
+                ),
+            ));
+
+            $response = curl_exec($curl);
+            $cliente = json_decode($response);
+
+            $names = explode(" ", ltrim($cliente->data->name));
+            $last_name = $names;
+            array_shift($last_name);
+            $last_name = join(" ", $last_name);
+            $first_name = isset($names[0]) ? $names[0] : '';
+
+            $subject->getRequest()->setPostValue("firstname", $first_name);
+            $subject->getRequest()->setPostValue("lastname", $last_name);
+            $subject->getRequest()->setPostValue("dob", $cliente->data->dateOfBirth);
+            $subject->getRequest()->setPostValue("postcode", $cliente->data->address->zipCode);
+            $street = [];
+            array_push($street, $cliente->data->address->location);
+            array_push($street, $cliente->data->address->number);
+            array_push($street, $cliente->data->address->district);
+            $subject->getRequest()->setPostValue("street", $street);
+
+            $subject->getRequest()->setPostValue("email", $cliente->data->email);
+            $subject->getRequest()->setPostValue("telephone", $cliente->data->phoneNumber);
+            $subject->getRequest()->setPostValue("telephone2", $cliente->data->phoneNumber2);
+        }
     }
 }
