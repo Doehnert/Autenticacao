@@ -1004,10 +1004,8 @@
                     let dob = moment(result?.data?.dateOfBirth).format('L');
 
 
-                    // $("#dob").remove();
-
-                    // $("#dob").val(dob);
-                    $("#dob").attr('readonly', 'readonly')
+                    // // $("#dob").val(dob);
+                    $("#dob").prop('disabled', 'true')
                     $("#dob").css({
                         backgroundColor: '#dbdbdb'
                     });

@@ -531,7 +531,7 @@ class CreateUserInGermini
 
             $subject->getRequest()->setPostValue("firstname", $first_name);
             $subject->getRequest()->setPostValue("lastname", $last_name);
-            $subject->getRequest()->setPostValue("dob", $cliente->data->dateOfBirth);
+            $subject->getRequest()->setPostValue("dob", date("d/m/Y", strtotime($cliente->data->dateOfBirth)));
             $subject->getRequest()->setPostValue("postcode", $cliente->data->address->zipCode);
             $street = [];
             array_push($street, $cliente->data->address->location);
@@ -540,8 +540,21 @@ class CreateUserInGermini
             $subject->getRequest()->setPostValue("street", $street);
 
             $subject->getRequest()->setPostValue("email", $cliente->data->email);
-            $subject->getRequest()->setPostValue("telephone", $cliente->data->phoneNumber);
-            $subject->getRequest()->setPostValue("telephone2", $cliente->data->phoneNumber2);
+            $phoneNumber = $cliente->data->phoneNumber == '' ? $cliente->data->phoneNumber2 : $cliente->data->phoneNumber;
+            $phoneNumber2 = $cliente->data->phoneNumber2 == '' ? $cliente->data->phoneNumber : $cliente->data->phoneNumber2;
+            $subject->getRequest()->setPostValue("telephone", $phoneNumber);
+            $subject->getRequest()->setPostValue("telephone2", $phoneNumber2);
+
+
+            // CIDADE E ESTADO
+            $subject->getRequest()->setPostValue("city", $cliente->data->address->city->name);
+
+            $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+            $region = $objectManager->create('Magento\Directory\Model\Region')
+                ->loadByCode($cliente->data->address->state->abbreviation, 'BR');
+            $region_id = $region->getData()['region_id'];
+
+            $subject->getRequest()->setPostValue("region_id", $region_id);
         }
     }
 }
