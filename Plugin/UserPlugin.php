@@ -159,8 +159,17 @@ class UserPlugin
         /** Applying Filters */
         $customerCollection
             //->addAttributeToSelect(array('email'))
-            ->addAttributeToFilter('cpf', array('eq' => $cpf_mask));
+            ->addAttributeToFilter('cpf', array('eq' => $cpf_apenas_numeros));
         $customers = $customerCollection->load();
+
+        if ($customers->count() == 0) {
+            $customerCollection
+                //->addAttributeToSelect(array('email'))
+                ->addAttributeToFilter('cpf', array('eq' => $cpf_mask));
+            $customers = $customerCollection->load();
+        }
+
+
 
         $conta = 0;
         $customer_id = 0;
