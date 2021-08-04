@@ -1,4 +1,11 @@
 <style>
+    #policy {
+        cursor: pointer;
+        color: #21409A;
+        font-style: normal;
+        text-decoration: underline;
+    }
+
     .search {
         position: relative;
         color: #aaa;
@@ -582,6 +589,16 @@
     </div>
 
     <hr>
+    <div id="policy_field">
+        <div class="field choice" style="display: flex; align-items: center;">
+            <div style="display: flex; align-items: baseline;">
+                <input type="checkbox" name="change_policy" id="change_policy" value="1" class="checkbox" />
+                <label for="change_policy" style="font-weight: bold" class="label"><span>Aceito as <i id="policy">Políticas de privacidade</i></span></label>
+            </div>
+        </div>
+    </div>
+
+    <hr>
     <div id="fidelidade_field">
         <div class="field choice" style="display: flex; align-items: center;">
             <div style="display: flex; align-items: baseline;">
@@ -632,6 +649,8 @@
 
     <input type="hidden" id="associated" name="associated" value="0">
 
+    <input type="hidden" id="policy_accepted" name="policy_accepted" value="0">
+
     <div>
         <div class="primary">
             <button type="submit" style="border-radius: 6px !important; margin-top: 20px;margin-bottom: 20px" class="action submit primary" id="button_create" title="<?php /* @escapeNotVerified */ echo __('Create an Account') ?>"><span><?php /* @escapeNotVerified */ echo __('Create an Account') ?></span></button>
@@ -681,6 +700,13 @@
         </div>
     </div>
 
+    <!--MODAL-->
+    <div id="modal-policy">
+        <div class="modal-inner-content" id="content-policy">
+
+        </div>
+    </div>
+
 </form>
 
 <script type="text/x-magento-init">
@@ -723,6 +749,21 @@
         'loader'
 
     ], function($, modal, moment) {
+
+        $("#button_create").prop('disabled', true);
+
+        $("#change_policy").click(function() {
+            if ($("#policy_accepted").val() == 0) {
+                $("#policy_accepted").val(1);
+                if ($("#aceito_termos_uso").prop("checked") == false) {
+                    $("#button_create").prop('disabled', false);
+                }
+            } else {
+                $("#policy_accepted").val(0);
+                $("#button_create").prop('disabled', true);
+            }
+            console.log($("#policy_accepted").val());
+        });
 
         $("#toggle").click(function() {
 
@@ -767,8 +808,9 @@
 
         function checkTerms() {
             if ($("#aceito_termos_uso").prop("checked") == true && $("#aceito_regulamento").prop("checked") ==
-                true) {
+                true && $("#policy_accepted").val() == 1) {
                 $("#user_fidelidade").val("1");
+
                 $("#button_create").prop('disabled', false);
             } else {
                 $("#user_fidelidade").val("0");
@@ -787,10 +829,14 @@
         $("#box").hide();
 
         $("#is_fidelidade").change(function() {
-            $("#button_create").prop('disabled', function(i, v) {
-                return !v;
-            });
-            $("#box").toggle();
+
+            if ($("#policy_accepted").val() == 1) {
+                $("#button_create").prop('disabled', function(i, v) {
+                    return !v;
+                });
+                $("#box").toggle();
+            }
+
         })
 
         $("#selecionar_todos").click(function() {
@@ -876,16 +922,26 @@
             responsive: true,
             title: 'Regulamento do programa de fidelidade',
         };
+        var options5 = {
+            innerScroll: true,
+            type: 'popup',
+            responsive: true,
+            title: 'O que é o C.Vale fidelidade?',
+        };
 
         modal(options, $('#modal-content'));
         modal(options2, $('#modal-conheca'));
 
         modal(options3, $('#modal-termos'));
         modal(options4, $('#modal-regulamentos'));
+        modal(options5, $('#modal-policy'));
+
+
 
         $("#conheca").click(function() {
             $("#modal-conheca").modal("openModal");
         })
+
         $("#tu").click(async function() {
             var body = $('body').loader();
             body.loader('show');
@@ -908,6 +964,19 @@
 
             $("#conteuto-termos").html(regulamentos.regulation);
             $("#modal-termos").modal("openModal");
+            body.loader('hide');
+        })
+
+        $("#policy").click(async function() {
+            var body = $('body').loader();
+            body.loader('show');
+            policy = await $.ajax({
+                url: "/autentica/germini/policy",
+                type: "GET"
+            });
+
+            $("#content-policy").html(policy.policy);
+            $("#modal-policy").modal("openModal");
             body.loader('hide');
         })
 
