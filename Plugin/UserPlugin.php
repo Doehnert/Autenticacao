@@ -157,27 +157,44 @@ class UserPlugin
         // Tentar carregar o usuário usando o CPF informado
         $customerCollection = $objectManager->create('Magento\Customer\Model\ResourceModel\Customer\Collection');
         /** Applying Filters */
-        $customerCollection
-            //->addAttributeToSelect(array('email'))
-            ->addAttributeToFilter('cpf', array('eq' => $cpf_apenas_numeros));
-        $customers = $customerCollection->load();
+        // $customerCollection
+        //     //->addAttributeToSelect(array('email'))
+        //     ->addAttributeToFilter('cpf', array('eq' => $cpf_apenas_numeros));
+        // $customers = $customerCollection->load();
 
-        if ($customers->count() == 0) {
-            $customerCollection
-                //->addAttributeToSelect(array('email'))
-                ->addAttributeToFilter('cpf', array('eq' => $cpf_mask));
-            $customers = $customerCollection->load();
-        }
-
-
+        // if ($customers->count() == 0) {
+        //     $customerCollection
+        //         //->addAttributeToSelect(array('email'))
+        //         ->addAttributeToFilter('cpf', array('eq' => $cpf_mask));
+        //     $customers = $customerCollection->load();
+        // }
 
         $conta = 0;
         $customer_id = 0;
-        foreach ($customers as $customer) {
-            $conta++;
-            $email = $customer->getEmail();
-            $customer_id = $customer->getId();
+
+
+        $customerObj = $objectManager->create('Magento\Customer\Model\ResourceModel\Customer\Collection');
+        $customer = $customerObj->addAttributeToSelect('*')
+            ->addAttributeToFilter('cpf', $cpf_mask)
+            ->load();
+        if ($customer->count() > 0) {
+            $customer_id = $customer->getData()[0]['entity_id'];
+        } else {
+            $customer = $customerObj->addAttributeToSelect('*')
+                ->addAttributeToFilter('cpf', $cpf_apenas_numeros)
+                ->load();
+            if ($customer->count() > 0) {
+                $customer_id = $customer->getData()[0]['entity_id'];
+            }
         }
+
+
+
+        // foreach ($customers as $customer) {
+        //     $conta++;
+        //     $email = $customer->getEmail();
+        //     $customer_id = $customer->getId();
+        // }
 
         if ($customer_id == 0) {
             $customerCollection = $objectManager->create('Magento\Customer\Model\ResourceModel\Customer\Collection');
