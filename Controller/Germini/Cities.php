@@ -92,8 +92,8 @@ class Cities extends Action
 
         $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
         // $url = $url_base . '/api/State/?countryId=' . $meu_pais->id;
-        $url = $url_base . '/api/State/?countryId=20b32dbd-8bda-4563-bcd5-0a7e827fc5e4';
-        // $url = $url_base . '/api/State/?countryId=f24483f2-066c-4fb1-afe3-7aba3df29c00';
+        // $url = $url_base . '/api/State/?countryId=20b32dbd-8bda-4563-bcd5-0a7e827fc5e4';
+        $url = $url_base . '/api/State/?countryId=f24483f2-066c-4fb1-afe3-7aba3df29c00';
 
         $curl = curl_init();
 
