@@ -1,4 +1,5 @@
 <?php
+
 namespace Vexpro\Autenticacao\Observer;
 
 use Magento\Customer\Api\CustomerRepositoryInterface;
@@ -28,11 +29,13 @@ class EditCustomer implements \Magento\Framework\Event\ObserverInterface
         $customerSession = $objectManager->create('Magento\Customer\Model\Session');
         $customer = $customerSession->getCustomer();
         $customerId = $customer->getId();
-        if (isset($customerId))
-        {
+        if (isset($customerId)) {
             $customer = $this->customerRepository->getById($customerId);
-            $pontosCliente = $customer->getCustomAttribute('pontos_cliente')->getValue();
-        } else{
+            if ($customer->getCustomAttribute('pontos_cliente')->getValue() != null) {
+
+                $pontosCliente = $customer->getCustomAttribute('pontos_cliente')->getValue();
+            }
+        } else {
             $pontosCliente = null;
         }
 
@@ -75,8 +78,7 @@ class EditCustomer implements \Magento\Framework\Event\ObserverInterface
                 $district = 0;
                 $region_id = 0;
                 $regionName = 0;
-                if (count($addresses) > 0)
-                {
+                if (count($addresses) > 0) {
                     $telephone2 = (null !== $addresses[0]->getTelephone()) ? $addresses[0]->getTelephone() : '';
                     $city = (null !== $addresses[0]->getCity()) ? $addresses[0]->getCity() : '';
                     $country_id = (null !== $addresses[0]->getCountryId()) ? $addresses[0]->getCountryId() : '';
@@ -89,11 +91,9 @@ class EditCustomer implements \Magento\Framework\Event\ObserverInterface
 
                     $region_id = (null !== $addresses[0]->getRegionId()) ? $addresses[0]->getRegionId() : '';
                     $regionName = '';
-                    if($region_id)
-                    {
+                    if ($region_id) {
                         $region = $this->regionFactory->create()->load($region_id);
                         $regionName = $region->getCode();
-
                     }
                 }
                 if (1 == 1) {

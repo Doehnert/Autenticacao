@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
@@ -6,19 +7,20 @@
 ?>
 
 <?php
-    $OrderStatus = [
-        "pending" => 0,
-        "processing" => 1,
-        "preparando" => 2,
-        "transito" => 3,
-        "complete" => 4
-    ];
+$OrderStatus = [
+    "pending" => 0,
+    "processing" => 1,
+    "preparando" => 2,
+    "transito" => 3,
+    "complete" => 4,
+    "canceled" => 5
+];
 
-    $estado = $OrderStatus[$block->escapeHtml($block->getOrder()->getStatus())];
+$estado = $OrderStatus[$block->escapeHtml($block->getOrder()->getStatus())];
 
-    // $shipment = $block->getOrder()->getShipmentsCollection()->getData();
+// $shipment = $block->getOrder()->getShipmentsCollection()->getData();
 
-    // $shipment_date = $shipment->getCreatedAt();
+// $shipment_date = $shipment->getCreatedAt();
 ?>
 
 <!--
@@ -95,50 +97,51 @@
     .progressbar li.active+li:after {
         background-color: #21409A;
     }
-
 </style>
 
 <div class="root">
     <div class="container">
         <ul class="progressbar">
             <li <?php
-        if ($estado ==0)
-        {
-            echo "class='active'";
-        }
-        ?>>Pagamento Pendente</li>
+                if ($estado == 0) {
+                    echo "class='active'";
+                }
+                ?>>Pagamento Pendente</li>
             <li <?php
-        if ($estado ==1)
-        {
-            echo "class='active'";
-        }
-        ?>>Processando</li>
+                if ($estado == 1) {
+                    echo "class='active'";
+                }
+                ?>>Processando</li>
             <li <?php
-        if ($estado ==2)
-        {
-            echo "class='active'";
-        }
-        ?>>Preparando para envio</li>
+                if ($estado == 2) {
+                    echo "class='active'";
+                }
+                ?>>Preparando para envio</li>
             <li <?php
-        if ($estado ==3)
-        {
-            echo "class='active'";
-        }
-        ?>>
+                if ($estado == 3) {
+                    echo "class='active'";
+                }
+                ?>>
 
-        <?php if ($block->getOrder()->getShippingDescription() == "Free Shipping - Free"){
-            echo "Pedido pronto para retirada";
-        } else {
-            echo "Pedido em transito";
-        }
-        ?>
-        </li>
+                <?php if ($block->getOrder()->getShippingDescription() == "Free Shipping - Free") {
+                    echo "Pedido pronto para retirada";
+                } else {
+                    echo "Pedido em transito";
+                }
+                ?>
+            </li>
             <li <?php
-        if ($estado >=4)
-        {
-            echo "class='active'";
-        }
-        ?>>Pedido Concluído</li>
+                if ($estado == 5) {
+                    echo "class='active'";
+                }
+                ?>>Pedido Cancelado
+            </li>
+            <li <?php
+                if ($estado > 5) {
+                    echo "class='active'";
+                }
+                ?>>Pedido Concluído
+            </li>
 
         </ul>
     </div>

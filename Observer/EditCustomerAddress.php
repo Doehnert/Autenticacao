@@ -1,4 +1,5 @@
 <?php
+
 namespace Vexpro\Autenticacao\Observer;
 
 use Magento\Customer\Api\CustomerRepositoryInterface;
@@ -28,10 +29,11 @@ class EditCustomerAddress implements \Magento\Framework\Event\ObserverInterface
         $customerSession = $objectManager->create('Magento\Customer\Model\Session');
         $customer = $customerSession->getCustomer();
         $customerId = $customer->getId();
-        if (isset($customerId))
-        {
+        if (isset($customerId)) {
             $customer = $this->customerRepository->getById($customerId);
-            $pontosCliente = $customer->getCustomAttribute('pontos_cliente')->getValue();
+            if ($customer->getCustomAttribute('pontos_cliente')->getValue() != null) {
+                $pontosCliente = $customer->getCustomAttribute('pontos_cliente')->getValue();
+            }
         } else {
             $pontosCliente = null;
         }
