@@ -137,7 +137,7 @@ $estado = $OrderStatus[$block->escapeHtml($block->getOrder()->getStatus())];
                 ?>>Pedido Cancelado
             </li>
             <li <?php
-                if ($estado > 5) {
+                if ($estado == 4) {
                     echo "class='active'";
                 }
                 ?>>Pedido Concluído
