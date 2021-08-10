@@ -130,18 +130,23 @@ $estado = $OrderStatus[$block->escapeHtml($block->getOrder()->getStatus())];
                 }
                 ?>
             </li>
-            <li <?php
-                if ($estado == 5) {
-                    echo "class='active'";
-                }
-                ?>>Pedido Cancelado
-            </li>
-            <li <?php
-                if ($estado == 4) {
-                    echo "class='active'";
-                }
-                ?>>Pedido Concluído
-            </li>
+            <?php
+            if ($estado == 5) { ?>
+                <li class='active'>
+                    Pedido Cancelado
+
+                </li>
+            <?php
+            }
+            ?>
+            <?php
+            if ($estado == 4) { ?>
+                <li class='active'>
+                    Pedido Concluído
+                </li>
+            <?php
+            }
+            ?>
 
         </ul>
     </div>
