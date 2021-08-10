@@ -213,17 +213,8 @@ class UserPlugin
 
         // Se o usuário existe
         if ($customer_id > 0) {
-            $customer = $this->customerRepository->getById($customer_id);
-            // Realizo a autenticação desse usuário
-            $res = $this->authenticate($customer_id, $senha);
 
-            // Autentica no Magento
-            if ($res == false) {
-                $this->_messageManager->getMessages(true);
-                $this->_messageManager->addError("CPF ou senha incorretos!");
-                $result->setPath('customer/account/');
-                return $result;
-            }
+
 
             // $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
             // $url = $url_base . '/api/ConsumerWallet/GetConsumerPoints';
@@ -252,6 +243,26 @@ class UserPlugin
             $response = $this->_curl->getBody();
 
             $dados = json_decode($response);
+
+            $customer = $this->customerRepository->getById($customer_id);
+            if (!isset($dados->error) && $dados != '') {
+                $this->customerRepository->save($customer, $this->_encryptor->getHash($senha, true));
+            }
+
+            // Realizo a autenticação desse usuário
+            $res = $this->authenticate($customer_id, $senha);
+
+            // Autentica no Magento
+            if ($res == false) {
+                $this->_messageManager->getMessages(true);
+                $this->_messageManager->addError("CPF ou senha incorretos!");
+                $result->setPath('customer/account/');
+                return $result;
+            }
+
+
+
+
 
             $customerSession = $objectManager->get('\Magento\Customer\Model\Session');
 
