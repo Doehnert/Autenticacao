@@ -12,7 +12,7 @@
     <body>
 
    <!-- Account link -->
-    <referenceBlock name="catalog.compare.link" remove="true" />
+
         <referenceBlock name="sidebar.main.account_nav" remove="true"/>
 
         <attribute name="class" value="account"/>
