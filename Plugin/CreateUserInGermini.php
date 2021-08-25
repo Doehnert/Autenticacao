@@ -317,6 +317,16 @@ class CreateUserInGermini
                                 <regio>{$regionName}</regio>
                                 <city>{$cityName}</city>
                             </address>
+                            <address_ship>
+                                <aditionalInfo>{$complemento}</aditionalInfo>
+                                <addressType>1</addressType>
+                                <district>{$district}</district>
+                                <location>{$location}</location>
+                                <number>{$number}</number>
+                                <zipcode>{$zipCodeNumbers}</zipcode>
+                                <regio>{$regionName}</regio>
+                                <city>{$cityName}</city>
+                            </address_ship>
                         </DATA_ADRESS>
                     </Data_BP_req>
                 </urn:MT_SAP_BP_Req>

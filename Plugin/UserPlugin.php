@@ -36,6 +36,7 @@ class UserPlugin
     protected $addressDataFactory;
     protected $_sessionFactory;
     protected $scopeConfig;
+    protected $addressRepository;
 
     protected $cacheTypeList;
     protected $cacheFrontendPool;
@@ -260,10 +261,6 @@ class UserPlugin
                 return $result;
             }
 
-
-
-
-
             $customerSession = $objectManager->get('\Magento\Customer\Model\Session');
 
             if (isset($dados->error)) {
@@ -271,16 +268,6 @@ class UserPlugin
                 if ($dados->error_description == "invalid_username") {
                     $fidelity = 0;
                 }
-
-                //         $this->_messageManager->getMessages(true);
-                //         $this->_messageManager->addSuccessMessage("Caso queira, se inscreva no programa de fidelidade C.Vale");
-                //         $this->customerSession->setCustomerDataAsLoggedIn($customer);
-                //         return $result;
-                //     }
-                //     $this->_messageManager->addError("Erro conectando com Germini");
-                //     $result->setPath('customer/account/');
-                //     return $result;
-
             }
 
             if (isset($dados->access_token)) {
@@ -303,12 +290,45 @@ class UserPlugin
                 }
 
                 if ($dados == "") {
-                    // $this->_messageManager->addError('Não foi possível conectar com germini');
-                    // $result->setPath('customer/account/');
-                    // return $result;
                     $pontos = 0;
+                    $saldo = 0;
                 } else {
+                    if (isset($customer->getAddresses()[0])) {
+
+
+                        $mainAddressId = $customer->getAddresses()[0]->getId();
+
+                        $address = $objectManager->create('\Magento\Customer\Model\Address')->load($mainAddressId);
+
+
+
+                        $address->setTelephone('7894561230')
+                            ->setCountryId('BR')
+                            ->setCity('customCity')
+                            ->setSaveInAddressBook('1')
+                            ->setIsDefaultShipping('1')
+                            ->save();
+                        // $shippingAddressId = $customer->getAddresses()[0]->getId();
+
+                        // $address = $this->addressRepository->getById($mainAddressId);
+
+                        // $countryCode = 'BR';
+
+                        // $region = $objectManager->create('Magento\Directory\Model\Region');
+                        // $regionId = $region->loadByCode($dados->address->state->abbreviation, $countryCode)->getId();
+
+                        // $address->setCity('customCity'); // Update city
+                        // $address->setCountryId('BR'); // Update country id
+
+                        // $address->setCustomerId($customer->getID())
+                        //     ->setIsDefaultBilling(1)
+                        //     ->setIsDefaultShipping(1);
+
+                        // $this->addressRepository->save($address);
+                    }
+
                     $pontos = $dados->points;
+                    $saldo = $dados->digitalWalletBalance;
                     if ($pontos == "") {
                         $pontos = 0;
                     }
@@ -316,6 +336,7 @@ class UserPlugin
                 $customerSession->setCustomerToken($token);
             } else {
                 $pontos = 0;
+                $saldo = 0;
                 //     $this->_messageManager->getMessages(true);
                 //     $this->_messageManager->addComplexNoticeMessage(
                 //         'customerNeedValidateGermini',
@@ -328,6 +349,7 @@ class UserPlugin
 
             $customerSession->setFidelity($fidelity);
             $customer->setCustomAttribute('pontos_cliente', $pontos);
+            $customer->setCustomAttribute('saldo_cliente', $saldo);
             $this->customerRepository->save($customer);
 
 
@@ -452,10 +474,12 @@ class UserPlugin
                 $new_customer->setDob(date_format($dateOfBirth, 'Y-m-d'));
 
                 $pontos = $dados->points;
+                $saldo = $dados->digitalWalletBalance;
                 if ($pontos == "") {
                     $pontos = 0;
                 }
                 $new_customer->setCustomAttribute('pontos_cliente', $pontos);
+                $new_customer->setCustomAttribute('saldo_cliente', $saldo);
 
 
 

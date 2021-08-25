@@ -1,4 +1,5 @@
 <?php
+
 namespace Vexpro\Autenticacao\Block;
 
 use Magento\Framework\App\Config\ScopeConfigInterface as ScopeConfig;
@@ -33,6 +34,7 @@ class Display extends \Magento\Framework\View\Element\Template
         $this->scopeConfig = $scopeConfig;
         $this->_messageManager = $messageManager;
         $this->customerRepository = $customerRepository;
+        setlocale(LC_MONETARY, "pt_BR");
     }
 
     /**
@@ -41,16 +43,41 @@ class Display extends \Magento\Framework\View\Element\Template
      * @return int
      */
     public function sayPoints()
-	{
+    {
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $customerSession = $objectManager->create('Magento\Customer\Model\Session');
         $customer = $customerSession->getCustomer();
-        $customerId = $customer->getId();
         $pontosCliente = $customer->getPontosCliente();
 
-        $fidelity = $customerSession->getFidelity();
-        $germiniToken = $customerSession->getCustomerToken();
+        return $pontosCliente;
+    }
 
-		return $pontosCliente;
-	}
+    public function sayWallet()
+    {
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $customerSession = $objectManager->create('Magento\Customer\Model\Session');
+        $customer = $customerSession->getCustomer();
+        $saldoCliente = $customer->getSaldoCliente();
+
+        return $saldoCliente;
+    }
+
+    public function pointsConsumer()
+    {
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $scopeConfig = $objectManager->get('Magento\Framework\App\Config\ScopeConfigInterface');
+
+        $programCurrencySymbol = $scopeConfig->getValue('acessos/general/programCurrencySymbol', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        $programCurrencyName = $scopeConfig->getValue('acessos/general/programCurrencyName', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        $pointsFormatted = number_format(floatval($this->sayPoints()), 0, ',', '.');
+
+        return "{$programCurrencySymbol} {$pointsFormatted}";
+    }
+
+    public function walletConsumer()
+    {
+        $walletFormatted = number_format(floatval($this->sayWallet()), 2, ',', '.');
+
+        return "R$ {$walletFormatted}";
+    }
 }

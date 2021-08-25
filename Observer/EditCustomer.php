@@ -28,6 +28,11 @@ class EditCustomer implements \Magento\Framework\Event\ObserverInterface
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $customerSession = $objectManager->create('Magento\Customer\Model\Session');
         $customer = $customerSession->getCustomer();
+
+        if (false == ($customerSession->getSapEdit())) {
+            return;
+        }
+
         $customerId = $customer->getId();
         if (isset($customerId)) {
             $customer = $this->customerRepository->getById($customerId);

@@ -1,24 +1,23 @@
-<div style="background-color: #21409A; color: white; font-size: 15px; padding: 10px; margin-bottom: 20px;">
-<img src="<?php echo $this->getViewFileUrl('Vexpro_Autenticacao::img/ico_seed.png'); ?>" />
-<?php
-    $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-    $customerSession = $objectManager->create('Magento\Customer\Model\Session');
-    // $fidelity = $customerSession->getFidelity();
-    // echo $fidelity;
-    // if ($fidelity === null || $fidelity == 0){
-    //     echo "<a style='color: #fff' href='/autentica/germini/registrargermini'>Vincule-se aqui</a>";
-    // } else {
-    ?>
-    Você possui
-    <br />
+<div style="background-color: #21409A; color: white; font-size: 15px; padding: 10px; margin-bottom: 2px; display: flex">
+    <div style="margin-right: 15px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;">
+        <img src="<?php echo $this->getViewFileUrl('Vexpro_Autenticacao::img/ico_seeds.png'); ?>" />
+    </div>
+    <div>
+        Saldo <span style="font-weight: bold;">Pontuação</span><br /><?php echo $block->pointsConsumer(); ?>
+    </div>
+</div>
 
-    <?php
-    $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-    $scopeConfig = $objectManager->get('Magento\Framework\App\Config\ScopeConfigInterface');
-
-    $programCurrencySymbol = $scopeConfig->getValue('acessos/general/programCurrencySymbol', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-    $programCurrencyName = $scopeConfig->getValue('acessos/general/programCurrencyName', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-    echo $programCurrencySymbol . "<b>" . $block->sayPoints() . "</b>";
-    // }
-    ?>
+<div style="background-color: #21409A; color: white; font-size: 15px; padding: 10px; display: flex">
+    <div style="margin-right: 15px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;">
+        <img src="<?php echo $this->getViewFileUrl('Vexpro_Autenticacao::img/ico_carteiraDigital.png'); ?>" />
+    </div>
+    <div>
+        Saldo <span style="font-weight: bold;">Carteira digital</span><br /><?php echo $block->walletConsumer(); ?>
+    </div>
 </div>

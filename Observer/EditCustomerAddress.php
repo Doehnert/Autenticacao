@@ -43,6 +43,8 @@ class EditCustomerAddress implements \Magento\Framework\Event\ObserverInterface
             if ($customerId) {
                 $customer = $this->customerRepository->getById($customerId);
                 $addresses = $customer->getAddresses();
+                $mainAddressId = $customer->getAddresses()[0]->getId();
+                $shippingAddressId = $customer->getAddresses()[0]->getId();
 
                 if ($customer->getCustomAttribute("cpf") !== null) {
                     $cpfCliente = $customer
@@ -66,6 +68,11 @@ class EditCustomerAddress implements \Magento\Framework\Event\ObserverInterface
                 $email = $customer->getEmail();
 
                 $address = $observer->getCustomerAddress();
+
+                $changedAddressType = 0;
+                if ($address->getId() == $shippingAddressId) {
+                    $changedAddressType = 1;
+                }
 
                 $telephone2 = $address->getTelephone();
                 $city = $address->getCity();
@@ -102,6 +109,8 @@ class EditCustomerAddress implements \Magento\Framework\Event\ObserverInterface
                     $zipCodeNumbers = preg_replace("/[^0-9]/", "", $zipCode);
                     $generoMaiusculo = $genero == 1 ? "M" : "F";
 
+                    $addressXml = $changedAddressType == 0 ? "address" : "address_ship";
+
                     $xmlstr = "<?xml version='1.0' standalone='yes'?>
                     <soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:urn=\"urn:cvale:i17:014\">
                     <soapenv:Body>
@@ -121,7 +130,7 @@ class EditCustomerAddress implements \Magento\Framework\Event\ObserverInterface
                                 <phoneNumber2>{$telephone2}</phoneNumber2>
                                 <Id_Interface>03</Id_Interface>
                                 <DATA_ADRESS>
-                                    <address>
+                                    <{$addressXml}>
                                         <addressType>1</addressType>
                                         <district>{$district}</district>
                                         <location>{$location}</location>
@@ -129,7 +138,7 @@ class EditCustomerAddress implements \Magento\Framework\Event\ObserverInterface
                                         <zipcode>{$zipCodeNumbers}</zipcode>
                                         <regio>{$regionName}</regio>
                                         <city>{$city}</city>
-                                    </address>
+                                    <{$addressXml}/>
                                 </DATA_ADRESS>
                             </Data_BP_req>
                         </urn:MT_SAP_BP_Req>
