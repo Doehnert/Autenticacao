@@ -178,15 +178,18 @@ class UserPlugin
         $customer = $customerObj->addAttributeToSelect('*')
             ->addAttributeToFilter('cpf', $cpf_mask)
             ->load();
+
         if ($customer->count() > 0) {
             $customer_id = $customer->getData()[0]['entity_id'];
-        } else {
-            $customer = $customerObj->addAttributeToSelect('*')
-                ->addAttributeToFilter('cpf', $cpf_apenas_numeros)
-                ->load();
-            if ($customer->count() > 0) {
-                $customer_id = $customer->getData()[0]['entity_id'];
-            }
+        }
+
+        $customerObj = $objectManager->create('Magento\Customer\Model\ResourceModel\Customer\Collection');
+        $customer = $customerObj->addAttributeToSelect('*')
+            ->addAttributeToFilter('cpf', $cpf_apenas_numeros)
+            ->load();
+
+        if ($customer->count() > 0) {
+            $customer_id = $customer->getData()[0]['entity_id'];
         }
 
 
@@ -297,26 +300,25 @@ class UserPlugin
 
 
                         $mainAddressId = $customer->getAddresses()[0]->getId();
+                        $region = $objectManager->create('Magento\Directory\Model\Region');
+                        $countryCode = 'BR';
+                        $regionId = $region->loadByCode($dados->address->state->abbreviation, $countryCode)->getId();
+
+
 
                         $address = $objectManager->create('\Magento\Customer\Model\Address')->load($mainAddressId);
 
-
-
-                        $address->setTelephone('7894561230')
-                            ->setCountryId('BR')
-                            ->setCity('customCity')
+                        $address->setRegionId($regionId)
+                            ->setCountryId($countryCode)
+                            ->setCity($dados->address->city->name)
+                            ->setStreet([$dados->address->location, $dados->address->number, $dados->address->district])
+                            ->setPostCode($dados->address->zipCode)
                             ->setSaveInAddressBook('1')
                             ->setIsDefaultShipping('1')
                             ->save();
+
                         // $shippingAddressId = $customer->getAddresses()[0]->getId();
-
                         // $address = $this->addressRepository->getById($mainAddressId);
-
-                        // $countryCode = 'BR';
-
-                        // $region = $objectManager->create('Magento\Directory\Model\Region');
-                        // $regionId = $region->loadByCode($dados->address->state->abbreviation, $countryCode)->getId();
-
                         // $address->setCity('customCity'); // Update city
                         // $address->setCountryId('BR'); // Update country id
 
@@ -350,7 +352,7 @@ class UserPlugin
             $customerSession->setFidelity($fidelity);
             $customer->setCustomAttribute('pontos_cliente', $pontos);
             $customer->setCustomAttribute('saldo_cliente', $saldo);
-            $this->customerRepository->save($customer);
+            // $this->customerRepository->save($customer);
 
 
             // } else {
