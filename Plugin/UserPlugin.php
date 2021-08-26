@@ -296,38 +296,7 @@ class UserPlugin
                     $pontos = 0;
                     $saldo = 0;
                 } else {
-                    if (isset($customer->getAddresses()[0])) {
 
-
-                        $mainAddressId = $customer->getAddresses()[0]->getId();
-                        $region = $objectManager->create('Magento\Directory\Model\Region');
-                        $countryCode = 'BR';
-                        $regionId = $region->loadByCode($dados->address->state->abbreviation, $countryCode)->getId();
-
-
-
-                        $address = $objectManager->create('\Magento\Customer\Model\Address')->load($mainAddressId);
-
-                        $address->setRegionId($regionId)
-                            ->setCountryId($countryCode)
-                            ->setCity($dados->address->city->name)
-                            ->setStreet([$dados->address->location, $dados->address->number, $dados->address->district])
-                            ->setPostCode($dados->address->zipCode)
-                            ->setSaveInAddressBook('1')
-                            ->setIsDefaultShipping('1')
-                            ->save();
-
-                        // $shippingAddressId = $customer->getAddresses()[0]->getId();
-                        // $address = $this->addressRepository->getById($mainAddressId);
-                        // $address->setCity('customCity'); // Update city
-                        // $address->setCountryId('BR'); // Update country id
-
-                        // $address->setCustomerId($customer->getID())
-                        //     ->setIsDefaultBilling(1)
-                        //     ->setIsDefaultShipping(1);
-
-                        // $this->addressRepository->save($address);
-                    }
 
                     $pontos = $dados->points;
                     $saldo = $dados->digitalWalletBalance;
@@ -352,7 +321,39 @@ class UserPlugin
             $customerSession->setFidelity($fidelity);
             $customer->setCustomAttribute('pontos_cliente', $pontos);
             $customer->setCustomAttribute('saldo_cliente', $saldo);
+
+
+
             $this->customerRepository->save($customer);
+
+            if (isset($customer->getAddresses()[0])) {
+
+
+                $mainAddressId = $customer->getAddresses()[0]->getId();
+                $currAddress = $this->addressRepository->getById($mainAddressId);
+                $region = $objectManager->create('Magento\Directory\Model\Region');
+                $countryCode = 'BR';
+                $regionId = $region->loadByCode($dados->address->state->abbreviation, $countryCode)->getId();
+
+                $address = $this->addressRepository->getById($mainAddressId);
+
+                $address->setCountryId($countryCode)
+                    ->setCity($dados->address->city->name)
+                    ->setStreet([$dados->address->location, $dados->address->number, $dados->address->district])
+                    ->setPostCode($dados->address->zipCode)
+                    ->setIsDefaultBilling(1)
+                    ->setIsDefaultShipping(1);
+                // $address->setCountryId('BR'); // Update country id
+                // $address->setRegionId($regionId);
+                // $address->setCity('customCity'); // Update city
+
+
+
+                $this->addressRepository->save($address);
+                $customer->setDefaultBilling($address->getId());
+            }
+
+            $customer->setDefaultBilling($address->getId());
 
 
             // } else {
@@ -440,6 +441,7 @@ class UserPlugin
                 $response = $this->_curl->getBody();
                 $dados = json_decode($response);
 
+                $fidelity = False;
                 $fidelity = $dados->fidelity->key;
 
                 $customerSession = $objectManager->get('\Magento\Customer\Model\Session');
