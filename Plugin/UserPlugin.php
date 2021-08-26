@@ -352,7 +352,7 @@ class UserPlugin
             $customerSession->setFidelity($fidelity);
             $customer->setCustomAttribute('pontos_cliente', $pontos);
             $customer->setCustomAttribute('saldo_cliente', $saldo);
-            // $this->customerRepository->save($customer);
+            $this->customerRepository->save($customer);
 
 
             // } else {
