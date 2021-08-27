@@ -43,8 +43,8 @@ class EditCustomerAddress implements \Magento\Framework\Event\ObserverInterface
             if ($customerId) {
                 $customer = $this->customerRepository->getById($customerId);
                 $addresses = $customer->getAddresses();
-                $mainAddressId = $customer->getAddresses()[0]->getId();
-                $shippingAddressId = $customer->getAddresses()[0]->getId();
+                $mainAddressId = $customer->getDefaultBilling();
+                $shippingAddressId = $customer->getDefaultShipping();
 
                 if ($customer->getCustomAttribute("cpf") !== null) {
                     $cpfCliente = $customer
@@ -72,6 +72,10 @@ class EditCustomerAddress implements \Magento\Framework\Event\ObserverInterface
                 $changedAddressType = 0;
                 if ($address->getId() == $shippingAddressId) {
                     $changedAddressType = 1;
+                }
+
+                if ($mainAddressId == $shippingAddressId) {
+                    $changedAddressType = 0;
                 }
 
                 $telephone2 = $address->getTelephone();
@@ -138,21 +142,21 @@ class EditCustomerAddress implements \Magento\Framework\Event\ObserverInterface
                                         <zipcode>{$zipCodeNumbers}</zipcode>
                                         <regio>{$regionName}</regio>
                                         <city>{$city}</city>
-                                    </{$addressXml}/>
+                                    </{$addressXml}>
                                 </DATA_ADRESS>
                             </Data_BP_req>
                         </urn:MT_SAP_BP_Req>
                     </soapenv:Body>
                     </soapenv:Envelope>";
 
-                    // $simplexml = new \SimpleXMLElement($xmlstr);
+                    $simplexml = new \SimpleXMLElement($xmlstr);
 
-                    // $input_xml = $simplexml->asXML();
+                    $input_xml = $simplexml->asXML();
 
                     $logger = $objectManager->create(
                         "\Psr\Log\LoggerInterface"
                     );
-                    $logger->info("Enviado ao SAP: " . $xmlstr);
+                    $logger->info("Enviado ao SAP: " . $input_xml);
 
                     $sap_url = $this->scopeConfig->getValue(
                         "acessos/general/sap_url",
@@ -163,7 +167,7 @@ class EditCustomerAddress implements \Magento\Framework\Event\ObserverInterface
                     $ch = curl_init();
                     curl_setopt($ch, CURLOPT_URL, $sap_url);
                     // Following line is compulsary to add as it is:
-                    curl_setopt($ch, CURLOPT_POSTFIELDS, $xmlstr);
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, $input_xml);
                     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
                     // curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 300);
                     curl_setopt($ch, CURLOPT_HTTPHEADER, [
