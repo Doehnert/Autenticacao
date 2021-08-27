@@ -74,8 +74,10 @@ class EditCustomerAddress implements \Magento\Framework\Event\ObserverInterface
                     $changedAddressType = 1;
                 }
 
+                $flag_same_addres = 0;
+
                 if ($mainAddressId == $shippingAddressId) {
-                    $changedAddressType = 0;
+                    $flag_same_addres = 1;
                 }
 
                 $telephone2 = $address->getTelephone();
@@ -115,7 +117,8 @@ class EditCustomerAddress implements \Magento\Framework\Event\ObserverInterface
 
                     $addressXml = $changedAddressType == 0 ? "address" : "address_ship";
 
-                    $xmlstr = "<?xml version='1.0' standalone='yes'?>
+                    if ($flag_same_addres == 1) {
+                        $xmlstr = "<?xml version='1.0' standalone='yes'?>
                     <soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:urn=\"urn:cvale:i17:014\">
                     <soapenv:Body>
                         <urn:MT_SAP_BP_Req>
@@ -134,7 +137,7 @@ class EditCustomerAddress implements \Magento\Framework\Event\ObserverInterface
                                 <phoneNumber2>{$telephone2}</phoneNumber2>
                                 <Id_Interface>03</Id_Interface>
                                 <DATA_ADRESS>
-                                    <{$addressXml}>
+                                    <address>
                                         <addressType>1</addressType>
                                         <district>{$district}</district>
                                         <location>{$location}</location>
@@ -142,12 +145,58 @@ class EditCustomerAddress implements \Magento\Framework\Event\ObserverInterface
                                         <zipcode>{$zipCodeNumbers}</zipcode>
                                         <regio>{$regionName}</regio>
                                         <city>{$city}</city>
-                                    </{$addressXml}>
+                                    </address>
+                                    <address_ship>
+                                        <addressType>1</addressType>
+                                        <district>{$district}</district>
+                                        <location>{$location}</location>
+                                        <number>{$number}</number>
+                                        <zipcode>{$zipCodeNumbers}</zipcode>
+                                        <regio>{$regionName}</regio>
+                                        <city>{$city}</city>
+                                    </address_ship>
                                 </DATA_ADRESS>
                             </Data_BP_req>
                         </urn:MT_SAP_BP_Req>
                     </soapenv:Body>
                     </soapenv:Envelope>";
+                    } else {
+                        $xmlstr = "<?xml version='1.0' standalone='yes'?>
+                        <soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:urn=\"urn:cvale:i17:014\">
+                        <soapenv:Body>
+                            <urn:MT_SAP_BP_Req>
+                                <Data_BP_req>
+                                    <cpf>{$cpf_apenas_numeros}</cpf>
+
+                                    <dateOfBirth>{$dob2}</dateOfBirth>
+                                    <email>{$email}</email>
+                                    <gender>{$generoMaiusculo}</gender>
+
+                                    <name>{$fullName}</name>
+
+                                    <nickname>{$firstName}</nickname>
+
+                                    <phoneNumber>{$telephone2}</phoneNumber>
+                                    <phoneNumber2>{$telephone2}</phoneNumber2>
+                                    <Id_Interface>03</Id_Interface>
+                                    <DATA_ADRESS>
+                                        <{$addressXml}>
+                                            <addressType>1</addressType>
+                                            <district>{$district}</district>
+                                            <location>{$location}</location>
+                                            <number>{$number}</number>
+                                            <zipcode>{$zipCodeNumbers}</zipcode>
+                                            <regio>{$regionName}</regio>
+                                            <city>{$city}</city>
+                                        </{$addressXml}>
+                                    </DATA_ADRESS>
+                                </Data_BP_req>
+                            </urn:MT_SAP_BP_Req>
+                        </soapenv:Body>
+                        </soapenv:Envelope>";
+                    }
+
+
 
                     $simplexml = new \SimpleXMLElement($xmlstr);
 
