@@ -138,7 +138,7 @@ class EditCustomerAddress implements \Magento\Framework\Event\ObserverInterface
                                         <zipcode>{$zipCodeNumbers}</zipcode>
                                         <regio>{$regionName}</regio>
                                         <city>{$city}</city>
-                                    <{$addressXml}/>
+                                    </{$addressXml}/>
                                 </DATA_ADRESS>
                             </Data_BP_req>
                         </urn:MT_SAP_BP_Req>
