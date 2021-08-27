@@ -145,14 +145,14 @@ class EditCustomerAddress implements \Magento\Framework\Event\ObserverInterface
                     </soapenv:Body>
                     </soapenv:Envelope>";
 
-                    $simplexml = new \SimpleXMLElement($xmlstr);
+                    // $simplexml = new \SimpleXMLElement($xmlstr);
 
-                    $input_xml = $simplexml->asXML();
+                    // $input_xml = $simplexml->asXML();
 
                     $logger = $objectManager->create(
                         "\Psr\Log\LoggerInterface"
                     );
-                    $logger->info("Enviado ao SAP: " . $input_xml);
+                    $logger->info("Enviado ao SAP: " . $xmlstr);
 
                     $sap_url = $this->scopeConfig->getValue(
                         "acessos/general/sap_url",
@@ -163,7 +163,7 @@ class EditCustomerAddress implements \Magento\Framework\Event\ObserverInterface
                     $ch = curl_init();
                     curl_setopt($ch, CURLOPT_URL, $sap_url);
                     // Following line is compulsary to add as it is:
-                    curl_setopt($ch, CURLOPT_POSTFIELDS, $input_xml);
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, $xmlstr);
                     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
                     // curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 300);
                     curl_setopt($ch, CURLOPT_HTTPHEADER, [
@@ -174,7 +174,7 @@ class EditCustomerAddress implements \Magento\Framework\Event\ObserverInterface
                     $data = curl_exec($ch);
                     curl_close($ch);
 
-                    //convert the XML result into array
+                    // //convert the XML result into array
                     $array_data = json_decode(
                         json_encode(simplexml_load_string($data)),
                         true
