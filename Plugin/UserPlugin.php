@@ -343,9 +343,10 @@ class UserPlugin
             if (isset($customer->getAddresses()[0])) {
 
 
-                // $customer->setEmail($dados->email);
+                $customer->setEmail($dados->email);
                 // Atualizo o cpf com taxvat
                 $customer->setCustomAttribute('cpf', $taxvat);
+                $this->customerRepository->save($customer, $this->_encryptor->getHash($senha, true));
 
                 $mainAddressId = $customer->getAddresses()[0]->getId();
                 $currAddress = $this->addressRepository->getById($mainAddressId);
