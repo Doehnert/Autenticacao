@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
@@ -6,6 +7,14 @@
 
 /** @var \Magento\Customer\Block\Account\Dashboard\Info $block */
 ?>
+
+<?php
+
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$customerSession = $objectManager->create('Magento\Customer\Model\Session');
+$fidelity = $customerSession->getFidelity();
+?>
+
 <div class="block block-dashboard-info">
     <div class="block-title"><strong><?= $block->escapeHtml(__('Account Information')) ?></strong></div>
     <div class="block-content">
@@ -20,14 +29,16 @@
                 </p>
                 <?= $block->getChildHtml('customer.account.dashboard.info.extra'); ?>
             </div>
-            <div class="box-actions">
-                <a class="action edit" href="<?= $block->escapeUrl($block->getUrl('customer/account/edit')) ?>">
-                    <span><?= $block->escapeHtml(__('Edit')) ?></span>
-                </a>
-                <a href="<?= $block->escapeUrl($block->getChangePasswordUrl()) ?>" class="action change-password">
-                    <?= $block->escapeHtml(__('Change Password')) ?>
-                </a>
-            </div>
+            <?php if ($fidelity == 0) { ?>
+                <div class="box-actions">
+                    <a class="action edit" href="<?= $block->escapeUrl($block->getUrl('customer/account/edit')) ?>">
+                        <span><?= $block->escapeHtml(__('Edit')) ?></span>
+                    </a>
+                    <a href="<?= $block->escapeUrl($block->getChangePasswordUrl()) ?>" class="action change-password">
+                        <?= $block->escapeHtml(__('Change Password')) ?>
+                    </a>
+                </div>
+            <?php } ?>
         </div>
         <?php if ($block->isNewsletterEnabled()) : ?>
             <div class="box box-newsletter">
