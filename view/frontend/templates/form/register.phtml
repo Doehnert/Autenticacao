@@ -547,7 +547,7 @@
 
                     <div class="search">
                         <img style="height: 30px;" class="fa fa-search" id="toggle" src="<?php echo $this->getViewFileUrl('Vexpro_Autenticacao::img/eye-solid.png'); ?>" />
-                        <input maxlength="6" pattern="\d{6}" data-validate="{required:true, germiniPassword:true, germiniPassword2:true,germiniPassword3:true,germiniPassword4:true}" type="password" name="password" validate-password id="password" title="<?php /* @escapeNotVerified */ echo __('Password') ?>" class="input-text" autocomplete="off">
+                        <input maxlength="20" pattern="\d{20}" data-validate="{required:true, germiniPassword:true, germiniPassword2:true,germiniPassword3:true,germiniPassword4:true}" type="password" name="password" validate-password id="password" title="<?php /* @escapeNotVerified */ echo __('Password') ?>" class="input-text" autocomplete="off">
                     </div>
 
                 </div>
@@ -573,7 +573,7 @@
                             <div class="right" style="padding-top: 5px;">
                                 <span style="font-weight: bold; margin-left: 15px; margin-top: 15px; font-size: 12px;">Regras:</span>
                                 <ul style="margin-left: -15px;">
-                                    <li>No mínimo 6 números</li>
+                                    <li>No mínimo 8 caracteres</li>
                                     <li>Não pode ter mais de 3 números sequenciais</li>
                                     <li>Não pode ter números repetidos em ordem</li>
                                     <li>Não ser igual ao CPF, CNPJ, data de nascimento, telefone ou celular.</li>

@@ -345,7 +345,7 @@ class UserPlugin
 
                 $customer->setEmail($dados->email);
                 // Atualizo o cpf com taxvat
-                $customer->setCustomAttribute('cpf', $taxvat);
+                // $customer->setCustomAttribute('cpf', $taxvat);
                 $this->customerRepository->save($customer, $this->_encryptor->getHash($senha, true));
 
                 $mainAddressId = $customer->getAddresses()[0]->getId();

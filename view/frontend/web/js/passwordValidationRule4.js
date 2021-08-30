@@ -1,29 +1,27 @@
 define([
-  "jquery",
-  "jquery/ui",
-  "jquery/validate",
-  "mage/translate",
-  "moment",
+  'jquery',
+  'jquery/ui',
+  'jquery/validate',
+  'mage/translate',
+  'moment',
 ], function ($) {
-  "use strict";
+  'use strict'
 
   return function (param) {
     $.validator.addMethod(
-      "germiniPassword4",
+      'germiniPassword4',
       function (value, element) {
-        let cpf = $("#cpf").val();
-        let dateOfBirth = $("#nasc").val();
-        let phoneNumber = $("#telephone").val();
-        let phoneNumber2 = $("#telephone2").val();
-        let item = value;
+        let item = value
 
-        if (!(Number(item, 10) && item.length === 6)) {
-          return false;
+        if (item.length < 8 || item.length > 20) {
+          return false
         }
 
-        return true;
+        return true
       },
-      $.mage.__("A senha deve ser numérica e ter 6 caracteres"),
-    );
-  };
-});
+      $.mage.__(
+        'A senha deve ser numérica e ter no mínimo 8 caracteres e no máximo 20 caracteres',
+      ),
+    )
+  }
+})
