@@ -192,6 +192,18 @@ class UserPlugin
             $customer_id = $customer->getData()[0]['entity_id'];
         }
 
+        // VERIFICA SE TEM ALGUM CLIENTE COM O TAXVAT COM O CPF INFORMADO
+        $customerObj = $objectManager->create('Magento\Customer\Model\ResourceModel\Customer\Collection');
+        $customer = $customerObj->addAttributeToSelect('*')
+            ->addAttributeToFilter('taxvat', $cpf_apenas_numeros)
+            ->load();
+
+        if ($customer->count() > 0) {
+            $customer_id = $customer->getData()[0]['entity_id'];
+
+            $taxvat = $customer->getData()[0]['taxvat'];
+        }
+
 
 
         // foreach ($customers as $customer) {
@@ -252,6 +264,8 @@ class UserPlugin
             if (!isset($dados->error) && $dados != '') {
                 $this->customerRepository->save($customer, $this->_encryptor->getHash($senha, true));
             }
+
+
 
             // Realizo a autenticação desse usuário
             $res = $this->authenticate($customer_id, $senha);
@@ -328,6 +342,10 @@ class UserPlugin
 
             if (isset($customer->getAddresses()[0])) {
 
+
+                // $customer->setEmail($dados->email);
+                // Atualizo o cpf com taxvat
+                $customer->setCustomAttribute('cpf', $taxvat);
 
                 $mainAddressId = $customer->getAddresses()[0]->getId();
                 $currAddress = $this->addressRepository->getById($mainAddressId);

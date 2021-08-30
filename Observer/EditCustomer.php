@@ -28,6 +28,7 @@ class EditCustomer implements \Magento\Framework\Event\ObserverInterface
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $customerSession = $objectManager->create('Magento\Customer\Model\Session');
         $customer = $customerSession->getCustomer();
+        $pontosCliente = 0;
 
         if (false == ($customerSession->getSapEdit())) {
             return;
