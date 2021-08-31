@@ -17,10 +17,17 @@ define([
           return false
         }
 
+        var paswd =
+          /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/
+
+        if (!paswd.test(item)) {
+          return false
+        }
+
         return true
       },
       $.mage.__(
-        'A senha deve ser numérica e ter no mínimo 8 caracteres e no máximo 20 caracteres',
+        'No mínimo 8 caracteres Conter letras, números e caracteres especiais',
       ),
     )
   }

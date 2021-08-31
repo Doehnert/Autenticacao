@@ -547,7 +547,7 @@
 
                     <div class="search">
                         <img style="height: 30px;" class="fa fa-search" id="toggle" src="<?php echo $this->getViewFileUrl('Vexpro_Autenticacao::img/eye-solid.png'); ?>" />
-                        <input maxlength="20" pattern="\d{20}" data-validate="{required:true, germiniPassword:true, germiniPassword2:true,germiniPassword3:true,germiniPassword4:true}" type="password" name="password" validate-password id="password" title="<?php /* @escapeNotVerified */ echo __('Password') ?>" class="input-text" autocomplete="off">
+                        <input maxlength="20" data-validate="{required:true, germiniPassword:true, germiniPassword2:true,germiniPassword3:true,germiniPassword4:true}" type="password" name="password" validate-password id="password" title="<?php /* @escapeNotVerified */ echo __('Password') ?>" class="input-text" autocomplete="off">
                     </div>
 
                 </div>
@@ -562,7 +562,7 @@
 
                     <div class="search">
                         <img style="height: 30px;" class="fa fa-search" id="toggle2" src="<?php echo $this->getViewFileUrl('Vexpro_Autenticacao::img/eye-solid.png'); ?>" />
-                        <input maxlength="6" type="password" name="password_confirmation" title="<?php /* @escapeNotVerified */ echo __('Confirm Password') ?>" id="password-confirmation" class="input-text" data-validate="{required:true, equalTo:'#password'}" autocomplete="off">
+                        <input maxlength="20" type="password" name="password_confirmation" title="<?php /* @escapeNotVerified */ echo __('Confirm Password') ?>" id="password-confirmation" class="input-text" data-validate="{required:true, equalTo:'#password'}" autocomplete="off">
                     </div>
 
 

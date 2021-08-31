@@ -340,39 +340,44 @@ class UserPlugin
 
             $this->customerRepository->save($customer);
 
-            if (isset($customer->getAddresses()[0])) {
+            if ($fidelity > 0) {
+                if (isset($customer->getAddresses()[0])) {
 
 
-                $customer->setEmail($dados->email);
-                // Atualizo o cpf com taxvat
-                // $customer->setCustomAttribute('cpf', $taxvat);
-                $this->customerRepository->save($customer, $this->_encryptor->getHash($senha, true));
+                    if (isset($dados->email)) {
+                        $customer->setEmail($dados->email);
+                    }
+                    // Atualizo o cpf com taxvat
+                    // $customer->setCustomAttribute('cpf', $taxvat);
+                    $this->customerRepository->save($customer, $this->_encryptor->getHash($senha, true));
 
-                $mainAddressId = $customer->getAddresses()[0]->getId();
-                $currAddress = $this->addressRepository->getById($mainAddressId);
-                $region = $objectManager->create('Magento\Directory\Model\Region');
-                $countryCode = 'BR';
-                $regionId = $region->loadByCode($dados->address->state->abbreviation, $countryCode)->getId();
+                    $mainAddressId = $customer->getAddresses()[0]->getId();
+                    $currAddress = $this->addressRepository->getById($mainAddressId);
+                    $region = $objectManager->create('Magento\Directory\Model\Region');
+                    $countryCode = 'BR';
+                    $regionId = $region->loadByCode($dados->address->state->abbreviation, $countryCode)->getId();
 
-                $address = $this->addressRepository->getById($mainAddressId);
+                    $address = $this->addressRepository->getById($mainAddressId);
 
-                $address->setCountryId($countryCode)
-                    ->setCity($dados->address->city->name)
-                    ->setStreet([$dados->address->location, $dados->address->number, $dados->address->district])
-                    ->setPostCode($dados->address->zipCode)
-                    ->setIsDefaultBilling(1)
-                    ->setIsDefaultShipping(1);
-                // $address->setCountryId('BR'); // Update country id
-                // $address->setRegionId($regionId);
-                // $address->setCity('customCity'); // Update city
+                    $address->setCountryId($countryCode)
+                        ->setCity($dados->address->city->name)
+                        ->setStreet([$dados->address->location, $dados->address->number, $dados->address->district])
+                        ->setPostCode($dados->address->zipCode)
+                        ->setIsDefaultBilling(1)
+                        ->setIsDefaultShipping(1);
+                    // $address->setCountryId('BR'); // Update country id
+                    // $address->setRegionId($regionId);
+                    // $address->setCity('customCity'); // Update city
 
-
-
-                $this->addressRepository->save($address);
+                    $this->addressRepository->save($address);
+                    $customer->setDefaultBilling($address->getId());
+                }
                 $customer->setDefaultBilling($address->getId());
             }
 
-            $customer->setDefaultBilling($address->getId());
+
+
+
 
 
             // } else {
