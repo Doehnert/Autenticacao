@@ -60,7 +60,7 @@ class Cities extends Action
 
         // Obtem o id do germini referente ao country_code
 
-        $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        // $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
         // $url = $url_base . '/api/Country';
 
         // $curl = curl_init();
@@ -83,8 +83,8 @@ class Cities extends Action
         // $paises = json_decode($response);
 
         // $meu_pais = '';
-        // foreach($paises as $pais){
-        //     if ($pais->code == $country_code){
+        // foreach ($paises as $pais) {
+        //     if ($pais->code == $country_code) {
         //         $meu_pais = $pais;
         //         break;
         //     }

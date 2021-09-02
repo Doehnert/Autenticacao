@@ -40,7 +40,9 @@
                 <?= $block->getChildHtml('form_additional_info') ?>
                 <div class="actions-toolbar">
                     <div class="primary"><button type="submit" class="action login primary" name="send" id="send2"><span><?= $block->escapeHtml(__('Sign In')) ?></span></button></div>
-                    <div class="secondary"><a class="action remind" href="<?= $block->escapeUrl($block->getForgotPasswordUrl()) ?>"><span><?= $block->escapeHtml(__('Forgot Your Password?')) ?></span></a></div>
+                    <div class="secondary"><a class="action remind" href="<?=
+
+                                                                            $block->escapeUrl($block->getForgotPasswordUrl()) ?>"><span><?= $block->escapeHtml(__('Forgot Your Password?')) ?></span></a></div>
                 </div>
             </fieldset>
         </form>
