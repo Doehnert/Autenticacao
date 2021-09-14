@@ -42,7 +42,7 @@ class EditCustomerAddress implements \Magento\Framework\Event\ObserverInterface
         }
 
 
-        if (isset($customerId) && $pontosCliente != null) {
+        if (isset($customerId)) {
             if ($customerId) {
                 $customer = $this->customerRepository->getById($customerId);
                 $addresses = $customer->getAddresses();
