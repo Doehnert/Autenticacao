@@ -37,9 +37,11 @@ class EditCustomer implements \Magento\Framework\Event\ObserverInterface
         $customerId = $customer->getId();
         if (isset($customerId)) {
             $customer = $this->customerRepository->getById($customerId);
-            if ($customer->getCustomAttribute('pontos_cliente')->getValue() != null) {
+            if ($customer->getCustomAttribute('pontos_cliente') != null) {
+                if ($customer->getCustomAttribute('pontos_cliente')->getValue() != null) {
 
-                $pontosCliente = $customer->getCustomAttribute('pontos_cliente')->getValue();
+                    $pontosCliente = $customer->getCustomAttribute('pontos_cliente')->getValue();
+                }
             }
         } else {
             $pontosCliente = null;
