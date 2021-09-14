@@ -114,7 +114,19 @@ class EditCustomerAddress implements \Magento\Framework\Event\ObserverInterface
 
                 if (1 == 1) {
                     $zipCodeNumbers = preg_replace("/[^0-9]/", "", $zipCode);
-                    $generoMaiusculo = $genero == 1 ? "M" : "F";
+                    switch ($genero) {
+                        case 1:
+                            $generoMaiusculo = "M";
+                            break;
+                        case 2:
+                            $generoMaiusculo = "F";
+                            break;
+                        case 3:
+                            $generoMaiusculo = "NDA";
+                            break;
+                    }
+
+                    // $generoMaiusculo = $genero == 1 ? "M" : "F";
 
                     $addressXml = $changedAddressType == 0 ? "address" : "address_ship";
 
