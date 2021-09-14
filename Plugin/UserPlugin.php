@@ -280,6 +280,8 @@ class UserPlugin
 
             $customerSession = $objectManager->get('\Magento\Customer\Model\Session');
 
+            $customerSession->setSapEdit(true);
+
             if (isset($dados->error)) {
                 $fidelity = 2;
                 if ($dados->error_description == "invalid_username") {
@@ -346,6 +348,12 @@ class UserPlugin
 
                     if (isset($dados->email)) {
                         $customer->setEmail($dados->email);
+                    }
+
+                    if (isset($dados->dateOfBirth)) {
+                        $dob = strtotime($dados->dateOfBirth);
+                        $yearOfBirth = date("Y-m-d", $dob);
+                        $customer->setDob($yearOfBirth);
                     }
                     // Atualizo o cpf com taxvat
                     // $customer->setCustomAttribute('cpf', $taxvat);
