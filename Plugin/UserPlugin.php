@@ -503,7 +503,20 @@ class UserPlugin
                 $new_customer->setLastname($last_name);
                 $new_customer->setTaxVat($cpf);
                 $new_customer->setCustomAttribute('cpf', $cpf);
-                $magentoGender = $dados->gender == 'M' ? 1 : 2;
+
+
+                switch ($dados->gender) {
+                    case 'M':
+                        $magentoGender = 1;
+                        break;
+                    case 'F':
+                        $magentoGender = 2;
+                        break;
+                    default:
+                        $magentoGender = 3;
+                        break;
+                }
+                // $magentoGender = $dados->gender == 'M' ? 1 : 2;
                 $new_customer->setGender($magentoGender);
 
                 $dateOfBirth = date_create($dados->dateOfBirth);
