@@ -36,8 +36,8 @@ class Recebe extends Action
         $post = $this->getRequest()->getPostValue();
         $cpf = $post['cpf'];
 
-        $url_base = $this->scopeConfig->getValue('acessos/general/identity_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-        $url = $url_base . '/api/Account/ListUsersByLogin/' . preg_replace("/[^0-9]/", "", $cpf);
+        $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        $url = $url_base . '/api/Consumer/VerifyDocument?cpfCnpj=' . preg_replace("/[^0-9]/", "", $cpf);
 
         $curl = curl_init();
 
@@ -59,7 +59,7 @@ class Recebe extends Action
         $resultado = json_decode($response);
 
         // SE O USUÁRIO JÁ EXISTE NO GERMINI
-        if (count($resultado) > 0) {
+        if ($resultado->success == true) {
             $resultJson = $this->resultJsonFactory->create();
             $resultJson->setData(True);
             return $resultJson;
