@@ -473,11 +473,11 @@ class CreateUserInGermini
                 }
             }
 
-            // return $proceed;
-            return $this->resultRedirectFactory->create()
-                ->setPath(
-                    'customer/account/create'
-                );
+            return $proceed;
+            // return $this->resultRedirectFactory->create()
+            //     ->setPath(
+            //         'customer/account/create'
+            //     );
         }
 
         // $this->messageManager->addComplexNoticeMessage(
