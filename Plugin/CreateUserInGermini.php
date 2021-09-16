@@ -465,18 +465,19 @@ class CreateUserInGermini
         $resultado = json_decode($response);
 
         if (
-            !empty($resultado->errors) ||
-            $response == "" ||
-            $resultado->success != true
+            $response == ""
         ) {
-            foreach ($resultado->errors as $error) {
-                $this->messageManager->addErrorMessage($error->message);
+            if (isset($resultado->errors)) {
+                foreach ($resultado->errors as $error) {
+                    $this->messageManager->addErrorMessage($error->message);
+                }
             }
-            return $proceed;
-            // return $this->resultRedirectFactory->create()
-            // ->setPath(
-            //     'customer/account/create'
-            // );
+
+            // return $proceed;
+            return $this->resultRedirectFactory->create()
+                ->setPath(
+                    'customer/account/create'
+                );
         }
 
         // $this->messageManager->addComplexNoticeMessage(
