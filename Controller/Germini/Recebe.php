@@ -59,7 +59,7 @@ class Recebe extends Action
         $resultado = json_decode($response);
 
         // SE O USUÁRIO JÁ EXISTE NO GERMINI
-        if ($resultado->success == true) {
+        if ($resultado->data != null) {
             $resultJson = $this->resultJsonFactory->create();
             $resultJson->setData(True);
             return $resultJson;
