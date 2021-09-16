@@ -363,7 +363,7 @@ class UserPlugin
                     $currAddress = $this->addressRepository->getById($mainAddressId);
                     $region = $objectManager->create('Magento\Directory\Model\Region');
                     $countryCode = 'BR';
-                    $regionId = $region->loadByCode($dados->address->state->abbreviation, $countryCode)->getId();
+                    // $regionId = $region->loadByCode($dados->address->state->abbreviation, $countryCode)->getId();
 
                     $address = $this->addressRepository->getById($mainAddressId);
 
