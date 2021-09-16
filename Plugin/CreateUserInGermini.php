@@ -357,26 +357,26 @@ class CreateUserInGermini
             ]);
             curl_setopt($ch, CURLOPT_POST, 1);
 
-            $data = curl_exec($ch);
-            curl_close($ch);
+            // $data = curl_exec($ch);
+            // curl_close($ch);
 
-            //convert the XML result into array
-            $array_data = json_decode(
-                json_encode(simplexml_load_string($data)),
-                true
-            );
+            // //convert the XML result into array
+            // $array_data = json_decode(
+            //     json_encode(simplexml_load_string($data)),
+            //     true
+            // );
 
-            $logger->info("Resposta SAP: " . $data);
+            // $logger->info("Resposta SAP: " . $data);
 
-            $customerSession->setFidelity(0);
+            // $customerSession->setFidelity(0);
 
-            if ($data == '') {
-                $this->messageManager->addErrorMessage("Ocorreu uma falha no cadastro. Tente novamente!");
-                return $this->resultRedirectFactory->create()
-                    ->setPath(
-                        'customer/account/create'
-                    );
-            }
+            // if ($data == '') {
+            //     $this->messageManager->addErrorMessage("Ocorreu uma falha no cadastro. Tente novamente!");
+            //     return $this->resultRedirectFactory->create()
+            //         ->setPath(
+            //             'customer/account/create'
+            //         );
+            // }
         }
 
         switch ($genero) {
@@ -451,7 +451,7 @@ class CreateUserInGermini
 
 
         $data_json = json_encode($params);
-        $logger->info("Enviado ao Germini: " . $data_json);
+        $logger->info("Enviado ao Germini: " . json_encode($params));
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -468,7 +468,7 @@ class CreateUserInGermini
         curl_close($ch);
         $resultado = json_decode($response);
 
-        $logger->info("Resposta do Germini: " . $resultado);
+        $logger->info("Resposta do Germini: " . json_encode($resultado));
 
         if (
             $response == ""
