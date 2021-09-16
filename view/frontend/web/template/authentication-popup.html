@@ -1,59 +1,65 @@
 <style>
-    button.button,
-    button,
-    .cart .continue,
-    .actions-toolbar .primary a.action,
-    button:focus {
-        color: white;
-        background-color: #3dbac7;
-        border-color: #dbdbdb;
-        border-radius: 52px;
-    }
-    .titulo {
-        color: #21409A;
-        font-size: large;
-        font-weight: bold;
-        margin-bottom: 15px;
-    }
-    .header {
-        text-align: center;
-        margin-bottom: 30px;
-    }
-    .meu-logo {
-        margin-bottom: 20px;
-    }
-
+  button.button,
+  button,
+  .cart .continue,
+  .actions-toolbar .primary a.action,
+  button:focus {
+    color: white;
+    background-color: #3dbac7;
+    border-color: #dbdbdb;
+    border-radius: 52px;
+  }
+  .titulo {
+    color: #21409a;
+    font-size: large;
+    font-weight: bold;
+    margin-bottom: 15px;
+  }
+  .header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  .meu-logo {
+    margin-bottom: 20px;
+  }
 </style>
 
-<div class="block-authentication" data-bind="afterRender: setModalElement, blockLoader: isLoading"
-    style="display: none; padding: 20px; flex-direction: column;">
-    <div class="header">
-        <div class="meu-logo">
-            <img data-bind="attr: { src: require.toUrl('Vexpro_Autenticacao/img/logo-cvale.png') }" />
-        </div>
-        <span class="titulo">Seja BEM VINDO a loja do C.VALE FIDELIDADE</span>
-        <p>Para aproveitar as melhores ofertas, você precisa se cadastrar na loja.</p>
+<div
+  class="block-authentication"
+  data-bind="afterRender: setModalElement, blockLoader: isLoading"
+  style="display: none; padding: 20px; flex-direction: column"
+>
+  <div class="header">
+    <div class="meu-logo">
+      <img
+        data-bind="attr: { src: require.toUrl('Vexpro_Autenticacao/img/logo-cvale.png') }"
+      />
     </div>
-    <div style="display: flex; justify-content: space-evenly;">
-
-        <div class="actions-toolbar">
-            <div class="primary">
-                <a class="action action-register primary button btn-cart" href="customer/account/login">ENTRAR</a>
-            </div>
-        </div>
-
-
-        <div class="actions-toolbar">
-            <div class="primary">
-                <a class="action action-register primary button btn-cart" data-bind="attr: {href: registerUrl}">
-                    <span data-bind="i18n: 'QUERO ME CADASTRAR'"></span>
-                </a>
-            </div>
-        </div>
-
-
-
-
+    <span class="titulo">Seja BEM VINDO a loja do C.VALE FIDELIDADE</span>
+    <p>
+      Para aproveitar as melhores ofertas, você precisa se cadastrar na loja.
+    </p>
+  </div>
+  <div style="display: flex; justify-content: space-evenly">
+    <div class="actions-toolbar">
+      <div class="primary">
+        <a
+          class="action action-register primary button btn-cart"
+          href="/customer/account/login"
+          >ENTRAR</a
+        >
+      </div>
     </div>
 
+    <div class="actions-toolbar">
+      <div class="primary">
+        <a
+          class="action action-register primary button btn-cart"
+          data-bind="attr: {href: registerUrl}"
+        >
+          <span data-bind="i18n: 'QUERO ME CADASTRAR'"></span>
+        </a>
+      </div>
+    </div>
+  </div>
 </div>
