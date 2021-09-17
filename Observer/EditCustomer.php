@@ -121,7 +121,7 @@ class EditCustomer implements \Magento\Framework\Event\ObserverInterface
 
                     // $generoMaiusculo = $genero == 1 ? "M" : "F";
 
-                    if (!$cpf_apenas_numeros) {
+                    if ($cpf_apenas_numeros == "") {
                         return;
                     }
 

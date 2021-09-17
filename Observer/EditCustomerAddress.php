@@ -131,7 +131,7 @@ class EditCustomerAddress implements \Magento\Framework\Event\ObserverInterface
 
                     $addressXml = $changedAddressType == 0 ? "address" : "address_ship";
 
-                    if (!$cpf_apenas_numeros) {
+                    if ($cpf_apenas_numeros == "") {
                         return;
                     }
 
