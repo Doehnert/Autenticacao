@@ -117,13 +117,13 @@ class EditCustomerAddress implements \Magento\Framework\Event\ObserverInterface
                     $zipCodeNumbers = preg_replace("/[^0-9]/", "", $zipCode);
                     switch ($genero) {
                         case 1:
-                            $generoMaiusculo = "M";
+                            $generoMaiusculo = "Masculino";
                             break;
                         case 2:
-                            $generoMaiusculo = "F";
+                            $generoMaiusculo = "Feminino";
                             break;
                         case 3:
-                            $generoMaiusculo = "NDA";
+                            $generoMaiusculo = "Desconhecido";
                             break;
                     }
 
@@ -131,9 +131,9 @@ class EditCustomerAddress implements \Magento\Framework\Event\ObserverInterface
 
                     $addressXml = $changedAddressType == 0 ? "address" : "address_ship";
 
-                    // if ($cpf_apenas_numeros == "") {
-                    //     return;
-                    // }
+                    if ($cpf_apenas_numeros == "") {
+                        return;
+                    }
 
                     if ($flag_same_addres == 1) {
                         $xmlstr = "<?xml version='1.0' standalone='yes'?>
