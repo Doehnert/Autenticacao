@@ -652,6 +652,8 @@
 
     <input type="hidden" id="policy_accepted" name="policy_accepted" value="0">
 
+    <input type="hidden" id="email_accepted" name="email_accepted" value="0">
+
     <div>
         <div class="primary">
             <button type="submit" style="border-radius: 6px !important; margin-top: 20px;margin-bottom: 20px" class="action submit primary" id="button_create" title="<?php /* @escapeNotVerified */ echo __('Create an Account') ?>"><span><?php /* @escapeNotVerified */ echo __('Create an Account') ?></span></button>
@@ -676,6 +678,14 @@
             <p>O CPF <span id="cpf_modal" style="color: #21409A;
     font-weight: bold;"></span> já está cadastrado no programa de fidelidade.<br />Você pode utilizar a mesma senha para acessar a loja da C.VALE.</p>
             <p><a target="_blank" href="/customer/account/forgotpassword/">ESQUECI A SENHA</a></p>
+        </div>
+    </div>
+
+    <!-- MODAL EXISTING EMAIL -->
+    <div id="modal-email">
+        <div class="modal-inner-content">
+            <p>O e-mail <span id="email_modal" style="color: #21409A;
+    font-weight: bold;"></span> já foi utilizado. Você deve utilizar outro e-mail para concluir o cadastro.</p>
         </div>
     </div>
 
@@ -763,7 +773,6 @@
                 $("#policy_accepted").val(0);
                 $("#button_create").prop('disabled', true);
             }
-            console.log($("#policy_accepted").val());
         });
 
         $("#toggle").click(function() {
@@ -929,13 +938,19 @@
             responsive: true,
             title: 'O que é o C.Vale fidelidade?',
         };
+        var options6 = {
+            innerScroll: true,
+            type: 'popup',
+            responsive: true,
+            title: 'E-mail inválido',
+        };
 
         modal(options, $('#modal-content'));
         modal(options2, $('#modal-conheca'));
-
         modal(options3, $('#modal-termos'));
         modal(options4, $('#modal-regulamentos'));
         modal(options5, $('#modal-policy'));
+        modal(options6, $('#modal-email'));
 
 
 
@@ -1022,6 +1037,34 @@
             }
         });
 
+        $("#email_address").blur(async function() {
+            try {
+                var body = $('body').loader();
+                body.loader('show');
+                $("#email_modal").text($("#email_address").val());
+                const result = await $.ajax({
+                    url: "/autentica/germini/email",
+                    type: "POST",
+                    data: {
+                        email: $("#email_address").val()
+                    }
+                });
+
+                body.loader('hide')
+
+                if (result == true) {
+                    $("#modal-email").modal("openModal")
+                    // $("#email_accepted").val("1");
+                    $("#button_create").prop('disabled', true);
+                } else {
+                    // $("#email_accepted").val("0");
+                    $("#button_create").prop('disabled', false);
+                }
+            } catch (error) {
+
+            }
+        })
+
         $("#cpf").blur(async function() {
             if ($("#cpf").val().length >= 14) {
                 var body = $('body').loader();
@@ -1034,8 +1077,6 @@
                         cpf: $("#cpf").val(),
                     },
                 });
-
-                console.log(result);
 
                 body.loader('hide');
 
@@ -1110,7 +1151,6 @@
                     let telephone2 = result?.data?.phoneNumber;
                     $("#telephone2").val(telephone2);
                     let postcode = result?.data?.address?.zipCode;
-                    console.log(postcode)
                     $("#postcode").val(postcode);
                     $("#postcode").attr('readonly', 'readonly')
                     $("#postcode").css({
@@ -1198,7 +1238,6 @@
                         country: $("#country").val()
                     }
                 });
-                console.log(result);
                 document.getElementById("city").options.length = 0;
                 result.forEach((city) => {
                     $('#city').append(`<option value="${city.name}">${city.name}</option>`);

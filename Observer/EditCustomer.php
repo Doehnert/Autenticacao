@@ -162,7 +162,7 @@ class EditCustomer implements \Magento\Framework\Event\ObserverInterface
                     $logger = $objectManager->create(
                         "\Psr\Log\LoggerInterface"
                     );
-                    $logger->info("Enviado ao SAP: " . $input_xml);
+                    $logger->info("Enviado ao SAP (EditCustomer): " . $input_xml);
 
                     $sap_url = $this->scopeConfig->getValue(
                         "acessos/general/sap_url",

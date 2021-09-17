@@ -56,7 +56,6 @@ class EditCustomerAddress implements \Magento\Framework\Event\ObserverInterface
                 } else {
                     $cpfCliente = $customer->getTaxVat();
                 }
-                $cpf_apenas_numeros = preg_replace("/[^0-9]/", "", $cpfCliente);
 
                 $fullName =
                     $customer->getFirstName() . " " . $customer->getLastName();
@@ -220,7 +219,7 @@ class EditCustomerAddress implements \Magento\Framework\Event\ObserverInterface
                     $logger = $objectManager->create(
                         "\Psr\Log\LoggerInterface"
                     );
-                    $logger->info("Enviado ao SAP: " . $input_xml);
+                    $logger->info("Enviado ao SAP (EditCustomerAddress): " . $input_xml);
 
                     $sap_url = $this->scopeConfig->getValue(
                         "acessos/general/sap_url",
