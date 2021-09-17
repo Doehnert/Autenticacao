@@ -345,6 +345,20 @@ class UserPlugin
             if ($fidelity > 0) {
                 if (isset($customer->getAddresses()[0])) {
 
+                    if (isset($dados->gender)) {
+                        switch ($dados->gender) {
+                            case "M":
+                                $gender = "1";
+                                break;
+                            case "F":
+                                $gender = "2";
+                                break;
+                            case "NI":
+                                $gender = "3";
+                                break;
+                        }
+                        $customer->setGender($gender);
+                    }
 
                     if (isset($dados->email)) {
                         $customer->setEmail($dados->email);
@@ -355,6 +369,8 @@ class UserPlugin
                         $yearOfBirth = date("Y-m-d", $dob);
                         $customer->setDob($yearOfBirth);
                     }
+
+                    // if (isset())
                     // Atualizo o cpf com taxvat
                     // $customer->setCustomAttribute('cpf', $taxvat);
                     $this->customerRepository->save($customer, $this->_encryptor->getHash($senha, true));
