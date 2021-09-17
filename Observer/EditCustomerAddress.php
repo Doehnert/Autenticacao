@@ -117,13 +117,13 @@ class EditCustomerAddress implements \Magento\Framework\Event\ObserverInterface
                     $zipCodeNumbers = preg_replace("/[^0-9]/", "", $zipCode);
                     switch ($genero) {
                         case 1:
-                            $generoMaiusculo = "Masculino";
+                            $generoMaiusculo = "M";
                             break;
                         case 2:
-                            $generoMaiusculo = "Feminino";
+                            $generoMaiusculo = "F";
                             break;
                         case 3:
-                            $generoMaiusculo = "Desconhecido";
+                            $generoMaiusculo = "NDA";
                             break;
                     }
 

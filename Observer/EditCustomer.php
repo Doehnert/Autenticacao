@@ -109,13 +109,13 @@ class EditCustomer implements \Magento\Framework\Event\ObserverInterface
 
                     switch ($genero) {
                         case 1:
-                            $generoMaiusculo = "Masculino";
+                            $generoMaiusculo = "M";
                             break;
                         case 2:
-                            $generoMaiusculo = "Feminino";
+                            $generoMaiusculo = "F";
                             break;
                         case 3:
-                            $generoMaiusculo = "Desconhecido";
+                            $generoMaiusculo = "NDA";
                             break;
                     }
 
