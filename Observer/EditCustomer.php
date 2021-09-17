@@ -121,9 +121,9 @@ class EditCustomer implements \Magento\Framework\Event\ObserverInterface
 
                     // $generoMaiusculo = $genero == 1 ? "M" : "F";
 
-                    if ($cpf_apenas_numeros == "") {
-                        return;
-                    }
+                    // if ($cpf_apenas_numeros == "") {
+                    //     return;
+                    // }
 
                     $xmlstr = "<?xml version='1.0' standalone='yes'?>
                     <soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:urn=\"urn:cvale:i17:014\">
