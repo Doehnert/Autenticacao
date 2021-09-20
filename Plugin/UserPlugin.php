@@ -340,6 +340,8 @@ class UserPlugin
 
 
 
+
+
             $this->customerRepository->save($customer);
 
             if ($fidelity > 0) {
@@ -353,7 +355,10 @@ class UserPlugin
                             case "F":
                                 $gender = "2";
                                 break;
-                            case "NI":
+                            case "NDA":
+                                $gender = "3";
+                                break;
+                            default:
                                 $gender = "3";
                                 break;
                         }

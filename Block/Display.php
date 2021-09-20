@@ -11,6 +11,9 @@ class Display extends \Magento\Framework\View\Element\Template
     protected $scopeConfig;
     protected $_messageManager;
 
+    protected $pontosCliente;
+    protected $saldoCliente;
+
     /**
      * Undocumented function
      *
@@ -35,6 +38,42 @@ class Display extends \Magento\Framework\View\Element\Template
         $this->_messageManager = $messageManager;
         $this->customerRepository = $customerRepository;
         setlocale(LC_MONETARY, "pt_BR");
+
+
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $customerSession = $objectManager->create('Magento\Customer\Model\Session');
+        $customer = $customerSession->getCustomer();
+        $pontosCliente = $customer->getPontosCliente();
+        $saldoCliente = $customer->getSaldoCliente();
+
+        if (!$pontosCliente || !$saldoCliente) {
+            $customerSession = $objectManager->get('\Magento\Customer\Model\Session');
+            $token = $customerSession->getCustomerToken();
+
+            $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+
+            $url = $url_base . '/api/Consumer/GetCurrentConsumer';
+
+            $this->_curl->addHeader("Accept", "text/plain");
+            $this->_curl->addHeader("Authorization", 'bearer ' . $token);
+            $this->_curl->get($url);
+            $response = $this->_curl->getBody();
+            $dados = json_decode($response);
+
+            $pontos = $dados->points;
+            $saldo = $dados->digitalWalletBalance;
+            if ($pontos == "") {
+                $pontos = 0;
+            }
+            $customer->setCustomAttribute('pontos_cliente', $pontos);
+            $customer->setCustomAttribute('saldo_cliente', $saldo);
+
+            $pontosCliente = $pontos;
+            $saldoCliente = $saldo;
+        }
+
+        $this->pontosCliente = $pontosCliente;
+        $this->saldoCliente = $saldoCliente;
     }
 
     /**
@@ -44,22 +83,12 @@ class Display extends \Magento\Framework\View\Element\Template
      */
     public function sayPoints()
     {
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $customerSession = $objectManager->create('Magento\Customer\Model\Session');
-        $customer = $customerSession->getCustomer();
-        $pontosCliente = $customer->getPontosCliente();
-
-        return $pontosCliente;
+        return $this->pontosCliente;
     }
 
     public function sayWallet()
     {
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $customerSession = $objectManager->create('Magento\Customer\Model\Session');
-        $customer = $customerSession->getCustomer();
-        $saldoCliente = $customer->getSaldoCliente();
-
-        return $saldoCliente;
+        return $this->saldoCliente;
     }
 
     public function pointsConsumer()
