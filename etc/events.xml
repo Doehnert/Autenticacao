@@ -8,7 +8,7 @@
         <observer name="edit_customer_vexpro" instance="Vexpro\Autenticacao\Observer\EditCustomer" />
     </event>
     <event name="customer_address_save_after">
-        <observer name="edit_customer_vexpro" instance="Vexpro\Autenticacao\Observer\EditCustomerAddress" />
+        <observer name="edit_customer_vexpro_address" instance="Vexpro\Autenticacao\Observer\EditCustomerAddress" />
     </event>
 
 </config>
