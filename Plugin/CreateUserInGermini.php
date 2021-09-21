@@ -344,6 +344,7 @@ class CreateUserInGermini
                 \Magento\Store\Model\ScopeInterface::SCOPE_STORE
             );
 
+            set_time_limit(0);
             //setting the curl parameters.
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $sap_url);
@@ -452,9 +453,6 @@ class CreateUserInGermini
                 "address" => ''
             ];
         }
-
-
-
 
         $data_json = json_encode($params);
         $logger->info("Enviado ao Germini: " . json_encode($params));
