@@ -46,6 +46,9 @@ class Display extends \Magento\Framework\View\Element\Template
         $pontosCliente = $customer->getPontosCliente();
         $saldoCliente = $customer->getSaldoCliente();
 
+        $pontos = 0;
+        $saldo = 0;
+
         if (!$pontosCliente || !$saldoCliente) {
             $customerSession = $objectManager->get('\Magento\Customer\Model\Session');
             $token = $customerSession->getCustomerToken();
@@ -60,13 +63,17 @@ class Display extends \Magento\Framework\View\Element\Template
             $response = $this->_curl->getBody();
             $dados = json_decode($response);
 
-            $pontos = $dados->points;
-            $saldo = $dados->digitalWalletBalance;
-            if ($pontos == "") {
-                $pontos = 0;
+            if ($dados != "") {
+                $pontos = $dados->points;
+                $saldo = $dados->digitalWalletBalance;
+                if ($pontos == "") {
+                    $pontos = 0;
+                }
+                $customer->setCustomAttribute('pontos_cliente', $pontos);
+                $customer->setCustomAttribute('saldo_cliente', $saldo);
             }
-            $customer->setCustomAttribute('pontos_cliente', $pontos);
-            $customer->setCustomAttribute('saldo_cliente', $saldo);
+
+
 
             $pontosCliente = $pontos;
             $saldoCliente = $saldo;
