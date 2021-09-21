@@ -350,6 +350,11 @@ class CreateUserInGermini
             // Following line is compulsary to add as it is:
             curl_setopt($ch, CURLOPT_POSTFIELDS, $input_xml);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+            curl_setopt($curl, CURLOPT_TIMEOUT_MS, 1);
+            curl_setopt($curl, CURLOPT_NOSIGNAL, 1);
+
+
             // curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 300);
             curl_setopt($ch, CURLOPT_HTTPHEADER, [
                 "Authorization: Basic cGlfZ2VybWluaTpjdmFsZTIwMTQ=",
