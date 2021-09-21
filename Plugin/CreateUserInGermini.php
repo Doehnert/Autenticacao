@@ -362,21 +362,21 @@ class CreateUserInGermini
             ]);
             curl_setopt($ch, CURLOPT_POST, 1);
 
-            // $data = curl_exec($ch);
+            $data = curl_exec($ch);
 
-            // $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            // if ($httpCode == 504) {
-            //     $logger->info("Erro 504");
-            // }
-            // curl_close($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            if ($httpCode == 504) {
+                $logger->info("Erro 504");
+            }
+            curl_close($ch);
 
-            // //convert the XML result into array
-            // $array_data = json_decode(
-            //     json_encode(simplexml_load_string($data)),
-            //     true
-            // );
+            //convert the XML result into array
+            $array_data = json_decode(
+                json_encode(simplexml_load_string($data)),
+                true
+            );
 
-            // $logger->info("Resposta SAP: " . $data);
+            $logger->info("Resposta SAP: " . $data);
 
             $customerSession->setFidelity(0);
 
