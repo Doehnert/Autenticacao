@@ -49,34 +49,39 @@ class Display extends \Magento\Framework\View\Element\Template
         $pontos = 0;
         $saldo = 0;
 
-        if (!$pontosCliente || !$saldoCliente) {
-            $customerSession = $objectManager->get('\Magento\Customer\Model\Session');
-            $token = $customerSession->getCustomerToken();
+        $fidelity = $customerSession->getFidelity();
 
-            $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        if ($fidelity > 0) {
 
-            $url = $url_base . '/api/Consumer/GetCurrentConsumer';
+            if (!$pontosCliente || !$saldoCliente) {
+                $customerSession = $objectManager->get('\Magento\Customer\Model\Session');
+                $token = $customerSession->getCustomerToken();
 
-            $this->_curl->addHeader("Accept", "text/plain");
-            $this->_curl->addHeader("Authorization", 'bearer ' . $token);
-            $this->_curl->get($url);
-            $response = $this->_curl->getBody();
-            $dados = json_decode($response);
+                $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 
-            if ($dados != "") {
-                $pontos = $dados->points;
-                $saldo = $dados->digitalWalletBalance;
-                if ($pontos == "") {
-                    $pontos = 0;
+                $url = $url_base . '/api/Consumer/GetCurrentConsumer';
+
+                $this->_curl->addHeader("Accept", "text/plain");
+                $this->_curl->addHeader("Authorization", 'bearer ' . $token);
+                $this->_curl->get($url);
+                $response = $this->_curl->getBody();
+                $dados = json_decode($response);
+
+                if ($dados != "") {
+                    $pontos = $dados->points;
+                    $saldo = $dados->digitalWalletBalance;
+                    if ($pontos == "") {
+                        $pontos = 0;
+                    }
+                    $customer->setCustomAttribute('pontos_cliente', $pontos);
+                    $customer->setCustomAttribute('saldo_cliente', $saldo);
                 }
-                $customer->setCustomAttribute('pontos_cliente', $pontos);
-                $customer->setCustomAttribute('saldo_cliente', $saldo);
+
+
+
+                $pontosCliente = $pontos;
+                $saldoCliente = $saldo;
             }
-
-
-
-            $pontosCliente = $pontos;
-            $saldoCliente = $saldo;
         }
 
         $this->pontosCliente = $pontosCliente;
