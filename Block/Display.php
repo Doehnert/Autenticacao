@@ -51,7 +51,7 @@ class Display extends \Magento\Framework\View\Element\Template
 
         $fidelity = $customerSession->getFidelity();
 
-        if ($fidelity > 0) {
+        if ($fidelity == 1) {
 
             if (!$pontosCliente || !$saldoCliente) {
                 $customerSession = $objectManager->get('\Magento\Customer\Model\Session');
