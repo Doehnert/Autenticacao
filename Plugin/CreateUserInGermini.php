@@ -351,8 +351,9 @@ class CreateUserInGermini
             curl_setopt($ch, CURLOPT_POSTFIELDS, $input_xml);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
-            curl_setopt($ch, CURLOPT_TIMEOUT_MS, 1);
-            curl_setopt($ch, CURLOPT_NOSIGNAL, 1);
+            // curl_setopt($ch, CURLOPT_TIMEOUT_MS, 1);
+            // curl_setopt($ch, CURLOPT_NOSIGNAL, 1);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 4000);
 
 
             // curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 300);
