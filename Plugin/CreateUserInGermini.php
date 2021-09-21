@@ -375,13 +375,13 @@ class CreateUserInGermini
 
             $customerSession->setFidelity(0);
 
-            if ($data == '') {
-                $this->messageManager->addErrorMessage("Ocorreu uma falha no cadastro. Tente novamente!");
-                return $this->resultRedirectFactory->create()
-                    ->setPath(
-                        'customer/account/create'
-                    );
-            }
+            // if ($data == '') {
+            //     $this->messageManager->addErrorMessage("Ocorreu uma falha no cadastro. Tente novamente!");
+            //     return $this->resultRedirectFactory->create()
+            //         ->setPath(
+            //             'customer/account/create'
+            //         );
+            // }
         }
 
         switch ($genero) {
