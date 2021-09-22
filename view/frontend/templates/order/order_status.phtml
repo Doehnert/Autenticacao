@@ -123,7 +123,7 @@ $estado = $OrderStatus[$block->escapeHtml($block->getOrder()->getStatus())];
                 }
                 ?>>
 
-                <?php if ($block->getOrder()->getShippingDescription() == "Free Shipping - Free") {
+                <?php if ($block->getOrder()->getShippingDescription() == "Free Shipping - Free" || $block->getOrder()->getShippingDescription() == "Frete Grátis - Grátis") {
                     echo "Pedido pronto para retirada";
                 } else {
                     echo "Pedido em transito";
@@ -139,14 +139,10 @@ $estado = $OrderStatus[$block->escapeHtml($block->getOrder()->getStatus())];
             <?php
             }
             ?>
-            <?php
-            if ($estado == 4) { ?>
-                <li class='active'>
-                    Pedido Concluído
-                </li>
-            <?php
-            }
-            ?>
+            <li <?php
+                if ($estado == 4) { ?> class='active' <?php
+                                                    }
+                                                        ?>>Pedido Concluído</li>
 
         </ul>
     </div>
