@@ -51,38 +51,41 @@ class Display extends \Magento\Framework\View\Element\Template
 
         $fidelity = $customerSession->getFidelity();
 
-        if ($fidelity == 1) {
+        // if ($fidelity > 0) {
 
-            if (!$pontosCliente || !$saldoCliente) {
-                $customerSession = $objectManager->get('\Magento\Customer\Model\Session');
-                $token = $customerSession->getCustomerToken();
+        // if (!$pontosCliente || !$saldoCliente) {
+        $customerSession = $objectManager->get('\Magento\Customer\Model\Session');
+        $token = $customerSession->getCustomerToken();
 
-                $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 
-                $url = $url_base . '/api/Consumer/GetCurrentConsumer';
+        $url = $url_base . '/api/Consumer/GetCurrentConsumer';
 
-                $this->_curl->addHeader("Accept", "text/plain");
-                $this->_curl->addHeader("Authorization", 'bearer ' . $token);
-                $this->_curl->get($url);
-                $response = $this->_curl->getBody();
-                $dados = json_decode($response);
+        $this->_curl->addHeader("Accept", "text/plain");
+        $this->_curl->addHeader("Authorization", 'bearer ' . $token);
+        $this->_curl->get($url);
+        $response = $this->_curl->getBody();
+        $dados = json_decode($response);
 
-                if ($dados != "") {
-                    $pontos = $dados->points;
-                    $saldo = $dados->digitalWalletBalance;
-                    if ($pontos == "") {
-                        $pontos = 0;
-                    }
-                    $customer->setCustomAttribute('pontos_cliente', $pontos);
-                    $customer->setCustomAttribute('saldo_cliente', $saldo);
-                }
-
-
-
-                $pontosCliente = $pontos;
-                $saldoCliente = $saldo;
+        if ($dados != "") {
+            $pontos = isset($dados->points) ? $dados->points : 0;
+            $saldo = isset($dados->digitalWalletBalance) ? $dados->digitalWalletBalance : 0;
+            $fidelity = isset($dados->fidelity->key) ? $dados->fidelity->key : 0;
+            if ($pontos == "") {
+                $pontos = 0;
             }
+            $customer->setCustomAttribute('pontos_cliente', $pontos);
+            $customer->setCustomAttribute('saldo_cliente', $saldo);
+
+            $customerSession->setFidelity($fidelity);
         }
+
+
+
+        $pontosCliente = $pontos;
+        $saldoCliente = $saldo;
+        // }
+        // }
 
         $this->pontosCliente = $pontosCliente;
         $this->saldoCliente = $saldoCliente;
