@@ -30,6 +30,12 @@ class EditCustomerAddress implements \Magento\Framework\Event\ObserverInterface
         $customer = $customerSession->getCustomer();
         $customerId = $customer->getId();
         $pontosCliente = 0;
+
+        if (false == ($customerSession->getSapEdit())) {
+            return;
+        }
+
+
         if (isset($customerId)) {
             $customer = $this->customerRepository->getById($customerId);
             if ($customer->getCustomAttribute('pontos_cliente') != null) {

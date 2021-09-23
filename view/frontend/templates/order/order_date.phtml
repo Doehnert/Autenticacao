@@ -1,15 +1,17 @@
 <?php
+
 /**
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 ?>
-<div class="order-date">
+<div class="order-date" style="display: inline-block;">
+    <br />
     <?= $block->escapeHtml(
         __(
             '<span class="label">Order Date:</span> %1',
             '<span>' . $block->formatDate($block->getOrder()->getCreatedAt(), \IntlDateFormatter::LONG) . '</span>'
         ),
         ['span']
-    )?>
+    ) ?>
 </div>

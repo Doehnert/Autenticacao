@@ -88,20 +88,20 @@ class Recebe extends Action
         $cliente = json_decode($response);
 
         if ($cliente->success != true) {
-            foreach ($cliente->errors as $error) {
-                $this->messageManager->addErrorMessage(
-                    $error->message
-                );
-            }
+            // foreach ($cliente->errors as $error) {
+            //     $this->messageManager->addErrorMessage(
+            //         $error->message
+            //     );
+            // }
             $resultJson = $this->resultJsonFactory->create();
-            $resultJson->setData(False);
+            $resultJson->setData(True);
             return $resultJson;
         }
 
 
         /** @var \Magento\Framework\Controller\Result\Json $resultJson */
         $resultJson = $this->resultJsonFactory->create();
-        $resultJson->setData($cliente);
+        $resultJson->setData(False);
 
         return $resultJson;
 
