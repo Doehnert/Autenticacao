@@ -1,9 +1,5 @@
 <?php
 
-/**
- *
- */
-
 namespace Vexpro\Autenticacao\Plugin;
 
 use Magento\Customer\Model\Session as CustomerSession;
@@ -20,10 +16,8 @@ use Magento\Customer\Model\CustomerFactory;
 use Magento\Quote\Model\QuoteRepository;
 use Magento\Framework\App\Cache\Frontend\Pool;
 use Magento\Framework\App\Cache\TypeListInterface;
+use Magento\Backend\Model\View\Result\Redirect;
 
-/**
- *
- */
 class UserPlugin
 {
     protected $quoteRepository;
@@ -41,6 +35,8 @@ class UserPlugin
     protected $cacheTypeList;
     protected $cacheFrontendPool;
 
+    protected $redirect;
+
     private function cleanCache()
     {
         $types = array('full_page');
@@ -49,8 +45,8 @@ class UserPlugin
         }
     }
 
-
     public function __construct(
+        Redirect $redirect,
         \Magento\Quote\Api\CartRepositoryInterface $quoteRepository,
         \Magento\Customer\Model\SessionFactory $sessionFactory,
         \Magento\Customer\Api\AddressRepositoryInterface $addressRepository,
@@ -68,6 +64,7 @@ class UserPlugin
         TypeListInterface $cacheTypeList,
         Pool $cacheFrontendPool
     ) {
+        $this->redirect = $redirect;
         $this->quoteRepository = $quoteRepository;
         $this->_sessionFactory = $sessionFactory;
         $this->addressRepository = $addressRepository;
@@ -99,6 +96,18 @@ class UserPlugin
             return false;
         }
         return true;
+    }
+
+    /**
+     *
+     * @return bool
+     */
+    public function emailExistOrNot($email): bool
+    {
+        // $email = "rakesh_jesadiya@exmaple.com";
+        $websiteId = (int)$this->storeManager->getWebsite()->getId();
+        $isEmailNotExists = $this->customerAccountManagement->isEmailAvailable($email, $websiteId);
+        return $isEmailNotExists;
     }
 
     /**
@@ -157,18 +166,6 @@ class UserPlugin
 
         // Tentar carregar o usuário usando o CPF informado
         $customerCollection = $objectManager->create('Magento\Customer\Model\ResourceModel\Customer\Collection');
-        /** Applying Filters */
-        // $customerCollection
-        //     //->addAttributeToSelect(array('email'))
-        //     ->addAttributeToFilter('cpf', array('eq' => $cpf_apenas_numeros));
-        // $customers = $customerCollection->load();
-
-        // if ($customers->count() == 0) {
-        //     $customerCollection
-        //         //->addAttributeToSelect(array('email'))
-        //         ->addAttributeToFilter('cpf', array('eq' => $cpf_mask));
-        //     $customers = $customerCollection->load();
-        // }
 
         $conta = 0;
         $customer_id = 0;
@@ -204,14 +201,6 @@ class UserPlugin
             $taxvat = $customer->getData()[0]['taxvat'];
         }
 
-
-
-        // foreach ($customers as $customer) {
-        //     $conta++;
-        //     $email = $customer->getEmail();
-        //     $customer_id = $customer->getId();
-        // }
-
         if ($customer_id == 0) {
             $customerCollection = $objectManager->create('Magento\Customer\Model\ResourceModel\Customer\Collection');
             $customerCollection
@@ -229,16 +218,6 @@ class UserPlugin
 
         // Se o usuário existe
         if ($customer_id > 0) {
-
-
-
-            // $url_base = $this->scopeConfig->getValue('acessos/general/kernel_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-            // $url = $url_base . '/api/ConsumerWallet/GetConsumerPoints';
-
-            // $url = $url . '?cpfCnpj=' . $cpf_apenas_numeros . '&password=' . $senha;
-
-            // // get method
-            // $this->_curl->get($url);
 
             // Tenta realizar a autenticação com JWT
             $url_base = $this->scopeConfig->getValue('acessos/general/identity_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
@@ -264,8 +243,6 @@ class UserPlugin
             if (!isset($dados->error) && $dados != '') {
                 $this->customerRepository->save($customer, $this->_encryptor->getHash($senha, true));
             }
-
-
 
             // Realizo a autenticação desse usuário
             $res = $this->authenticate($customer_id, $senha);
@@ -312,8 +289,6 @@ class UserPlugin
                     $pontos = 0;
                     $saldo = 0;
                 } else {
-
-
                     $pontos = $dados->points;
                     $saldo = $dados->digitalWalletBalance;
                     if ($pontos == "") {
@@ -324,27 +299,15 @@ class UserPlugin
             } else {
                 $pontos = 0;
                 $saldo = 0;
-                //     $this->_messageManager->getMessages(true);
-                //     $this->_messageManager->addComplexNoticeMessage(
-                //         'customerNeedValidateGermini',
-                //         [
-                //             'url' => 'https://cvale-fidelidade-consumer-hom.azurewebsites.net/auth/login',
-                //         ]
-                //     );
-
             }
 
             $customerSession->setFidelity($fidelity);
             $customer->setCustomAttribute('pontos_cliente', $pontos);
             $customer->setCustomAttribute('saldo_cliente', $saldo);
 
-
-
-
-
             $this->customerRepository->save($customer);
 
-            if ($fidelity > 0) {
+            if ($fidelity == 1) {
                 if (isset($customer->getAddresses()[0])) {
 
                     if (isset($dados->gender)) {
@@ -375,7 +338,6 @@ class UserPlugin
                         $customer->setDob($yearOfBirth);
                     }
 
-                    // if (isset())
                     // Atualizo o cpf com taxvat
                     // $customer->setCustomAttribute('cpf', $taxvat);
                     $this->customerRepository->save($customer, $this->_encryptor->getHash($senha, true));
@@ -394,32 +356,12 @@ class UserPlugin
                         ->setPostCode($dados->address->zipCode)
                         ->setIsDefaultBilling(1)
                         ->setIsDefaultShipping(1);
-                    // $address->setCountryId('BR'); // Update country id
-                    // $address->setRegionId($regionId);
-                    // $address->setCity('customCity'); // Update city
 
                     $this->addressRepository->save($address);
                     $customer->setDefaultBilling($address->getId());
                 }
                 $customer->setDefaultBilling($address->getId());
             }
-
-
-
-
-
-
-            // } else {
-            //     $this->_messageManager->getMessages(true);
-            //     $this->_messageManager->addComplexNoticeMessage(
-            //         'customerNeedValidateGermini',
-            //         [
-            //             'url' => 'https://cvale-fidelidade-consumer-hom.azurewebsites.net/auth/login',
-            //         ]
-            //     );
-            //     return $result;
-
-            // }
             $this->customerSession->setCustomerDataAsLoggedIn($customer);
             $result->setPath('/');
             $this->_messageManager->getMessages(true);
@@ -429,7 +371,6 @@ class UserPlugin
             // Tenta realizar a autenticação com JWT
             try {
                 $url_base = $this->scopeConfig->getValue('acessos/general/identity_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-                // $url_base = 'https://vxp-germini-identity-dev.azurewebsites.net/';
                 $url = $url_base . '/connect/token';
 
                 $params = [
@@ -444,9 +385,6 @@ class UserPlugin
                 //response will contain the output in form of JSON string
                 $response = $this->_curl->getBody();
             } catch (\Exception $e) {
-
-
-                // $this->_messageManager->addError('Não foi possível conectar com germini');
                 $this->_messageManager->getMessages(true);
 
                 $this->_messageManager->addComplexNoticeMessage(
@@ -467,13 +405,6 @@ class UserPlugin
 
                     $this->_messageManager->getMessages(true);
                     $this->_messageManager->addError("Usuário não encontrado no CVale Fidelidade");
-                    // $this->_messageManager->addComplexNoticeMessage(
-                    //     'customerNeedValidateGermini',
-                    //     [
-                    //         'url' => 'https://cvale-fidelidade-consumer.azurewebsites.net/auth/login',
-                    //     ]
-                    // );
-                    // $this->_messageManager->addError("Não foi possível conectar com germini");
                     $result->setPath('customer/account/');
                     return $result;
                 }
@@ -502,6 +433,21 @@ class UserPlugin
 
                 $new_customer = $objectManager->get('\Magento\Customer\Api\Data\CustomerInterfaceFactory')->create();
                 $new_customer->setWebsiteId($websiteId);
+
+                // Verify if email is already in use
+                if ($this->emailExistOrNot($dados->email)) {
+                    $this->_messageManager->getMessages(true);
+                    $this->_messageManager->addComplexErrorMessage(
+                        'addEmailInUseMessage',
+                        [
+                            'url' => 'https://cvalefidelidade.com.br/auth/login',
+                        ]
+                    );
+
+
+                    $result->setPath('customer/account/');
+                    return $result;
+                }
 
                 // Preparing data for new customer
                 $new_customer->setEmail($dados->email);
