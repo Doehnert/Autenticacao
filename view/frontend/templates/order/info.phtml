@@ -48,7 +48,7 @@ asdasdasdasd
                 <span><?= $block->escapeHtml(__('Payment Method')) ?></span>
             </strong>
             <div class="box-content">
-                <?
+                <?php
                 if ($block->getOrder()->getPaymentType() == "2") {
                     echo "Pago R$ " . number_format(floatval($block->getOrder()->getGrandTotal()), 2, ',', '.')  . " com saldo da carteira digital";
                 } elseif ($block->getOrder()->getPaymentType() == "1") {
