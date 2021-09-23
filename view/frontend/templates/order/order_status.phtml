@@ -107,12 +107,12 @@ $estado = $OrderStatus[$block->escapeHtml($block->getOrder()->getStatus())];
                 if ($estado == 0) {
                     echo "class='active'";
                 }
-                ?>>Pagamento Pendente</li>
+                ?>>Pedido recebido</li>
             <li <?php
                 if ($estado == 1) {
                     echo "class='active'";
                 }
-                ?>>Processando</li>
+                ?>>Pagamento Aprovado</li>
             <li <?php
                 if ($estado == 2) {
                     echo "class='active'";
@@ -122,15 +122,7 @@ $estado = $OrderStatus[$block->escapeHtml($block->getOrder()->getStatus())];
                 if ($estado == 3) {
                     echo "class='active'";
                 }
-                ?>>
-
-                <?php if ($block->getOrder()->getShippingDescription() == "Free Shipping - Free" || $block->getOrder()->getShippingDescription() == "Frete Grátis - Grátis") {
-                    echo "Pedido pronto para retirada";
-                } else {
-                    echo "Pedido em transito";
-                }
-                ?>
-            </li>
+                ?>>Disponível para retirada</li>
             <?php
             if ($estado == 5) { ?>
                 <li class='active'>
