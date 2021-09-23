@@ -37,7 +37,7 @@
                             <?= $extra->getChildHtml() ?>
                         <?php endif; ?>
                         <td data-th="<?= $block->escapeHtml(__('Order Total')) ?>" class="col total">
-                            <?
+                            <?php
                             if ($_order->getPaymentType() == "1") {
                                 echo "SD " . $_order->getPontosUsados();
                             } else {
