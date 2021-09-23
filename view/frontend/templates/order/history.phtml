@@ -18,7 +18,7 @@
             <caption class="table-caption"><?= $block->escapeHtml(__('Orders')) ?></caption>
             <thead>
                 <tr>
-                    <th scope="col" class="col id"><?= $block->escapeHtml(__('Compra #')) ?></th>
+                    <th scope="col" class="col id"><?= $block->escapeHtml(__('Order #')) ?></th>
                     <th scope="col" class="col date"><?= $block->escapeHtml(__('Date')) ?></th>
                     <?= $block->getChildHtml('extra.column.header') ?>
                     <th scope="col" class="col total"><?= $block->escapeHtml(__('Order Total')) ?></th>
@@ -29,7 +29,7 @@
             <tbody>
                 <?php foreach ($_orders as $_order) : ?>
                     <tr>
-                        <td data-th="<?= $block->escapeHtml(__('Compra #')) ?>" class="col id"><?= $block->escapeHtml($_order->getRealOrderId()) ?></td>
+                        <td data-th="<?= $block->escapeHtml(__('Order #')) ?>" class="col id"><?= $block->escapeHtml($_order->getRealOrderId()) ?></td>
                         <td data-th="<?= $block->escapeHtml(__('Date')) ?>" class="col date"><?= /* @noEscape */ $block->formatDate($_order->getCreatedAt()) ?></td>
                         <?php $extra = $block->getChildBlock('extra.container'); ?>
                         <?php if ($extra) : ?>
