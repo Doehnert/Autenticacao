@@ -13,7 +13,8 @@ $OrderStatus = [
     "preparando" => 2,
     "transito" => 3,
     "complete" => 4,
-    "canceled" => 5
+    "canceled" => 5,
+    "closed" => 6
 ];
 
 $estado = $OrderStatus[$block->escapeHtml($block->getOrder()->getStatus())];
