@@ -19,4 +19,9 @@
             type="Vexpro\Autenticacao\Plugin\CreateUserInGermini"/>
   </type>
 
+  <preference for="Magento\Sales\Block\Order\Info" type="Vexpro\Autenticacao\Block\Order\Info" />
+
+    <!-- <preference for="Vexpro\Autenticacao\Api\ConsumerDataInterface"
+           type="Vexpro\Autenticacao\Model\Api\ConsumerData"/> -->
+
 </config>

@@ -137,7 +137,6 @@ class UserPlugin
 
             return $maskared;
         }
-        $errorMessage = "Cpf ou senha inválidos";
         // $websiteId  = $this->storeManager->getWebsite()->getWebsiteId();
         $websiteId = 1;
 
@@ -218,10 +217,8 @@ class UserPlugin
 
         // Se o usuário existe
         if ($customer_id > 0) {
-
             // Tenta realizar a autenticação com JWT
             $url_base = $this->scopeConfig->getValue('acessos/general/identity_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-            // $url_base = 'https://vxp-germini-identity-dev.azurewebsites.net/';
             $url = $url_base . '/connect/token';
 
             $params = [
