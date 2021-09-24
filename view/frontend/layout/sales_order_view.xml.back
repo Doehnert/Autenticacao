@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <update handle="customer_account"/>
+    <update handle="sales_order_item_renderers"/>
+    <update handle="sales_order_item_price"/>
+    <update handle="sales_order_info_links"/>
+    <body>
+        <referenceContainer name="page.main.title">
+            <block class="Magento\Sales\Block\Order\Info" name="order.status" template="Vexpro_Autenticacao::order/order_status.phtml"/>
+            <block class="Magento\Sales\Block\Order\Info" name="order.date" template="Vexpro_Autenticacao::order/order_date.phtml"/>
+        </referenceContainer>
+
+        <referenceContainer name="left">
+            <block class="Magento\Sales\Block\Adminhtml\Order\View\Tabs" name="sales_order_tabs">
+                <block class="Magento\Sales\Block\Adminhtml\Order\View\Tab\Info" name="order_tab_info" template="Magento_Sales::order/view/tab/info.phtml">
+                    <block class="Magento\Sales\Block\Adminhtml\Order\View\History" name="order_history" template="Vexpro_Autenticacao::order/view/history.phtml"/>
+                </block>
+
+            </block>
+        </referenceContainer>
+    </body>
+</page>
