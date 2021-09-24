@@ -254,7 +254,6 @@ class UserPlugin
 
             $customerSession = $objectManager->get('\Magento\Customer\Model\Session');
 
-            $customerSession->setSapEdit(true);
 
             if (isset($dados->error)) {
                 $fidelity = 2;
@@ -363,6 +362,9 @@ class UserPlugin
             $result->setPath('/');
             $this->_messageManager->getMessages(true);
             $this->cleanCache();
+
+            $customerSession->setSapEdit(true);
+
             return $result;
         } else { // USUARIO NAO EXISTE AINDA NO MAGENTO
             // Tenta realizar a autenticação com JWT
