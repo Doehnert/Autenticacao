@@ -330,18 +330,18 @@ class UserPlugin
                     if (isset($dados->email)) {
 
                         // Verify if email is already in use
-                        if ($this->emailExistOrNot($dados->email)) {
-                            $this->_messageManager->getMessages(true);
-                            $this->_messageManager->addComplexErrorMessage(
-                                'addEmailInUseMessage',
-                                [
-                                    'url' => 'https://cvalefidelidade.com.br/auth/login',
-                                ]
-                            );
+                        // if ($this->emailExistOrNot($dados->email)) {
+                        //     $this->_messageManager->getMessages(true);
+                        //     $this->_messageManager->addComplexErrorMessage(
+                        //         'addEmailInUseMessage',
+                        //         [
+                        //             'url' => 'https://cvalefidelidade.com.br/auth/login',
+                        //         ]
+                        //     );
 
-                            $result->setPath('customer/account/');
-                            return $result;
-                        }
+                        //     $result->setPath('customer/account/');
+                        //     return $result;
+                        // }
 
                         $customer->setEmail($dados->email);
                     }
