@@ -17,6 +17,7 @@ use Magento\Quote\Model\QuoteRepository;
 use Magento\Framework\App\Cache\Frontend\Pool;
 use Magento\Framework\App\Cache\TypeListInterface;
 use Magento\Backend\Model\View\Result\Redirect;
+use Magento\Customer\Api\AccountManagementInterface;
 
 class UserPlugin
 {
@@ -62,8 +63,10 @@ class UserPlugin
         CustomerSession $customerSession,
         \Magento\Framework\App\Cache\Manager $cacheManager,
         TypeListInterface $cacheTypeList,
-        Pool $cacheFrontendPool
+        Pool $cacheFrontendPool,
+        AccountManagementInterface $customerAccountManagement
     ) {
+        $this->customerAccountManagement = $customerAccountManagement;
         $this->redirect = $redirect;
         $this->quoteRepository = $quoteRepository;
         $this->_sessionFactory = $sessionFactory;
