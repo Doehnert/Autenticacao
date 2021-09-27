@@ -107,11 +107,11 @@ class UserPlugin
      */
     public function emailExistOrNot($email): bool
     {
-        // $email = "rakesh_jesadiya@exmaple.com";
         $websiteId = (int)$this->storeManager->getWebsite()->getId();
         $isEmailNotExists = $this->customerAccountManagement->isEmailAvailable($email, $websiteId);
-        return $isEmailNotExists;
+        return !$isEmailNotExists;
     }
+
 
     /**
      *
