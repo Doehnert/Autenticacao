@@ -20,14 +20,5 @@
             </block>
         </referenceContainer>
 
-        <referenceContainer name="after.body.start">
-            <block class="Magento\Framework\View\Element\Text" name="fixminicarterror">
-                <arguments>
-                    <argument name="text" xsi:type="string"><![CDATA[<script>window.checkout = {};</script>]]></argument>
-                </arguments>
-            </block>
-        </referenceContainer>
-
-
     </body>
 </page>
