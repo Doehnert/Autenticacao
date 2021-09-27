@@ -172,7 +172,6 @@ class UserPlugin
         $conta = 0;
         $customer_id = 0;
 
-
         $customerObj = $objectManager->create('Magento\Customer\Model\ResourceModel\Customer\Collection');
         $customer = $customerObj->addAttributeToSelect('*')
             ->addAttributeToFilter('cpf', $cpf_mask)
@@ -182,26 +181,31 @@ class UserPlugin
             $customer_id = $customer->getData()[0]['entity_id'];
         }
 
-        $customerObj = $objectManager->create('Magento\Customer\Model\ResourceModel\Customer\Collection');
-        $customer = $customerObj->addAttributeToSelect('*')
-            ->addAttributeToFilter('cpf', $cpf_apenas_numeros)
-            ->load();
+        if ($customer_id == 0) {
+            $customerObj = $objectManager->create('Magento\Customer\Model\ResourceModel\Customer\Collection');
+            $customer = $customerObj->addAttributeToSelect('*')
+                ->addAttributeToFilter('cpf', $cpf_apenas_numeros)
+                ->load();
 
-        if ($customer->count() > 0) {
-            $customer_id = $customer->getData()[0]['entity_id'];
+            if ($customer->count() > 0) {
+                $customer_id = $customer->getData()[0]['entity_id'];
+            }
         }
 
-        // VERIFICA SE TEM ALGUM CLIENTE COM O TAXVAT COM O CPF INFORMADO
-        $customerObj = $objectManager->create('Magento\Customer\Model\ResourceModel\Customer\Collection');
-        $customer = $customerObj->addAttributeToSelect('*')
-            ->addAttributeToFilter('taxvat', $cpf_apenas_numeros)
-            ->load();
+        if ($customer_id == 0) {
+            // VERIFICA SE TEM ALGUM CLIENTE COM O TAXVAT COM O CPF INFORMADO
+            $customerObj = $objectManager->create('Magento\Customer\Model\ResourceModel\Customer\Collection');
+            $customer = $customerObj->addAttributeToSelect('*')
+                ->addAttributeToFilter('taxvat', $cpf_apenas_numeros)
+                ->load();
 
-        if ($customer->count() > 0) {
-            $customer_id = $customer->getData()[0]['entity_id'];
+            if ($customer->count() > 0) {
+                $customer_id = $customer->getData()[0]['entity_id'];
 
-            $taxvat = $customer->getData()[0]['taxvat'];
+                // $taxvat = $customer->getData()[0]['taxvat'];
+            }
         }
+
 
         if ($customer_id == 0) {
             $customerCollection = $objectManager->create('Magento\Customer\Model\ResourceModel\Customer\Collection');
