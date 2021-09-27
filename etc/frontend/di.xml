@@ -7,7 +7,7 @@
       <item name="addEmailInUseMessage" xsi:type="array">
         <item name="renderer" xsi:type="const">\Magento\Framework\View\Element\Message\Renderer\BlockRenderer::CODE</item>
         <item name="data" xsi:type="array">
-        <item name="template" xsi:type="string">Vexpro_Autenticacao::messages/email_in_use.phtml</item>
+        <item name="template" xsi:type="string">Vexpro_Autenticacao::messages/addEmailInUseMessage.phtml</item>
         </item>
       </item>
     </argument>

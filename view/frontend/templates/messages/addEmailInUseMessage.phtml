@@ -1,0 +1,9 @@
+<?php
+
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+/** @var \Magento\Framework\View\Element\Template $block */
+?>
+<?= $block->escapeHtml(__('Seu email já está em uso na loja. <a href="%1">Clique Aqui</a>. Para escolher outro email em CVale Fidelidade', $block->getData('url')), ['a']); ?>
