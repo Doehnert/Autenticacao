@@ -206,6 +206,20 @@ class UserPlugin
             }
         }
 
+        if ($customer_id == 0) {
+            // VERIFICA SE TEM ALGUM CLIENTE COM O TAXVAT COM O CPF INFORMADO
+            $customerObj = $objectManager->create('Magento\Customer\Model\ResourceModel\Customer\Collection');
+            $customer = $customerObj->addAttributeToSelect('*')
+                ->addAttributeToFilter('taxvat', $cpf_mask)
+                ->load();
+
+            if ($customer->count() > 0) {
+                $customer_id = $customer->getData()[0]['entity_id'];
+
+                // $taxvat = $customer->getData()[0]['taxvat'];
+            }
+        }
+
 
         if ($customer_id == 0) {
             $customerCollection = $objectManager->create('Magento\Customer\Model\ResourceModel\Customer\Collection');
