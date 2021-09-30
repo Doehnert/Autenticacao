@@ -112,7 +112,6 @@ class UserPlugin
         return !$isEmailNotExists;
     }
 
-
     /**
      *
      * @param \Magento\Customer\Controller\Account\LoginPost $subject
@@ -158,7 +157,6 @@ class UserPlugin
         //     Se o CPF náo exite no magento então cria esse usuário no magento.
         //     Se não conseguir conectar no germini tenta logar com os dados
         //     no magento.
-
 
         //Get Object Manager Instance
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
@@ -220,7 +218,6 @@ class UserPlugin
             }
         }
 
-
         if ($customer_id == 0) {
             $customerCollection = $objectManager->create('Magento\Customer\Model\ResourceModel\Customer\Collection');
             $customerCollection
@@ -274,7 +271,6 @@ class UserPlugin
             }
 
             $customerSession = $objectManager->get('\Magento\Customer\Model\Session');
-
 
             if (isset($dados->error)) {
                 $fidelity = 2;
@@ -346,21 +342,6 @@ class UserPlugin
                     }
 
                     if (isset($dados->email)) {
-
-                        // Verify if email is already in use
-                        // if ($this->emailExistOrNot($dados->email)) {
-                        //     $this->_messageManager->getMessages(true);
-                        //     $this->_messageManager->addComplexErrorMessage(
-                        //         'addEmailInUseMessage',
-                        //         [
-                        //             'url' => 'https://cvalefidelidade.com.br/auth/login',
-                        //         ]
-                        //     );
-
-                        //     $result->setPath('customer/account/');
-                        //     return $result;
-                        // }
-
                         $customer->setEmail($dados->email);
                     }
 
@@ -471,14 +452,16 @@ class UserPlugin
 
                 // Verify if email is already in use
                 if ($this->emailExistOrNot($dados->email)) {
+
+                    $cvale_url = $this->scopeConfig->getValue('acessos/general/cvale_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+
                     $this->_messageManager->getMessages(true);
                     $this->_messageManager->addComplexErrorMessage(
                         'addEmailInUseMessage',
                         [
-                            'url' => 'https://cvalefidelidade.com.br/auth/login',
+                            'url' => "{$cvale_url}/auth/login"
                         ]
                     );
-
 
                     $result->setPath('customer/account/');
                     return $result;
@@ -506,7 +489,6 @@ class UserPlugin
                 $new_customer->setTaxVat($cpf);
                 $new_customer->setCustomAttribute('cpf', $cpf);
 
-
                 switch ($dados->gender) {
                     case 'M':
                         $magentoGender = 1;
@@ -531,8 +513,6 @@ class UserPlugin
                 }
                 $new_customer->setCustomAttribute('pontos_cliente', $pontos);
                 $new_customer->setCustomAttribute('saldo_cliente', $saldo);
-
-
 
                 $hashedPassword = $this->_encryptor->hash($senha);
 
