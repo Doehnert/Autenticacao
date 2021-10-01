@@ -196,12 +196,15 @@ class UserPlugin
                 ->addAttributeToFilter('cpf', array('eq' => $cpf_mask));
             $customers = $customerCollection->load();
 
-            $conta = 0;
-            $customer_id = 0;
-            foreach ($customers as $customer) {
-                $conta++;
-                $email = $customer->getEmail();
-                $customer_id = $customer->getId();
+            // $conta = 0;
+            // $customer_id = 0;
+            // foreach ($customers as $customer) {
+            //     $conta++;
+            //     $email = $customer->getEmail();
+            //     $customer_id = $customer->getId();
+            // }
+            if ($customer->count() > 0) {
+                $customer_id = $customer->getData()[0]['entity_id'];
             }
         }
 
