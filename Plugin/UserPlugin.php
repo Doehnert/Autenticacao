@@ -191,6 +191,21 @@ class UserPlugin
         }
 
         if ($customer_id == 0) {
+            $customerCollection = $objectManager->create('Magento\Customer\Model\ResourceModel\Customer\Collection');
+            $customerCollection
+                ->addAttributeToFilter('cpf', array('eq' => $cpf_mask));
+            $customers = $customerCollection->load();
+
+            $conta = 0;
+            $customer_id = 0;
+            foreach ($customers as $customer) {
+                $conta++;
+                $email = $customer->getEmail();
+                $customer_id = $customer->getId();
+            }
+        }
+
+        if ($customer_id == 0) {
             // VERIFICA SE TEM ALGUM CLIENTE COM O TAXVAT COM O CPF INFORMADO
             $customerObj = $objectManager->create('Magento\Customer\Model\ResourceModel\Customer\Collection');
             $customer = $customerObj->addAttributeToSelect('*')
@@ -218,20 +233,7 @@ class UserPlugin
             }
         }
 
-        if ($customer_id == 0) {
-            $customerCollection = $objectManager->create('Magento\Customer\Model\ResourceModel\Customer\Collection');
-            $customerCollection
-                ->addAttributeToFilter('cpf', array('eq' => $cpf));
-            $customers = $customerCollection->load();
 
-            $conta = 0;
-            $customer_id = 0;
-            foreach ($customers as $customer) {
-                $conta++;
-                $email = $customer->getEmail();
-                $customer_id = $customer->getId();
-            }
-        }
 
         // Se o usuário existe
         if ($customer_id > 0) {
