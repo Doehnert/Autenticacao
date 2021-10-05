@@ -381,8 +381,6 @@ class CreateUserInGermini
             $xmlDoc = new \DOMDocument();
             $xmlDoc->loadXML($data);
 
-            $flag_sap_erro = (null !== $xmlDoc->getElementsByTagName('Erros'));
-
             $errors = $xmlDoc->getElementsByTagName('Erros');
             foreach ($errors as $error) {
                 $msg = $error->getElementsByTagName('Message')->item(0)->nodeValue;
@@ -390,7 +388,7 @@ class CreateUserInGermini
                 // print_r("Houve um erro $msg." . "\n");
             }
 
-            if ($flag_sap_erro) {
+            if (count($errors) > 0) {
                 return $this->resultRedirectFactory->create()
                     ->setPath(
                         'customer/account/create'
