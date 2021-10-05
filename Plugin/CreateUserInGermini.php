@@ -378,6 +378,25 @@ class CreateUserInGermini
 
             $logger->info("Resposta SAP: " . $data);
 
+            $xmlDoc = new \DOMDocument();
+            $xmlDoc->loadXML($data);
+
+            $flag_sap_erro = (null !== $xmlDoc->getElementsByTagName('Erros'));
+
+            $errors = $xmlDoc->getElementsByTagName('Erros');
+            foreach ($errors as $error) {
+                $msg = $error->getElementsByTagName('Message')->item(0)->nodeValue;
+                $this->messageManager->addErrorMessage($msg);
+                // print_r("Houve um erro $msg." . "\n");
+            }
+
+            if ($flag_sap_erro) {
+                return $this->resultRedirectFactory->create()
+                    ->setPath(
+                        'customer/account/create'
+                    );
+            }
+
             $customerSession->setFidelity(0);
 
             // if ($data == '') {
