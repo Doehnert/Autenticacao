@@ -475,7 +475,7 @@ class CreateUserInGermini
         }
 
         $data_json = json_encode($params);
-        $logger->info("Enviado ao Germini: " . json_encode($params));
+        // $logger->info("Enviado ao Germini: " . json_encode($params));
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -492,7 +492,7 @@ class CreateUserInGermini
         curl_close($ch);
         $resultado = json_decode($response);
 
-        $logger->info("Resposta do Germini: " . json_encode($resultado));
+        // $logger->info("Resposta do Germini: " . json_encode($resultado));
 
         if (
             $response == ""
