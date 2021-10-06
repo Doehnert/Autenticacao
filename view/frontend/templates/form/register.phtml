@@ -766,12 +766,14 @@
         $("#change_policy").click(function() {
             if ($("#policy_accepted").val() == 0) {
                 $("#policy_accepted").val(1);
-                if ($("#aceito_termos_uso").prop("checked") == false) {
-                    $("#button_create").prop('disabled', false);
-                }
+                // if ($("#aceito_termos_uso").prop("checked") == false) {
+                // $("#button_create").prop('disabled', false);
+                checkTerms()
+                // }
             } else {
                 $("#policy_accepted").val(0);
-                $("#button_create").prop('disabled', true);
+                // $("#button_create").prop('disabled', true);
+                checkTerms()
             }
         });
 
@@ -817,15 +819,8 @@
             }))
 
         function checkTerms() {
-            if ($("#aceito_termos_uso").prop("checked") == true && $("#aceito_regulamento").prop("checked") ==
-                true && $("#policy_accepted").val() == 1) {
-                $("#user_fidelidade").val("1");
-
-                $("#button_create").prop('disabled', false);
-            } else {
-                $("#user_fidelidade").val("0");
-                $("#button_create").prop('disabled', true);
-            }
+            $flag_can_create = checkEnabledToCreate();
+            $("#button_create").prop('disabled', !$flag_can_create);
         }
 
         $("#aceito_termos_uso").click(function() {
@@ -839,14 +834,13 @@
         $("#box").hide();
 
         $("#is_fidelidade").change(function() {
-
-            if ($("#policy_accepted").val() == 1) {
-                $("#button_create").prop('disabled', function(i, v) {
-                    return !v;
-                });
-                $("#box").toggle();
+            if ($("#user_fidelidade").val() == "0") {
+                $("#user_fidelidade").val(1)
+            } else {
+                $("#user_fidelidade").val(0)
             }
-
+            checkTerms()
+            $("#box").toggle();
         })
 
         $("#selecionar_todos").click(function() {
@@ -1055,10 +1049,12 @@
                 if (result == true) {
                     $("#modal-email").modal("openModal")
                     // $("#email_accepted").val("1");
-                    $("#button_create").prop('disabled', true);
+                    // $("#button_create").prop('disabled', true);
+                    checkTerms()
                 } else {
                     // $("#email_accepted").val("0");
-                    $("#button_create").prop('disabled', false);
+                    // $("#button_create").prop('disabled', false);
+                    checkTerms()
                 }
             } catch (error) {
 
@@ -1080,14 +1076,14 @@
 
                 body.loader('hide');
 
-                console.log(result)
-
                 // Já existe no Germini
                 if (result == true) {
                     $("#modal-content").modal("openModal");
-                    $("#button_create").prop('disabled', true);
+                    // $("#button_create").prop('disabled', true);
+                    checkTerms()
                 } else if (result?.data != null) {
-                    $("#button_create").prop('disabled', false);
+                    // $("#button_create").prop('disabled', false);
+                    checkTerms()
                     // Usa os dados retornados para preencher campos do formulario
                     // nesse caso, tenho que setar em CreateUpdateConsumer
                     // "associated": true
@@ -1247,6 +1243,20 @@
                 body.loader('hide');
             }
         })
+
+        function checkEnabledToCreate() {
+            if ($("#policy_accepted").val() == 0) {
+                return false
+            }
+            if ($("#user_fidelidade").val() == 1) {
+
+                if ($("#aceito_termos_uso").prop("checked") == false || $("#aceito_regulamento").prop("checked") ==
+                    false) {
+                    return false
+                }
+            }
+            return true
+        }
 
         var dataForm = $('#form-validate');
 
