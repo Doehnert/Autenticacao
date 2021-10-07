@@ -141,6 +141,7 @@ class UserPlugin
         }
         // $websiteId  = $this->storeManager->getWebsite()->getWebsiteId();
         $websiteId = 1;
+        $flag_email_exists = 0;
 
         $username = $subject->getRequest()->getPost('login')['username'];
         // $cpf = preg_replace("/[^0-9]/", "", $username);
@@ -149,7 +150,6 @@ class UserPlugin
         $cpf_mask = mask($cpf_apenas_numeros, '###.###.###-##');
 
         $senha = $subject->getRequest()->getPost('login')['password'];
-
 
         //     Tenta conectar com Germini usando JWT, caso consiga:
         //     Verifico se esse CPF já existe no magento, se existir então
@@ -346,9 +346,9 @@ class UserPlugin
                         $customer->setGender($gender);
                     }
 
-                    if (isset($dados->email)) {
-                        $customer->setEmail($dados->email);
-                    }
+                    // if (isset($dados->email)) {
+                    //     $customer->setEmail($dados->email);
+                    // }
 
                     if (isset($dados->dateOfBirth)) {
                         $dob = strtotime($dados->dateOfBirth);
@@ -381,6 +381,16 @@ class UserPlugin
                 $customer->setDefaultBilling($address->getId());
             }
             $this->customerSession->setCustomerDataAsLoggedIn($customer);
+
+
+            if ($flag_email_exists == 1) {
+                $this->_messageManager->getMessages(true);
+                $this->_messageManager->addErrorMessage("Email já existe na loja, defina outro agora!");
+                $result->setPath('autentica/germini/newemail');
+                return $result;
+            }
+
+
             $result->setPath('/');
             $this->_messageManager->getMessages(true);
             $this->cleanCache();
@@ -455,25 +465,32 @@ class UserPlugin
                 $new_customer = $objectManager->get('\Magento\Customer\Api\Data\CustomerInterfaceFactory')->create();
                 $new_customer->setWebsiteId($websiteId);
 
+
                 // Verify if email is already in use
                 if ($this->emailExistOrNot($dados->email)) {
 
-                    $cvale_url = $this->scopeConfig->getValue('acessos/general/cvale_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+                    $flag_email_exists = 1;
+                    // Create random email for user
+                    $email = rand(100000, 999999) . "@cvale.com";
 
-                    $this->_messageManager->getMessages(true);
-                    $this->_messageManager->addComplexErrorMessage(
-                        'addEmailInUseMessage',
-                        [
-                            'url' => "{$cvale_url}/auth/login"
-                        ]
-                    );
+                    // $cvale_url = $this->scopeConfig->getValue('acessos/general/cvale_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 
-                    $result->setPath('customer/account/');
-                    return $result;
+                    // $this->_messageManager->getMessages(true);
+                    // $this->_messageManager->addComplexErrorMessage(
+                    //     'addEmailInUseMessage',
+                    //     [
+                    //         'url' => "{$cvale_url}/auth/login"
+                    //     ]
+                    // );
+
+                    // $result->setPath('customer/account/');
+                    // return $result;
+                } else {
+                    $email = $dados->email;
                 }
 
                 // Preparing data for new customer
-                $new_customer->setEmail($dados->email);
+                $new_customer->setEmail($email);
                 // $name = str_ireplace (' ', '', $dados->name);
                 $names = explode(" ", ltrim($dados->name));
                 $last_name = $names;
@@ -578,6 +595,14 @@ class UserPlugin
             }
         }
         $this->cleanCache();
+
+
+        if ($flag_email_exists == 1) {
+            $this->_messageManager->addErrorMessage("Email já existe na loja, defina outro agora!");
+            $result->setPath('germini/autentica/newemail');
+            return $result;
+        }
+
         $result->setPath('/');
         $this->_messageManager->getMessages(true);
         return $result;

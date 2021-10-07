@@ -1,0 +1,100 @@
+<?php
+
+/**<!-- echo $block->sayHello(); -->
+ * @var \Mageplaza\HelloWorld\Block\Display $block
+ */
+?>
+
+<form class="form create account form-create-account" action="/autentica/germini/createemail" method="post" id="form-validate" enctype="multipart/form-data" autocomplete="off" data-mage-init='{"validation": {}}'>
+    <?php echo $block->getBlockHtml('formkey'); ?>
+
+    <div id="email_field">
+        <div class="field fieldset individual">
+            <div class="field required">
+                <label for="email_address" class="label">Novo E-mail</label>
+                <input type="email" name="email" autocomplete="email" id="email_address" title="<?php /* @escapeNotVerified */ echo __('Email') ?>" class="input-text" data-validate="{required:true, 'validate-email':true}">
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <div class="primary">
+            <button type="submit" style="border-radius: 6px !important; margin-top: 20px;margin-bottom: 20px" class="action submit primary" id="button_create" title="<?php /* @escapeNotVerified */ echo __('Create an Account') ?>"><span>Alterar e-mail</span></button>
+        </div>
+    </div>
+
+    <!-- MODAL EXISTING EMAIL -->
+    <div id="modal-email">
+        <div class="modal-inner-content">
+            <p>O e-mail <span id="email_modal" style="color: #21409A;
+    font-weight: bold;"></span> já foi utilizado. Você deve utilizar outro e-mail para concluir o cadastro.</p>
+        </div>
+    </div>
+
+</form>
+
+<script>
+    require([
+        'jquery',
+        'Magento_Ui/js/modal/modal',
+        'moment',
+        'redirectUrl',
+        'mage/mage',
+        'mage/calendar',
+        'jquery.mask',
+        'loader'
+    ], function($, modal, moment) {
+
+        var options6 = {
+            innerScroll: true,
+            type: 'popup',
+            responsive: true,
+            title: 'E-mail inválido',
+        };
+
+        modal(options6, $('#modal-email'));
+
+        function debounce(func, wait, immediate) {
+            var timeout;
+            return function() {
+                var context = this,
+                    args = arguments;
+                var later = function() {
+                    timeout = null;
+                    if (!immediate) func.apply(context, args);
+                };
+                var callNow = immediate && !timeout;
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+                if (callNow) func.apply(context, args);
+            };
+        };
+
+        var myEfficientFn = debounce(async function() {
+            var body = $('body').loader();
+            body.loader('show');
+            $("#email_modal").text($("#email_address").val());
+            const result = await $.ajax({
+                url: "/autentica/germini/email",
+                type: "POST",
+                data: {
+                    email: $("#email_address").val()
+                }
+            });
+
+            body.loader('hide')
+
+            if (result == true) {
+                $("#button_create").prop('disabled', true);
+                $("#modal-email").modal("openModal")
+            } else {
+                $("#button_create").prop('disabled', false);
+            }
+        }, 300);
+
+        $("#button_create").prop('disabled', true);
+
+        $("#email_address").keypress(myEfficientFn)
+
+    })
+</script>
