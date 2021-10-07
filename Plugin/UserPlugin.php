@@ -323,6 +323,11 @@ class UserPlugin
             $customer->setCustomAttribute('pontos_cliente', $pontos);
             $customer->setCustomAttribute('saldo_cliente', $saldo);
 
+            $email = $customer->getEmail();
+            if (explode('@', $email)[1] == "trocar.com"){
+                $flag_email_exists = 1;
+            }
+
             $this->customerRepository->save($customer);
 
             if ($fidelity == 1) {
@@ -474,7 +479,7 @@ class UserPlugin
 
                     $flag_email_exists = 1;
                     // Create random email for user
-                    $email = rand(100000, 999999) . "@cvale.com";
+                    $email = rand(100000, 999999) . "@trocar.com";
 
                     // $cvale_url = $this->scopeConfig->getValue('acessos/general/cvale_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 
