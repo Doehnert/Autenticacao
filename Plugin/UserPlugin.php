@@ -601,6 +601,10 @@ class UserPlugin
 
 
         if ($flag_email_exists == 1) {
+
+            $this->cleanCache();
+
+
             $this->_messageManager->getMessages(true);
             $this->_messageManager->addErrorMessage("Email já existe na loja, defina outro agora!");
             $result->setPath('autentica/germini/newemail');
