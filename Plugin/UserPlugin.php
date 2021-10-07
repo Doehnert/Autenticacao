@@ -544,7 +544,7 @@ class UserPlugin
                 $objectManager->get('\Magento\Customer\Api\CustomerRepositoryInterface')->save($new_customer, $hashedPassword);
 
                 $new_customer = $objectManager->get('\Magento\Customer\Model\CustomerFactory')->create();
-                $new_customer->setWebsiteId($websiteId)->loadByEmail($dados->email);
+                $new_customer->setWebsiteId($websiteId)->loadByEmail($email);
 
                 // Seta endereço do cliente
                 try {
