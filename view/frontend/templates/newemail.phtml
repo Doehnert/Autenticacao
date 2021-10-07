@@ -74,6 +74,7 @@
             var body = $('body').loader();
             body.loader('show');
             $("#email_modal").text($("#email_address").val());
+            console.log($("#email_address").val())
             const result = await $.ajax({
                 url: "/autentica/germini/email",
                 type: "POST",
