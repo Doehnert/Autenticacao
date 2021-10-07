@@ -4,10 +4,10 @@ namespace Vexpro\Autenticacao\Controller\Germini;
 
 use Magento\Framework\App\Action\Action;
 
-
 class Newemail extends Action
 {
     protected $_pageFactory;
+
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
         \Magento\Framework\View\Result\PageFactory $pageFactory
