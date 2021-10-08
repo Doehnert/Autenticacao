@@ -85,6 +85,7 @@ class UserPlugin
 
         $this->cacheTypeList = $cacheTypeList;
         $this->cacheFrontendPool = $cacheFrontendPool;
+        ini_set('max_input_vars', 10000);
     }
 
     // Autentica o usuário
@@ -236,8 +237,6 @@ class UserPlugin
             }
         }
 
-
-
         // Se o usuário existe
         if ($customer_id > 0) {
             // Tenta realizar a autenticação com JWT
@@ -284,6 +283,8 @@ class UserPlugin
                 }
             }
 
+
+
             if (isset($dados->access_token)) {
                 $token = $dados->access_token;
 
@@ -324,7 +325,7 @@ class UserPlugin
             $customer->setCustomAttribute('saldo_cliente', $saldo);
 
             $email = $customer->getEmail();
-            if (explode('@', $email)[1] == "trocar.com"){
+            if (explode('@', $email)[1] == "trocar.com") {
                 $flag_email_exists = 1;
             }
 
@@ -443,7 +444,7 @@ class UserPlugin
                 if (isset($resultado->error)) {
 
                     $this->_messageManager->getMessages(true);
-                    $this->_messageManager->addError("Usuário não encontrado no CVale Fidelidade");
+                    $this->_messageManager->addError("Usuário não encontrado no CVale Fidelidade ou cadastro ainda não conluído");
                     $result->setPath('customer/account/');
                     return $result;
                 }
@@ -466,6 +467,15 @@ class UserPlugin
 
                 $fidelity = False;
                 $fidelity = $dados->fidelity->key;
+
+                if ($fidelity != "1") {
+                    $this->cleanCache();
+                    $this->_messageManager->getMessages(true);
+                    $this->_messageManager->addErrorMessage("Seu cadastro encontra-se inativo no C.Vale Fidelidade!");
+                    $result->setPath('/customer/account/login/');
+
+                    return $result;
+                }
 
                 $customerSession = $objectManager->get('\Magento\Customer\Model\Session');
                 $customerSession->setFidelity($fidelity);
@@ -606,10 +616,7 @@ class UserPlugin
 
 
         if ($flag_email_exists == 1) {
-
             $this->cleanCache();
-
-
             $this->_messageManager->getMessages(true);
             $this->_messageManager->addErrorMessage("Email já existe na loja, defina outro agora!");
             $result->setPath('autentica/germini/newemail');
