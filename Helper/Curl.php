@@ -79,6 +79,9 @@ class Curl extends AbstractHelper
 
     public function getUserToken()
     {
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $messageManager = $objectManager->get('Magento\Framework\Message\ManagerInterface');
+
         $login = $this->getAdminLogin();
         $password = $this->getAdminPassword();
         $response = "";
@@ -97,7 +100,9 @@ class Curl extends AbstractHelper
         $resultado = json_decode($response);
 
         if ($response == "" || isset($resultado->error)) {
-            throw new Exception(__('Erro ao conectar com germini ou usuário e senha incorretos'));
+            // throw new Exception(__('Erro ao conectar com germini ou usuário e senha incorretos'));
+            $messageManager->addError('Erro ao conectar com germini ou usuário e senha incorretos');
+            return;
         }
 
         $token = $resultado->access_token;
