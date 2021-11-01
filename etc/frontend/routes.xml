@@ -4,5 +4,9 @@
 				<route id="autentica" frontName="autentica">
 						<module name="Vexpro_Autenticacao" />
 				</route>
+
+                <route id="customer" frontName="customer">
+                    <module name="Vexpro_Autenticacao" />
+                </route>
 		</router>
 </config>

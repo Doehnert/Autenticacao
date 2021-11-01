@@ -21,6 +21,8 @@
 
   <preference for="Magento\Sales\Block\Order\Info" type="Vexpro\Autenticacao\Block\Order\Info" />
 
+  <preference for="Magento\Customer\Controller\Account\ResetPasswordPost" type="Vexpro\Autenticacao\Controller\Account\ResetPasswordPost" />
+
     <!-- <preference for="Vexpro\Autenticacao\Api\ConsumerDataInterface"
            type="Vexpro\Autenticacao\Model\Api\ConsumerData"/> -->
 
