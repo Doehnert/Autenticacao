@@ -328,6 +328,7 @@ class UserPlugin
             $email = $customer->getEmail();
             if (explode('@', $email)[1] == "trocar.com") {
                 $flag_email_exists = 1;
+                $used_email = $dados->email;
             }
 
             $this->customerRepository->save($customer);
