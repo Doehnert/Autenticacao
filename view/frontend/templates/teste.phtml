@@ -53,7 +53,7 @@
     }
     $used_email = "";
     if (isset($block->getRequest()->getParams()['used_email'])) {
-        $used_email = $block->getRequest()->getParams()['used_email'];
+        $used_email = trim($block->getRequest()->getParams()['used_email'], "/");
     }
     ?>
 
