@@ -397,7 +397,7 @@ class UserPlugin
 
                 // $this->_messageManager->addErrorMessage("Email já existe na loja, defina outro agora!");
                 // $result->setPath('autentica/germini/newemail');
-                $result->setPath('customer/account/edit/?change_email=1&used_email=' . $used_email);
+                $result->setPath('customer/account/edit?change_email=1&used_email=' . $used_email);
                 return $result;
             }
 
@@ -624,7 +624,7 @@ class UserPlugin
             $this->_messageManager->getMessages(true);
             // $this->_messageManager->addErrorMessage("Email já existe na loja, defina outro agora!");
             // $result->setPath('autentica/germini/newemail');
-            $result->setPath('customer/account/edit/?change_email=1&used_email=' . $used_email);
+            $result->setPath('customer/account/edit?change_email=1&used_email=' . $used_email);
             return $result;
         }
 
