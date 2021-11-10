@@ -62,19 +62,21 @@ class EditCustomer implements \Magento\Framework\Event\ObserverInterface
                 }
                 $cpf_apenas_numeros = preg_replace("/[^0-9]/", "", $cpfCliente);
 
-                $fullName =
-                    $customer->getFirstName() . " " . $customer->getLastName();
 
-                $firstName = $customer->getFirstName();
+                $customer->getFirstName() . " " . $customer->getLastName();
 
-                $customer = $observer->getCustomer();
+                $firstName = $observer->getEvent()->getData()['customer']->getData('firstname');
+
+                $lastname = $observer->getEvent()->getData()['customer']->getData('lastname');
+
+                $fullName = $firstName . " " . $lastname;
 
                 $genero = '';
                 $genero = $customer->getGender();
                 $dob2 = '';
                 $dob2 = $customer->getDob();
                 $email = '';
-                $email = $customer->getEmail();
+                $email = $observer->getEvent()->getData()['customer']->getData('email');
 
                 $telephone2 = 0;
                 $city = 0;
