@@ -63,18 +63,17 @@ class EditCustomerAddress implements \Magento\Framework\Event\ObserverInterface
                     $cpfCliente = $customer->getTaxVat();
                 }
 
-                $firstName = $observer->getEvent()->getData()['customer']->getData('firstname');
+                $fullName =
+                    $customer->getFirstName() . " " . $customer->getLastName();
 
-                $lastname = $observer->getEvent()->getData()['customer']->getData('lastname');
-
-                $fullName = $firstName . " " . $lastname;
+                $firstName = $customer->getFirstName();
 
                 $genero = '';
                 $genero = $customer->getGender();
                 $dob2 = '';
                 $dob2 = $customer->getDob();
                 $email = '';
-                $email = $observer->getEvent()->getData()['customer']->getData('email');
+                $email = $customer->getEmail();
 
                 $address = $observer->getCustomerAddress();
 
