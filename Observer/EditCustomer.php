@@ -177,30 +177,30 @@ class EditCustomer implements \Magento\Framework\Event\ObserverInterface
                     );
 
                     //setting the curl parameters.
-                    // $ch = curl_init();
-                    // curl_setopt($ch, CURLOPT_URL, $sap_url);
-                    // // Following line is compulsary to add as it is:
-                    // curl_setopt($ch, CURLOPT_POSTFIELDS, $input_xml);
-                    // curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                    // // curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 300);
-                    // curl_setopt($ch, CURLOPT_HTTPHEADER, [
-                    //     "Authorization: Basic cGlfZ2VybWluaTpjdmFsZTIwMTQ=",
-                    //     "Content-Type: text/xml",
-                    // ]);
-                    // curl_setopt($ch, CURLOPT_POST, 1);
-                    // $data = curl_exec($ch);
-                    // curl_close($ch);
+                    $ch = curl_init();
+                    curl_setopt($ch, CURLOPT_URL, $sap_url);
+                    // Following line is compulsary to add as it is:
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, $input_xml);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                    // curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 300);
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                        "Authorization: Basic cGlfZ2VybWluaTpjdmFsZTIwMTQ=",
+                        "Content-Type: text/xml",
+                    ]);
+                    curl_setopt($ch, CURLOPT_POST, 1);
+                    $data = curl_exec($ch);
+                    curl_close($ch);
 
-                    // //convert the XML result into array
-                    // $array_data = json_decode(
-                    //     json_encode(simplexml_load_string($data)),
-                    //     true
-                    // );
+                    //convert the XML result into array
+                    $array_data = json_decode(
+                        json_encode(simplexml_load_string($data)),
+                        true
+                    );
 
-                    // $logger->info("Resposta SAP: " . $data);
-                    // print_r("<pre>");
-                    // print_r($array_data);
-                    // print_r("</pre>");
+                    $logger->info("Resposta SAP: " . $data);
+                    print_r("<pre>");
+                    print_r($array_data);
+                    print_r("</pre>");
                 }
             }
         }
