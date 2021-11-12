@@ -176,7 +176,6 @@ class EditCustomer implements \Magento\Framework\Event\ObserverInterface
                         \Magento\Store\Model\ScopeInterface::SCOPE_STORE
                     );
 
-                    //setting the curl parameters.
                     $ch = curl_init();
                     curl_setopt($ch, CURLOPT_URL, $sap_url);
                     // Following line is compulsary to add as it is:
