@@ -132,6 +132,11 @@ class ResetPasswordPost extends \Magento\Customer\Controller\AbstractAccount imp
         $user_id = $customer->getId();
 
         $cpf = $customer->getCustomAttribute('cpf')->getValue();
+
+        if ($cpf == "") {
+            $cpf = $customer->getTaxVat();
+        }
+
         $email = $customer->getEmail();
         $cpf_apenas_numeros = preg_replace("/[^0-9]/", "", $cpf);
 
