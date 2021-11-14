@@ -454,7 +454,7 @@ class UserPlugin
 
                     $this->_messageManager->getMessages(true);
                     $this->_messageManager->addError("CPF ou senha incorretos!");
-                    $result->setPath('customer/account/');
+                    $result->setPath('/');
                     return $result;
                 }
                 $token = json_decode($response)->access_token;
