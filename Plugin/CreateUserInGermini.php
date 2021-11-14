@@ -362,9 +362,6 @@ class CreateUserInGermini
             ]);
             curl_setopt($ch, CURLOPT_POST, 1);
 
-
-
-
             $data = curl_exec($ch);
 
             $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -398,13 +395,8 @@ class CreateUserInGermini
                     );
             }
 
-
-
-
-
-
             $customerSession->setFidelity(0);
-            $customerSession->setSapEdit(true)
+            $customerSession->setSapEdit(true);
 
             // if ($data == '') {
             //     $this->messageManager->addErrorMessage("Ocorreu uma falha no cadastro. Tente novamente!");
@@ -527,7 +519,7 @@ class CreateUserInGermini
         // );
 
         $customerSession->setFidelity(2);
-        $customerSession->setSapEdit(true)
+        $customerSession->setSapEdit(true);
 
         return $proceed();
         // $params = array('cpf' => $cpf);
