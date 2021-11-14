@@ -330,7 +330,9 @@ class UserPlugin
                 $flag_email_exists = 1;
                 $used_email = $dados->email;
             } else {
-                $email = $dados->email;
+                if (isset($dados->email)) {
+                    $email = $dados->email;
+                }
             }
 
             $this->customerRepository->save($customer);
