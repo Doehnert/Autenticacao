@@ -335,6 +335,8 @@ class UserPlugin
                 }
             }
 
+            $customer->setEmail($email);
+
             $this->customerRepository->save($customer);
 
             if ($fidelity == 1) {
