@@ -329,6 +329,8 @@ class UserPlugin
             if (explode('@', $email)[1] == "trocar.com") {
                 $flag_email_exists = 1;
                 $used_email = $dados->email;
+            } else {
+                $email = $dados->email;
             }
 
             $this->customerRepository->save($customer);
@@ -447,7 +449,7 @@ class UserPlugin
                 if (isset($resultado->error)) {
 
                     $this->_messageManager->getMessages(true);
-                    $this->_messageManager->addError("Usuário não encontrado no CVale Fidelidade ou cadastro ainda não conluído");
+                    $this->_messageManager->addError("CPF ou senha incorretos!");
                     $result->setPath('customer/account/');
                     return $result;
                 }
