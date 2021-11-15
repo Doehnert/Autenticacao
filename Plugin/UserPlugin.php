@@ -337,50 +337,32 @@ class UserPlugin
 
             $customer->setEmail($email);
 
-            $this->customerRepository->save($customer);
-
-            if (isset($dados->gender)) {
-                switch ($dados->gender) {
-                    case "M":
-                        $gender = "1";
-                        break;
-                    case "F":
-                        $gender = "2";
-                        break;
-                    case "NDA":
-                        $gender = "3";
-                        break;
-                    default:
-                        $gender = "3";
-                        break;
-                }
-                $customer->setGender($gender);
-            }
+            // $this->customerRepository->save($customer);
 
             if ($fidelity == 1) {
                 if (isset($customer->getAddresses()[0])) {
 
-                    // if (isset($dados->gender)) {
-                    //     switch ($dados->gender) {
-                    //         case "M":
-                    //             $gender = "1";
-                    //             break;
-                    //         case "F":
-                    //             $gender = "2";
-                    //             break;
-                    //         case "NDA":
-                    //             $gender = "3";
-                    //             break;
-                    //         default:
-                    //             $gender = "3";
-                    //             break;
-                    //     }
-                    //     $customer->setGender($gender);
-                    // }
+                    if (isset($dados->gender)) {
+                        switch ($dados->gender) {
+                            case "M":
+                                $gender = "1";
+                                break;
+                            case "F":
+                                $gender = "2";
+                                break;
+                            case "NDA":
+                                $gender = "3";
+                                break;
+                            default:
+                                $gender = "3";
+                                break;
+                        }
+                        $customer->setGender($gender);
+                    }
 
-                    // if (isset($dados->email)) {
-                    //     $customer->setEmail($dados->email);
-                    // }
+                    if (isset($dados->email)) {
+                        $customer->setEmail($dados->email);
+                    }
 
                     if (isset($dados->dateOfBirth)) {
                         $dob = strtotime($dados->dateOfBirth);
@@ -412,6 +394,10 @@ class UserPlugin
                 }
                 $customer->setDefaultBilling($address->getId());
             }
+
+            $this->customerRepository->save($customer);
+
+
             $this->customerSession->setCustomerDataAsLoggedIn($customer);
 
 
