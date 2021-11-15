@@ -339,26 +339,44 @@ class UserPlugin
 
             $this->customerRepository->save($customer);
 
+            if (isset($dados->gender)) {
+                switch ($dados->gender) {
+                    case "M":
+                        $gender = "1";
+                        break;
+                    case "F":
+                        $gender = "2";
+                        break;
+                    case "NDA":
+                        $gender = "3";
+                        break;
+                    default:
+                        $gender = "3";
+                        break;
+                }
+                $customer->setGender($gender);
+            }
+
             if ($fidelity == 1) {
                 if (isset($customer->getAddresses()[0])) {
 
-                    if (isset($dados->gender)) {
-                        switch ($dados->gender) {
-                            case "M":
-                                $gender = "1";
-                                break;
-                            case "F":
-                                $gender = "2";
-                                break;
-                            case "NDA":
-                                $gender = "3";
-                                break;
-                            default:
-                                $gender = "3";
-                                break;
-                        }
-                        $customer->setGender($gender);
-                    }
+                    // if (isset($dados->gender)) {
+                    //     switch ($dados->gender) {
+                    //         case "M":
+                    //             $gender = "1";
+                    //             break;
+                    //         case "F":
+                    //             $gender = "2";
+                    //             break;
+                    //         case "NDA":
+                    //             $gender = "3";
+                    //             break;
+                    //         default:
+                    //             $gender = "3";
+                    //             break;
+                    //     }
+                    //     $customer->setGender($gender);
+                    // }
 
                     // if (isset($dados->email)) {
                     //     $customer->setEmail($dados->email);
